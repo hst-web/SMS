@@ -3,7 +3,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// http助手

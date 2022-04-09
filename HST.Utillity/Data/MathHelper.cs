@@ -8,7 +8,7 @@
 using System;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 数据计算辅助操作类

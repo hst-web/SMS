@@ -6,7 +6,7 @@
 //----------------------------------------------------------------*/
 using System;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// 业务模型基类

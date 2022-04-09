@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// RotationChart

@@ -8,7 +8,7 @@
 using System.Collections.Generic;
 using System.Data.Common;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 数据库提供程序工厂类。

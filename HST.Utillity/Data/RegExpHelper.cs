@@ -7,7 +7,7 @@
 //----------------------------------------------------------------*/
 using System.Text.RegularExpressions;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 常用正则匹配工具类

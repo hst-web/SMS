@@ -1,4 +1,4 @@
-﻿@using HST.Art.Core
+﻿@using ZT.SMS.Core
 @model Account
 
 @{
@@ -34,27 +34,13 @@
 
         <dl class="single-dt">
             <dt class="selected" ><a data-href="@Url.Action("Edit","Home")" data-title="企业信息" href="javascript:void(0)"><i class="iconfont icon-qiyexinxi" style="font-size:18px"></i>企业信息</a></dt>
-            <dt><a data-href="@Url.Action("List","MemberUnit")" data-title="协会会员" href="javascript:void(0)"><i class="iconfont icon-danwei"></i>协会会员</a></dt>
-            <dt><a data-href="@Url.Action("List","Article")" data-title="文章管理" href="javascript:void(0)"><i class="iconfont icon-aiguifanfile"></i>文章管理</a></dt>
-
-        </dl>
-        <dl class="list-dt">
-            <dt><i class="iconfont icon-diploma"></i>证书管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-            <dd>
-                <ul>
-                    <li><a data-href="@Url.Action("List","Teacher")" data-title="教师证书" href="javascript:void(0)">教师证书</a></li>
-                    <li><a data-href="@Url.Action("List","Student")" data-title="学员证书" href="javascript:void(0)">学员证书</a></li>
-                </ul>
-            </dd>
-        </dl>
-        <dl class="single-dt">
-            <dt><a data-href="@Url.Action("List","Download")" data-title="下载管理" href="javascript:void(0)"><i class="iconfont icon-xiazaiguanli"></i>下载管理</a></dt>
+            <dt><a data-href="@Url.Action("List","MemberUnit")" data-title="协会会员" href="javascript:void(0)"><i class="iconfont icon-danwei"></i>协会会员</a></dt>           
         </dl>
         <dl class="list-dt">
             <dt class=""><i class="iconfont icon-xitong"></i>系统设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="@Url.Action("Index", "Category")" data-title="类别设置" href="javascript:void(0)">类别设置</a></li>
+                    @*<li><a data-href="@Url.Action("Index", "Category")" data-title="类别设置" href="javascript:void(0)">类别设置</a></li>*@
                     <li><a data-href="@Url.Action("List", "User")" data-title="账号管理" href="javascript:void(0)">账号管理</a></li>
                 </ul>
             </dd>

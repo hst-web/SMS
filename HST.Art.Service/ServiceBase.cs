@@ -5,15 +5,15 @@
 // 创建者：sysmenu
 // 创建时间：2015-9-18
 //----------------------------------------------------------------*/
-using HST.Art.Core;
-using HST.Utillity;
+using ZT.SMS.Core;
+using ZT.Utillity;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace HST.Art.Service
+namespace ZT.SMS.Service
 {
     /// <summary>
     /// 服务基类

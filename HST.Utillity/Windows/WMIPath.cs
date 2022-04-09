@@ -7,7 +7,7 @@
 //----------------------------------------------------------------*/
 
 // ReSharper disable InconsistentNaming
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 表示WMI地址的枚举

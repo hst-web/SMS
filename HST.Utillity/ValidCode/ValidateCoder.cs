@@ -12,7 +12,7 @@ using System.Drawing.Drawing2D;
 using System.Text;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 验证码生成类

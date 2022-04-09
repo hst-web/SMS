@@ -27,11 +27,11 @@ namespace ASP
     using System.Web.Security;
     using System.Web.UI;
     using System.Web.WebPages;
-    using HST.Art.Web;
+    using ZT.SMS.Web;
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("RazorGenerator", "2.0.0.0")]
     [System.Web.WebPages.PageVirtualPathAttribute("~/Areas/manage/Views/Account/Login.cshtml")]
-    public partial class _Areas_manage_Views_Account_Login_cshtml : System.Web.Mvc.WebViewPage<HST.Art.Web.LoginViewModel>
+    public partial class _Areas_manage_Views_Account_Login_cshtml : System.Web.Mvc.WebViewPage<ZT.SMS.Web.LoginViewModel>
     {
         public _Areas_manage_Views_Account_Login_cshtml()
         {

@@ -7,7 +7,7 @@
 //----------------------------------------------------------------*/
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 验证码类型

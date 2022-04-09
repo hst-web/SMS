@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     public class ValidateHelper
     {

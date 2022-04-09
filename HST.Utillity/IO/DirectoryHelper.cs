@@ -9,7 +9,7 @@ using System;
 using System.IO;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 目录操作辅助类

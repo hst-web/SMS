@@ -5,8 +5,8 @@
 // 创建时间：2019-4-14
 //----------------------------------------------------------------*/
 using System;
-using HST.Utillity;
-namespace HST.Art.Core
+using ZT.Utillity;
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// StuCertificate

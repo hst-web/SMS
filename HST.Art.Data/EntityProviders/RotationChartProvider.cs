@@ -8,13 +8,13 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
-using HST.Art.Core;
-using HST.Utillity;
+using ZT.SMS.Core;
+using ZT.Utillity;
 using System.Text;
 using System.Linq;
 using System.Data;
 
-namespace HST.Art.Data
+namespace ZT.SMS.Data
 {
     public class RotationChartProvider : EntityProviderBase
     {

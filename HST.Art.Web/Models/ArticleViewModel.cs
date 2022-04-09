@@ -2,10 +2,10 @@
 using System.Web.Mvc;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using HST.Art.Core;
-using HST.Utillity;
+using ZT.SMS.Core;
+using ZT.Utillity;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class ArticleViewModel
     {

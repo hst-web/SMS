@@ -9,7 +9,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 加密字符串辅助类

@@ -3,10 +3,10 @@ using System.Web;
 using System.Web.Mvc;
 using System.IO;
 using System.Web.Configuration;
-using HST.Utillity;
+using ZT.Utillity;
 using System.Web.Helpers;
 
-namespace HST.Art.Web.Areas.manage.Controllers
+namespace ZT.SMS.Web.Areas.manage.Controllers
 {
     public class UploadController : ApplicationBase
     {

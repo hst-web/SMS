@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     /// <summary>
     /// 分页视图模型

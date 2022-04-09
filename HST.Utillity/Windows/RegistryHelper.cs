@@ -11,7 +11,7 @@ using System.Linq;
 using Microsoft.Win32;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 注册表辅助类

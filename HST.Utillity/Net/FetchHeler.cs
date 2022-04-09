@@ -8,7 +8,7 @@
 using System.Collections.Generic;
 using System.Web;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// FetchHelper 的摘要说明。

@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace HST.Art.Web.Areas.manage
+namespace ZT.SMS.Web.Areas.manage
 {
     public class manageAreaRegistration : AreaRegistration
     {
@@ -17,7 +17,7 @@ namespace HST.Art.Web.Areas.manage
             context.MapLowerCaseUrlRoute(
                 "manage_default",
                 "manage/{controller}/{action}/{id}",
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional }, new string[] { "HST.Art.Web.Areas.manage.Controllers" }
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional }, new string[] { "ZT.SMS.Web.Areas.manage.Controllers" }
             );
         }
     }

@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.VisualBasic.FileIO;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 文件辅助操作类

@@ -5,7 +5,7 @@
 // 创建者：sysmenu
 // 创建时间：2019-3-18
 //----------------------------------------------------------------*/
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// IP位置信息类

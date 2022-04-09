@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Drawing.Imaging;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     /// <summary>
     /// 验证码类

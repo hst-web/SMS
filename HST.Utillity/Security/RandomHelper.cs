@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     public sealed class RandomHelper
     {

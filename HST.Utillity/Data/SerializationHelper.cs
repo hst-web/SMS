@@ -13,7 +13,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     public enum SerializationType
     {

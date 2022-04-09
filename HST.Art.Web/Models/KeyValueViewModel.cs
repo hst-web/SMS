@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class KeyValueViewModel
     {

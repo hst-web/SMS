@@ -1,11 +1,11 @@
-﻿using HST.Art.Core;
+﻿using ZT.SMS.Core;
 using System;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class MvcApplication : System.Web.HttpApplication
     {

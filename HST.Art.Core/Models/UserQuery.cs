@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     public class UserQuery
     {

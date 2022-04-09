@@ -5,10 +5,10 @@
 // 创建时间：2019-4-14
 //----------------------------------------------------------------*/
 using System;
-using HST.Utillity;
+using ZT.Utillity;
 using System.IO;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// Article

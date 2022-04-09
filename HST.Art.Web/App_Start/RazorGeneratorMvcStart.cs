@@ -2,11 +2,11 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.WebPages;
 using RazorGenerator.Mvc;
-using HST.Art.Web;
+using ZT.SMS.Web;
 
 [assembly: WebActivatorEx.PostApplicationStartMethod(typeof(RazorGeneratorMvcStart), "Start")]
 
-namespace HST.Art.Web {
+namespace ZT.SMS.Web {
     public static class RazorGeneratorMvcStart {
         public static void Start() {
             var engine = new PrecompiledMvcEngine(typeof(RazorGeneratorMvcStart).Assembly) {

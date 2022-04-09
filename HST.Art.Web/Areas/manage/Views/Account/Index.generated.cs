@@ -29,13 +29,13 @@ namespace ASP
     using System.Web.WebPages;
     
     #line 3 "..\..\Areas\manage\Views\Account\Index.cshtml"
-    using HST.Art.Core;
+    using ZT.SMS.Core;
     
     #line default
     #line hidden
     
     #line 2 "..\..\Areas\manage\Views\Account\Index.cshtml"
-    using HST.Art.Web;
+    using ZT.SMS.Web;
     
     #line default
     #line hidden

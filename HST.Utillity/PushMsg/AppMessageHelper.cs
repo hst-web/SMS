@@ -7,7 +7,7 @@ using cn.jpush.api;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// app消息助手

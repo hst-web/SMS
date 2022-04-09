@@ -5,13 +5,13 @@
 // 创建时间：2019-5-8
 //----------------------------------------------------------------*/
 using System.Collections.Generic;
-using HST.Art.Core;
-using HST.Utillity;
-using HST.Art.Data;
+using ZT.SMS.Core;
+using ZT.Utillity;
+using ZT.SMS.Data;
 using System;
 
 
-namespace HST.Art.Service
+namespace ZT.SMS.Service
 {
     public class AccountService : ServiceBase
     {

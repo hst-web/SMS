@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using HST.Utillity;
+using ZT.Utillity;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public partial class WebClearCache : System.Web.UI.Page
     {

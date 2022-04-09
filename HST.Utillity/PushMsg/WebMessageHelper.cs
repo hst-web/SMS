@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR;
 using System;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// web消息助手

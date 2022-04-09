@@ -9,7 +9,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// RSA加密解密操作类

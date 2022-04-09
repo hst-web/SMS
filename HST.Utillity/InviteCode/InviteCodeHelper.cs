@@ -12,7 +12,7 @@ using System.Text;
 using Microsoft.VisualBasic.FileIO;
 using System;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 邀请码辅助操作类

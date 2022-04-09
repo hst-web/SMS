@@ -9,7 +9,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 结合RSA，DES的通信加密解密操作类

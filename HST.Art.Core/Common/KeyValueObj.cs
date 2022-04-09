@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// key-value对象

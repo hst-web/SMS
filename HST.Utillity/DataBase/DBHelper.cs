@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 通用数据库访问类。

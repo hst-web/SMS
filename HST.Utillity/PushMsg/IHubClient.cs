@@ -1,4 +1,4 @@
-﻿namespace HST.Utillity
+﻿namespace ZT.Utillity
 {
     /// <summary>
     /// 接口：客户端js函数的原型，后台不要实现

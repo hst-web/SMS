@@ -12,7 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// IP位置查找操作类

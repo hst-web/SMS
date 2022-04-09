@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class AccountViewModel
     {

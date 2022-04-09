@@ -5,7 +5,7 @@
 // 创建时间：2019-4-14
 //----------------------------------------------------------------*/
 using System;
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// CategoryDictionary

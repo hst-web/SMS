@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Optimization;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     internal class AsIsBundleOrderer : IBundleOrderer
     {

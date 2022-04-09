@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     public class FilterEntityModel
     {

@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using HST.Art.Core;
+using ZT.SMS.Core;
 
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class HomeViewModel
     {

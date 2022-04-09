@@ -4,8 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ZT.SMS.Web.Areas.manage.Controllers;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class RouteConfig
     {
@@ -25,8 +26,8 @@ namespace HST.Art.Web
             "Default",
             "{controller}/{action}/{id}",
              new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-             , new string[] { "HST.Art.Web.Controllers" }
-            );
+             , new string[] { typeof(HomeController).Namespace }
+            ).DataTokens.Add("area", "manage");//HomeController  ZT.SMS.Web.Areas.manage.Controllers
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     public class CommonEnums
     {

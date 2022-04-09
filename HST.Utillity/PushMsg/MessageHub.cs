@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 客户端与服务端的通讯hub

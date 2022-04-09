@@ -5,11 +5,11 @@
 // 创建时间：2019-3-18
 //----------------------------------------------------------------*/
 using System.Collections.Generic;
-using HST.Art.Core;
-using HST.Art.Data;
-using HST.Utillity;
+using ZT.SMS.Core;
+using ZT.SMS.Data;
+using ZT.Utillity;
 
-namespace HST.Art.Service
+namespace ZT.SMS.Service
 {
     /// <summary>
     /// 企业服务

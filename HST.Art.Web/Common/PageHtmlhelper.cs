@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using System.Web.Mvc;
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public static class PageHtmlhelper
     {

@@ -1,6 +1,6 @@
 ﻿using System.Web;
 using System.Web.Optimization;
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class BundleConfig
     {

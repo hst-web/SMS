@@ -8,7 +8,7 @@
 using System;
 using System.Web;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// Cookie帮助类

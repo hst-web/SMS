@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// 常量类

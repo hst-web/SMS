@@ -7,7 +7,7 @@
 //----------------------------------------------------------------*/
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// UserAgent辅助操作类

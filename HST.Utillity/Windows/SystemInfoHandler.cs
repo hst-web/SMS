@@ -12,7 +12,7 @@ using System.Linq;
 using System.Management;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 获取系统硬件、软件信息

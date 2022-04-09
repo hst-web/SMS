@@ -1,5 +1,5 @@
-﻿using HST.Art.Core;
-using HST.Utillity;
+﻿using ZT.SMS.Core;
+using ZT.Utillity;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HST.Art.Data
+namespace ZT.SMS.Data
 {
     public class MemberUnitProvider : EntityProviderBase
     {

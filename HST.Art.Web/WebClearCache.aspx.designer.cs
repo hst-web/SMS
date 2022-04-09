@@ -7,7 +7,7 @@
 // </自动生成>
 //------------------------------------------------------------------------------
 
-namespace HST.Art.Web {
+namespace ZT.SMS.Web {
     
     
     public partial class WebClearCache {

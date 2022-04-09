@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// ftp帮助类

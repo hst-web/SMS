@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HST.Art.Core;
+using ZT.SMS.Core;
 
-namespace HST.Art.Data
+namespace ZT.SMS.Data
 {
     public interface IEntityBase
     {

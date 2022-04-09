@@ -7,7 +7,7 @@
 //----------------------------------------------------------------*/
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 注册表基项域

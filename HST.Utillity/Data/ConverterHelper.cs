@@ -8,7 +8,7 @@
 using System;
 using System.Text;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 各种值类型转换

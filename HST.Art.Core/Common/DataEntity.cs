@@ -7,7 +7,7 @@
 using System;
 using System.Collections;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// 数据实体类

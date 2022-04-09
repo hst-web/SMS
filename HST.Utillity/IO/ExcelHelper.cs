@@ -17,7 +17,7 @@ using System.Threading;
 using System.ComponentModel;
 using System.Text;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// Excel操作类

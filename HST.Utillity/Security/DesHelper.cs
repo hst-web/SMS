@@ -12,7 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// DES / TripleDES加密解密操作类

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using HST.Art.Core;
+using ZT.SMS.Core;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class ResourceViewModel
     {

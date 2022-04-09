@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Newtonsoft.Json;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     [Serializable]
     public class PlatformAgent

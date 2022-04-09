@@ -5,10 +5,10 @@
 // 创建时间：2020-01-14
 //----------------------------------------------------------------*/
 using System;
-using HST.Utillity;
+using ZT.Utillity;
 using Newtonsoft.Json;
 
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// Setting

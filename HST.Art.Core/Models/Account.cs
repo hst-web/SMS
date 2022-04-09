@@ -4,7 +4,7 @@
 // 创建者：sysmenu
 // 创建时间：2019-4-14
 //----------------------------------------------------------------*/
-namespace HST.Art.Core
+namespace ZT.SMS.Core
 {
     /// <summary>
     /// 账号Model

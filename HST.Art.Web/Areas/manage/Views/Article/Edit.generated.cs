@@ -29,19 +29,19 @@ namespace ASP
     using System.Web.WebPages;
     
     #line 6 "..\..\Areas\manage\Views\Article\Edit.cshtml"
-    using HST.Art.Core;
+    using ZT.SMS.Core;
     
     #line default
     #line hidden
     
     #line 5 "..\..\Areas\manage\Views\Article\Edit.cshtml"
-    using HST.Art.Web;
+    using ZT.SMS.Web;
     
     #line default
     #line hidden
     
     #line 7 "..\..\Areas\manage\Views\Article\Edit.cshtml"
-    using HST.Utillity;
+    using ZT.Utillity;
     
     #line default
     #line hidden

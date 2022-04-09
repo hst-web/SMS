@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     using InvokeHandler = Func<object, object[], object>;
 

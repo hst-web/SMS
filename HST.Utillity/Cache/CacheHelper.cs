@@ -9,7 +9,7 @@ using System.Collections;
 using System.Web;
 using System.Web.Caching;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 缓存工具类

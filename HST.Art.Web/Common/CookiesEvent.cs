@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     public class CookiesEvent
     {

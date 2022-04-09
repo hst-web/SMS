@@ -1,11 +1,11 @@
-﻿using HST.Art.Core;
+﻿using ZT.SMS.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     /// <summary>
     /// 筛选条件类

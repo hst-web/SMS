@@ -6,13 +6,13 @@
 //----------------------------------------------------------------*/
 using System;
 using System.Configuration;
-using HST.Utillity;
+using ZT.Utillity;
 using System.Data.Common;
-using HST.Art.Core;
+using ZT.SMS.Core;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace HST.Art.Data
+namespace ZT.SMS.Data
 {
     /// <summary>
     /// 实体数据提供者基类

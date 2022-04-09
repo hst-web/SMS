@@ -10,7 +10,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     /// <summary>
     /// Url小写路由

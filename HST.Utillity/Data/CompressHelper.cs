@@ -10,7 +10,7 @@ using System.IO.Compression;
 using System.Text;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 压缩操作类

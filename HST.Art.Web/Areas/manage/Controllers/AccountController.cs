@@ -1,10 +1,10 @@
-﻿using HST.Art.Service;
-using HST.Art.Core;
-using HST.Utillity;
+﻿using ZT.SMS.Service;
+using ZT.SMS.Core;
+using ZT.Utillity;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 
-namespace HST.Art.Web.Areas.manage.Controllers
+namespace ZT.SMS.Web.Areas.manage.Controllers
 {
     public class AccountController : ApplicationBase
     {

@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     public class SMSHelper
     {

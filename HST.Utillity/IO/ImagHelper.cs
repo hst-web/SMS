@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 水印位置

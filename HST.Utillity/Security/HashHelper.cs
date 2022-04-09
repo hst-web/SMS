@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 
 
-namespace HST.Utillity
+namespace ZT.Utillity
 {
     /// <summary>
     /// 字符串Hash操作类

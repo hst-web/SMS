@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace HST.Art.Web
+namespace ZT.SMS.Web
 {
     /// <summary>
     /// JqueryDataTable插件交互的DT格式的数据(DT参数区分大小写)

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("HST.Art.Data")]
+[assembly: AssemblyTitle("ZT.SMS.Data")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sky123.Org")]
-[assembly: AssemblyProduct("HST.Art.Data")]
+[assembly: AssemblyProduct("ZT.SMS.Data")]
 [assembly: AssemblyCopyright("Copyright © Sky123.Org 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
