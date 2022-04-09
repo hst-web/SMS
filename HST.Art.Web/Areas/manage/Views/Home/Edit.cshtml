@@ -1,0 +1,510 @@
+﻿@{
+    Layout = null;
+}
+
+@using HST.Art.Web
+@using HST.Art.Core
+@using HST.Utillity
+@model  OrganizationViewModel
+
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+@Styles.Render("~/appcss")
+<script src="~/Content/lib/webuploader/0.1.5/webuploader.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="~/Content/lib/ckeditor/ckeditor.js"></script>
+<style type="text/css">
+    .form-horizontal .form-label {
+        text-align: right;
+    }
+</style>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span><a href="javascript:void(0)" onclick="location.reload()">企业管理</a> </nav>
+<article class="page-container">
+    <div class="tabBar cl" id="tabBarList">
+        <span data-bind="tabCon1" data-type="@RotationType.UnKnown" class="current">基本信息</span>
+        <span data-bind="tabCon2" data-type="@RotationType.Banner" class="">轮播图管理</span>
+        <span data-bind="tabCon2" data-type="@RotationType.Logo" class="">Logo链接管理</span>
+    </div>
+    <div class="tabCon form-wrap tab-show" id="tabCon1">
+        @using (Ajax.BeginForm("Edit", "Home", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "formSuccess(data)", OnBegin = "disSubmit('sub_btn')", OnComplete = "enSubmit('sub_btn')" }, new { id = "", @class = "form form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Number)
+            @Html.HiddenFor(m => m.Logo)
+            <div class="row cl">
+                <label class="form-label col-sm-2 ">微信公众号：</label>
+                <div class="formControls col-sm-6 ">
+                    <div class="form-group" @(string.IsNullOrEmpty(Model.WeChat) ? "" : "style=position:relative")>
+                        <div id="upfileImg" class="up-img-left @(string.IsNullOrEmpty(Model.WeChat) ?"":"up-imgBtn")">
+                            @(string.IsNullOrEmpty(Model.WeChat) ? "上传图片" : "更改图片")
+                        </div>
+                        <span class="help-block help-tip help-img @(string.IsNullOrEmpty(Model.WeChat) ?"":"hidden")" style="top:8px;position:absolute">请上传jpg、jpeg、gif、bmp、png等图片类型的公众号二维码</span>
+                        <div class="formControls">
+                            <ul id="imglist" class="@(string.IsNullOrEmpty(Model.WeChat)?"hidden":"") ">
+                                <li>
+                                    @if (!string.IsNullOrEmpty(Model.SmallHeadImg))
+                                    {
+                                        <img src="@Model.SmallHeadImg" style="max-width:125px" onerror='nofind()' />
+                                    }
+                                </li>
+                            </ul>
+                            <input type="hidden" id="loc_temp_img" />
+                        </div>
+                    </div>
+                    @Html.HiddenFor(m => m.WeChat, new { id = "memberFileImg" })
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-sm-2 "><span class="c-red">*</span>企业名称：</label>
+                <div class="formControls col-sm-3 ">
+                    @Html.TextBoxFor(m => m.OrgName, new { placeholder = "请输入企业名称", @class = "input-text" })
+                    @Html.ValidationMessageFor(m => m.OrgName, null, new { @class = "error-lable" })
+                </div>
+                <label class="form-label col-sm-2 ">企业电话：</label>
+                <div class="formControls col-sm-3 ">
+                    @Html.TextBoxFor(m => m.Telephone, new { placeholder = "请输入企业电话", @class = "input-text" })
+                    @Html.ValidationMessageFor(m => m.Telephone, null, new { @class = "error-lable" })
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-sm-2 ">企业邮箱：</label>
+                <div class="formControls col-sm-3 ">
+                    @Html.TextBoxFor(m => m.Email, new { placeholder = "请输入企业邮箱", @class = "input-text" })
+                    @Html.ValidationMessageFor(m => m.Email, null, new { @class = "error-lable" })
+                </div>
+                <label class="form-label col-sm-2 ">企业微博：</label>
+                <div class="formControls col-sm-3 ">
+                    @Html.TextBoxFor(m => m.Blog, new { placeholder = "请输入企业微博", @class = "input-text" })
+                    @Html.ValidationMessageFor(m => m.Blog, null, new { @class = "error-lable" })
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-sm-2 "><span class="c-red">*</span>企业地址：</label>
+                <div class="formControls col-sm-8 ">
+                    @Html.TextBoxFor(m => m.Address, new { @class = "input-text", placeholder = "请输入企业地址" })
+                    @Html.ValidationMessageFor(m => m.Address, null, new { @class = "error-lable" })
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-sm-2 "><span class="c-red">*</span>企业简介：</label>
+                <div class="formControls col-sm-8 ">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "textarea", rows = "5", placeholder = "请输入协会简介..." })
+                    @Html.ValidationMessageFor(m => m.Description, null, new { @class = "error-lable" })
+                </div>
+            </div>
+
+            <div class="row cl">
+                <label class="form-label col-sm-2 ">组织架构：</label>
+                <div class="formControls col-sm-8 ">
+                    @Html.TextAreaFor(m => m.Framework, new { @class = "ckeditor textarea", rows = "10", placeholder = "请输入组织架构..." })
+                </div>
+            </div>
+            <div class="row cl">
+                <label class="form-label col-sm-2 ">企业详情：</label>
+                <div class="formControls col-sm-8 ">
+                    @Html.TextAreaFor(m => m.Detail, new { @class = "ckeditor textarea", rows = "10", placeholder = "请输入协会详情..." })
+                </div>
+            </div>
+            <div class="row cl">
+                <div id="btn_submit" class="col-xs-6  col-xs-offset-3 col-sm-offset-2 mt-10">
+                    <button class="btn btn-primary radius" type="submit" id="sub_btn">保存</button>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="tabCon" id="tabCon2">
+        <div class="cl pd-10  mt-10 search-wrap" style="padding-left:0px;padding-right:0px">
+            <button class="btn btn-primary float-right hidden" id="btnRotation1" onclick="ration_add('新建轮播','@Url.Action("AddRotation")','@RotationType.Banner')" type="button">新建轮播</button>
+            <button class="btn btn-primary float-right hidden" id="btnRotation2" onclick="ration_add('新建Logo轮播','@Url.Action("AddRotation")','@RotationType.Logo')" type="button">新建Logo轮播</button>
+            <span class="help-block help-tip  " style="font-size:13px">最多可添加<i style="color:red;padding-right:3px;display:inline-block" id="ration-num">5</i>张轮播图，可通过鼠标拖动改变显示顺序</span>
+        </div>
+        <div style="margin-top:-10px">
+            <table id="tbTable" class="table table-border table-bordered table-bg table-sort">
+                <thead>
+                    <tr class="text-c">
+                        <th width="8%">序号</th>
+                        <th width="15%">轮播图片</th>
+                        <th>链接地址</th>
+                        <th width="11%">操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="hidden">
+        <input type="hidden" id="rotationType" value="@RotationType.UnKnown" />
+        <input type="hidden" id="rotationSort" value="" />
+    </div>
+</article>
+
+@Scripts.Render("~/bundles/datatable")
+<script type="text/javascript">
+    var table1 = null;
+    $(function () {
+        table1 = initializeTable();
+        var editor = CKEDITOR.replace('Framework',
+          {
+              height: 260,
+              toolbar: 'Basic',
+              filebrowserImageUploadUrl: "@Url.Action("UploadEditer", "Upload")"
+          });
+
+        var editor1 = CKEDITOR.replace('Detail',
+         {
+             height: 260,
+             toolbar: 'Basic',
+             filebrowserImageUploadUrl: "@Url.Action("UploadEditer", "Upload")"
+         });
+
+        //控制富文本编辑器复制粘贴图片方法
+        editor.on("change", pasteImg);
+        editor1.on("change", pasteImg);
+
+        $("#tabBarList span").each(function () {
+            $(this).click(function () {
+                $(this).addClass("current").siblings().removeClass("current");
+                var attrId = $(this).attr("data-bind");
+                var attrType = $(this).attr("data-type");
+                $("#" + attrId).addClass("tab-show").siblings().removeClass("tab-show");
+                if (attrType != '@RotationType.UnKnown') {
+                    if (attrType == '@RotationType.Banner') {
+                        $("#btnRotation1").removeClass("hidden").siblings("button").addClass("hidden");
+                        $("#ration-num").html(5);
+                    } else {
+                        $("#btnRotation2").removeClass("hidden").siblings("button").addClass("hidden");
+                        $("#ration-num").html(20);
+                    }
+
+                    $("#rotationType").val(attrType);
+                    table1.ajax.reload();
+                }
+            })
+        });
+
+        var fixHelperModified = function (e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+            $helper.children().each(function (index) {
+                $(this).width($originals.eq(index).width())
+            });
+            return $helper;
+        },
+        updateIndex = function (e, ui) {
+            $('td.index', ui.item.parent()).each(function (i) {
+                $(this).html(i + 1);
+            });
+
+            var itemArray = new Array();
+            ui.item.parent().find("tr").each(function () {
+                var attrId = $(this).attr("data-bind");
+                itemArray.push(parseInt(attrId));
+            });
+
+            $("#rotationSort").val(JSON.stringify(itemArray));
+            $.ajax({
+                url: "@Url.Action("UpdateSort")",
+                type: "Post",
+                data: { "RotationType": $("#rotationType").val(), "SortJson": $("#rotationSort").val() },
+                dataType: "json",
+                success: function (data) {
+                    if (data.isSuccess) {
+                        table1.ajax.reload();
+                    } else {
+                        layer.msg('排序失败');
+                    }
+                }
+            })
+        };
+        $("#tbTable tbody").sortable({
+            helper: fixHelperModified,
+            stop: updateIndex
+        }).disableSelection();
+    });
+
+    /*编辑*/
+    function ration_deit(title, url, id) {
+        var index = top.layer.open({
+            type: 2,
+            title: title,
+            area: ['750px', '450px'],
+            content: url + "?id=" + id
+        });
+    }
+
+    /*添加*/
+    function ration_add(title, url, type) {
+        var rationCount = $("#tbTable tbody tr").length;
+
+        if (type == '@RotationType.Banner' && rationCount >= 5) {
+            layer.alert("最多添加Banner轮播不可超过5条", 3);
+            return;
+        }
+
+        if (type == '@RotationType.Logo' && rationCount >= 20) {
+            layer.alert("最多添加Logo轮播不可超过20条", 3);
+            return;
+        }
+
+        var index = top.layer.open({
+            type: 2,
+            title: title,
+            area: ['750px', '450px'],
+            content: url + "?rotationType=" + type
+        });
+    }
+
+    function initializeTable() {
+        var dataTable = $('#tbTable').DataTable({
+            "serverSide": true,
+            "ajax": {
+                "url": "@Url.Action("GetJsonData")",
+                "type": "post",
+                "data": function (data) {
+                    data.pageIndex = (data.start / data.length) + 1;
+                    data.rotationType = $("#rotationType").val();
+                }
+            },
+            "columns": [
+                { "defaultContent": "" },
+                { "mDataProp": "SmallHeadImg" },
+                { "mDataProp": "WebLink" },
+                { "defaultContent": "" }
+            ],
+            "columnDefs": [
+             {
+                 "targets": [1],
+                 "data": "SmallHeadImg",
+                 "render": function (data, type, full) {
+                     var result = "<a class='fancybox' href='" + full.HeadImg + "' title='' data-rel='fancybox-button'><img src=\"" + data + "\" class=\"thumbnail\" onerror='nofind()' style='height:40px;padding:2px' /></a>";
+                     if (data.length <= 0) {
+                         result = "<img src='/Content/image/not-img.jpg' class=\"thumbnail\" style='width:55px;padding:2px' />";
+                     }
+                     return result;
+                 }
+             },
+            {
+                "targets": [-1],
+                "data": "Id",
+                "render": function (data, type, full) {
+                    var tmpString = "<a  onClick=\"ration_deit('修改轮播','@Url.Action("EditRotation")'," + data + ")\" href=\"javascript:;\" title=\"编辑\">编辑</a>";
+                    tmpString += "<a href=\"javascript:;\" onClick=\"obj_del('轮播','@Url.Action("Delete")'," + data + ")\"  title=\"删除\">删除</a>";
+
+                    return tmpString;
+                }
+            }
+            ],
+            "fnDrawCallback": function () {
+                var api = this.api();
+                var startIndex = api.context[0]._iDisplayStart;
+                api.column(0).nodes().each(function (cell, i) {
+                    cell.innerHTML = startIndex + i + 1;
+                });
+            },
+            "rowCallback": function (row, data, displayIndex) {
+                $(row).attr("class", "text-c").attr("data-bind", data.Id);
+                $(row).children('td').eq(3).attr("class", "td-manage");
+                $(row).children('td').eq(0).css("cursor", "move");
+            },
+            "initComplete": function (settings, json) {
+                handleFancybox();
+            },
+            language: {
+                lengthMenu: '',
+                loadingRecords: '数据加载中...',
+                paginate: {
+                    previous: "上一页",
+                    next: "下一页",
+                    first: "",
+                    last: ""
+                },
+                zeroRecords: "暂无数据",
+
+                info: "<span class='pagesStyle'>总共<span class='recordsStyle'> _TOTAL_ 条,计 _PAGES_ </span>页，当前显示 _START_ -- _END_ 条记录 </span>",
+                infoEmpty: "0条记录",
+                infoFiltered: ""
+            },
+            "searching": false,
+            "ordering": false,
+            "autoWidth": false,
+            "iDisplayLength": 50,
+            "processing": true,
+            //destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题
+
+        });
+
+        //handleFancybox();
+        return dataTable;
+    }
+
+    function formSuccess(result) {
+        if (result != null) {
+            if (result.isSuccess) {
+                top.layer.alert('操作成功！', {
+                    icon: 6, closeBtn: 0, yes: function () {
+                        location.reload();
+                        parent.layer.closeAll();
+                    }
+                });
+            } else {
+                top.layer.alert('操作失败！', { icon: 5 });
+            }
+        } else {
+            top.layer.alert('操作失败！', { icon: 5 });
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    var maxcount = 8;
+    //上传参数
+    var jq_imgFormData = { BidFileDomain: ' ', uploadQueryData: { Suffix: 1 } };
+    if (!WebUploader.Uploader.support()) {
+        $(".FJsp2").html("说明：当前浏览器不支持附件上传");
+        $("#upfileImg").hide();
+        //alert( 'Web Uploader 不支持您的浏览器！如果你使用的是IE浏览器，请尝试升级 flash 播放器');
+        alert("当前浏览器不支持附件上传，如果你使用的是IE浏览器，请尝试升级 flash 播放器");
+        throw new Error('WebUploader does not support the browser you are using.');
+    }
+    var BASE_URL = "/content/webuploader-0.1.5";
+    var file_ids = []; //已上传文件的路径
+    var file_info = []; //记录文件的GUID和存储路径
+    var isfilesuping = false;
+    // 文件上传
+    jQuery(function () {
+        var id = "upfileImg";
+        var $ = jQuery,
+    state = 'pending',
+    $probar = $("#" + id).siblings("div").find(".pros"),
+    uploader;
+        uploader = WebUploader.create({
+            // 不压缩image
+            resize: false,
+            //发送后台时参数
+            formData: jq_imgFormData.uploadQueryData,
+            fileVal: jq_imgFormData.BidFileDomain,
+            method: "POST",
+            //是否分块（大文件上传）
+            chunked: true,
+            //设置文件上传域名称
+            fileVal: 'file',
+            //每块最大限制（默认5M 因为是.net 所以设置2M）
+            chunkSize: 2097152,
+            // swf文件路径
+            swf: BASE_URL + '/Uploader.swf',
+            // 文件接收服务端。
+            server: jq_imgFormData.BidFileDomain + '@Url.Action("Upload", "Upload")',
+            //创建选择文件按钮
+            pick: { id: "#" + id, innerHTML: "", multiple: false },
+            //选择文件自动上传
+            auto: true,
+            //accept:{title:"只能上传rar,zip文件",extensions :'rar,zip',mimeTypes:'application/x-zip-compressed'},
+            fileNumLimit: maxcount
+        });
+
+        //文件大小限制,超过则不加入队列
+        uploader.on('beforeFileQueued', function (file, han, msg) {
+            var xzlist = ("jpg,jpeg,gif,bmp,png").split(",");
+            var filenamelist = file.name.split('.');
+            var filehz = filenamelist[filenamelist.length - 1];
+
+            if (xzlist.indexOf(filehz) < 0) {
+                layer.alert("请上传指定类型格式的文件", 0);
+                return false;
+            }
+
+            if (file.size > (1024 * 1024 * 10)) {
+                layer.alert("图片大小不可超过5M", 0);
+                return false;
+            }
+
+            var filelen = $("#imglist>li").length;
+            if (filelen >= maxcount) {
+                layer.alert("超出最大上传数量", 0);
+                return false;
+            }
+        });
+        //某个文件开始上传前触发，一个文件只会触发一次。
+        uploader.on('uploadStart', function (file) {
+            uploader.options.formData.guid = WebUploader.Base.guid();
+        });
+        // 当有文件添加进来的时候
+        uploader.on('fileQueued', function (file) {
+            $(".help-img").hide();
+            $(".yangli").hide()
+            $(".yulan").show();
+            uploader.makeThumb(file, function (error, ret) {
+                var file_list = [];
+                file_list.push("<li id='" + file.id + "'>");
+                file_list.push("<img src='" + ret + "'/>");
+                file_list.push("<div class='percent_small'>");
+                file_list.push("<div class='per_pic2'>");
+                file_list.push("<div class='change_per2' style='width:1%'></div>");
+                file_list.push("</div>");
+                file_list.push("<span class='showtitle'>正准备上传…</span></div>");
+                file_list.push("</div></li>");
+                $("#imglist").empty().append(file_list.join(''));
+            });
+        });
+        //重置
+        uploader.on('reset', function (file) {
+
+        });
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on('uploadProgress', function (file, percentage) {
+            var jd = parseInt(percentage * 100);
+            if (jd > 1) {
+                $("#" + file.id).find(".change_per2").css("width", jd + '%');
+                $("#" + file.id).find(".per_pic2,.showtitle").attr("title", '已上传' + jd + '%');
+                $("#" + file.id).find(".showtitle").text('已上传' + jd + '%');
+            }
+            if (jd >= 100) {
+                $("#" + file.id).find(".per_pic2,.showtitle").attr("title", "处理中...");
+            }
+            isfilesuping = uploader.getStats().progressNum != 0;
+        });
+
+        uploader.on('uploadSuccess', function (file, obj) {
+
+            isfilesuping = uploader.getStats().progressNum != 0;
+            var jsonresult = obj._raw;
+            jsonresult = eval('(' + jsonresult + ')');
+            if (jsonresult.FilePath) {
+                $("#" + file.id).find(".showtitle").text("");
+                $("#memberFileImg,#loc_temp_img").val(jsonresult.FilePath);
+                $("#memberFileImg").blur();
+                $("#" + file.id).find("span.title").html(jsonresult.FileName);
+                $("#upfileImg").find("div.webuploader-pick").html("更改图片");
+                $("#upfileImg").parent().attr("style", "position:relative");//
+                $("#upfileImg").addClass("up-imgBtn");
+                $("#imglist").removeClass("hidden");
+            }
+            else {
+                layer.msg(jsonresult.Message);
+            }
+
+            uploader.reset();
+        });
+
+        uploader.on('uploadError', function (file, reason) {
+            layer.msg(reason);
+        });
+        uploader.on('error', function (handler) {
+            if (handler == "Q_EXCEED_NUM_LIMIT") {
+                layer.alert("超出最大张数");
+            }
+            if (handler == "F_DUPLICATE") {
+                layer.alert("该文件已在上传列表", 3);
+            }
+
+            if (handler == "Q_TYPE_DENIED") {
+                layer.alert("该文件不满足上传要求，可能您上传的文件为0KB");
+            }
+        });
+        uploader.on('uploadComplete', function (file) {
+            $('#' + file.id).find('.percent_small').fadeOut();
+        });
+
+    });
+
+</script>

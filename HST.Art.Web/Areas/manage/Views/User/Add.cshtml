@@ -1,0 +1,101 @@
+﻿@{
+    Layout = null;
+}
+
+@using HST.Art.Web
+@using HST.Art.Core
+
+@model  UserViewModel
+
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+@Styles.Render("~/appcss")
+<style type="text/css">
+    .form-horizontal .form-label {
+        text-align: right;
+    }
+</style>
+<article class="page-container">
+    @using (Ajax.BeginForm("Add", "User", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "formSuccess(data)", OnBegin = "disSubmit('sub_btn')", OnComplete = "enSubmit('sub_btn')" }, new { id = "", @class = "form form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id,new {@Value=0 })
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>用户名：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.TextBoxFor(m => m.UserName, new { placeholder = "请输入用户名", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.UserName, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>姓名：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.TextBoxFor(m => m.RealName, new { placeholder = "请输入姓名", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.RealName, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>手机号：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.TextBoxFor(m => m.Phone, new { placeholder = "请输入手机号", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.Phone, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 ">邮箱：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.TextBoxFor(m => m.Email, new { placeholder = "请输入邮箱", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.Email, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>密码：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.PasswordFor(m => m.Password, new { placeholder = "6-20位字符，可由英文、数字和特殊符号组成", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.Password, null, new { @class = "error-lable" })
+
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 ">状态：</label>
+            <div class="formControls col-xs-6 ">
+                <select class="select select-box" name="State">
+                    <option value="@((int)PublishState.Upper)">上架</option>
+                    <option value="@((int)PublishState.Lower)">下架</option>
+                </select>
+            </div>
+        </div>
+        <div class="row cl">
+            <div id="btn_submit" class="col-xs-6  col-xs-offset-3 col-sm-offset-2 mt-10">
+
+                <button class="btn btn-primary radius" id="sub_btn" type="submit">保存</button>
+                <input name="" type="button" onclick="layer_close();" class="btn btn-default radius " value="取消">
+            </div>
+        </div>
+    }
+</article>
+
+<script type="text/javascript">
+    function formSuccess(result) {
+        if (result != null) {
+            if (result.isSuccess) {
+                var index = parent.layer.getFrameIndex(window.name);
+                layer.alert('保存成功！', {
+                    icon: 6,
+                    closeBtn: 0,
+                    yes: function () {
+                        if (parent[1] != null) {
+                            parent[pageIndex()].table1.ajax.reload();
+                        } else {
+                            parent.table1.ajax.reload();
+                        }
+                        parent.layer.close(index);
+                    }
+                });
+            } else
+                layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+        } else
+            layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+    }
+</script>

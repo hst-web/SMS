@@ -1,0 +1,78 @@
+﻿@using HST.Art.Web
+@using HST.Art.Core
+
+@model SidebarViewModel
+
+<p class="list_ti">最新信息</p>
+<div class="list_new">
+    @if (Model.NewestList != null && Model.NewestList.Count > 0)
+    {
+        foreach (WebNewsViewModel item in Model.NewestList)
+        {
+            <div class="list_div">
+                @switch (Model.SectionType)
+                {
+                    case CategoryType.Industry:
+                        <a href="@Url.Action("industry", "home", new {qtype = QSType.detail, id =item.Id, fctype = item.Category })">
+                            <p class="list_p fl"><b>@item.CreateTime.ToString("dd")</b>@item.CreateTime.ToString("yyyy-MM")</p>
+                            <div class="list_fr_n fr">
+                                <p>@item.Title</p>
+                                <span>@item.CreateTime.ToString("HH:mm")</span>
+                            </div>
+                        </a>
+                        break;
+                    case CategoryType.Association:
+                        <a href="@Url.Action("association", "home", new { qtype = QSType.detail, id =item.Id, fctype = item.Category })">
+                            <p class="list_p fl"><b>@item.CreateTime.ToString("dd")</b>@item.CreateTime.ToString("yyyy-MM")</p>
+                            <div class="list_fr_n fr">
+                                <p>@item.Title</p>
+                                <span>@item.CreateTime.ToString("HH:mm")</span>
+                            </div>
+                        </a>
+                        break;
+                    case CategoryType.Examination:
+                        <a href="@Url.Action("examination", "home", new {qtype = QSType.detail, id =item.Id, fctype = item.Category,pctype=item.ParCategory })">
+                            <p class="list_p fl"><b>@item.CreateTime.ToString("dd")</b>@item.CreateTime.ToString("yyyy-MM")</p>
+                            <div class="list_fr_n fr">
+                                <p>@item.Title</p>
+                                <span>@item.CreateTime.ToString("HH:mm")</span>
+                            </div>
+                        </a>
+                        break;
+                    case CategoryType.Social:
+                        <a href="@Url.Action("social", "home", new {qtype = QSType.detail, id =item.Id, fctype = item.Category })">
+                            <p class="list_p fl"><b>@item.CreateTime.ToString("dd")</b>@item.CreateTime.ToString("yyyy-MM")</p>
+                            <div class="list_fr_n fr">
+                                <p>@item.Title</p>
+                                <span>@item.CreateTime.ToString("HH:mm")</span>
+                            </div>
+                        </a>
+                        break;
+                    case CategoryType.Member:
+                        <a href="@Url.Action("about", "home", new { qtype = QSType.detail, id =item.Id, fctype = item.Category })">
+                            <p class="list_p fl"><b>@item.CreateTime.ToString("dd")</b>@item.CreateTime.ToString("yyyy-MM")</p>
+                            <div class="list_fr_n fr">
+                                <p>@item.Title</p>
+                                <span>@item.CreateTime.ToString("HH:mm")</span>
+                            </div>
+                        </a>
+                        break;
+                    case CategoryType.Download:
+                        <a href="@Url.Action("download", "home", new {qtype = QSType.detail, id =item.Id, fctype = item.Category })">
+                            <p class="list_p fl"><b>@item.CreateTime.ToString("dd")</b>@item.CreateTime.ToString("yyyy-MM")</p>
+                            <div class="list_fr_n fr">
+                                <p>@item.Title</p>
+                                <span>@item.CreateTime.ToString("HH:mm")</span>
+                            </div>
+                        </a>
+                        break;
+                }
+
+            </div>
+        }
+    }
+    else
+    {
+        <p class="not-data">暂无数据</p>
+    }
+</div><!--/list_new-->

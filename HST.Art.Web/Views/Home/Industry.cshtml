@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "行业资讯";
+}
+@using HST.Art.Web
+@using HST.Art.Core
+
+@model WebContentViewModel
+<div class="list">
+    <div class="position">当前位置：<a href="@Url.Action("index","home")">首页</a> / <a href="@Url.Action("industry")" cl class='red'>行业资讯</a></div>
+    <div class="list_cont">
+        <div class="list_fl fl">
+            <ul class="list_ul list_exam">
+                <li class="title">行业资讯</li>
+                @if (ViewBag.Categorys != null)
+                {
+                    foreach (CategoryDictionary item in ViewBag.Categorys)
+                    {
+                        <li class="@(Model.PageFilter!=null&&Model.PageFilter.Category==item.Id?"current":"")">
+                            <a href="@Url.Action("industry", new { qtype = QSType.list, fctype = item.Id })">@item.Name</a>
+                        </li>
+                    }
+                }
+            </ul>
+            @Html.Action("GetRecommend", new { sectionType = CategoryType.Industry })
+        </div>
+        @if (Model.QType != QSType.detail)
+        {
+            <div class="list_fr fr" id="tbTable_wrapper"></div>
+
+        }
+        else
+        {
+            @Html.Partial("GetDetail", Model.DetailModel)
+        }
+
+        @using (Ajax.BeginForm("GetArticList", new { }, new AjaxOptions { OnFailure = "showException", OnSuccess = "", UpdateTargetId = "tbTable_wrapper", OnBegin = "", OnComplete = "" }, new { id = "searchByRequest" }))
+        {
+            @Html.Hidden("PageIndex", Model.PageFilter.PageIndex)
+            @Html.Hidden("PageSize", Model.PageFilter.PageSize)
+            @Html.Hidden("Category", Model.PageFilter.Category)
+            @Html.Hidden("SectionType", Model.PageFilter.SectionType)
+        }
+    </div><!--/list_cont-->
+</div><!--/list-->
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ('@Model.QType' != '@QSType.detail') {
+                changeQueryCondition();
+            }
+        })
+
+        //改变筛选条件
+        function changeQueryCondition() {
+            $("#PageIndex").val(1);//页索引置为1
+            $("#searchByRequest").submit();
+        }
+
+        //改变索引页
+        function changePageIndex(index) {
+            $("#PageIndex").val(index);
+            $("#searchByRequest").submit();
+        }
+    </script>
+}

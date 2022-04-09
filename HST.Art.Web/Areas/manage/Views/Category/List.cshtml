@@ -1,0 +1,318 @@
+﻿@{
+    Layout = null;
+}
+
+@using HST.Art.Web
+@using HST.Art.Core
+@using HST.Utillity
+
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+@Styles.Render("~/appcss")
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span><a href="javascript:void(0)" onclick="layer_close()">类别设置</a><span class="c-gray en">&gt;</span><a href="javascript:void(0)" onclick="location.reload()">大类管理</a> </nav>
+<article class="page-container">
+    <div class="cl search-wrap" style="padding-bottom:10px;">
+        <button name="search" class="btn btn-primary  float-right" type="button" id="btn_add">添加类别</button>
+        <span class="help-block help-tip  " style="font-size:13px">添加和编辑类别将在表格中完成，便于您对类别的维护</span>
+    </div>
+    <div style="margin-top:-10px">
+        <table id="tbTableP" class="table table-border table-bordered table-bg table-sort">
+            <thead>
+                <tr class="text-c">
+                    <th width="8%">序号</th>
+                    <th>类别名称</th>
+                    <th width="10%">状态</th>
+                    <th width="15%">创建时间</th>
+                    <th width="10%">创建人</th>
+                    <th width="15%">操作</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div class="hidden">
+        <input type="hidden" id="categoryType" value="@CategoryType.Examination" />
+        <input type="hidden" id="categoryId" value="0" />
+        <input type="hidden" id="categoryParentId" value="0" />
+        <table id="tableCategory2">
+            <tr class="text-c bg-warning">
+                <td>1</td>
+                <td colspan="5">
+                    <div data-bind="category-form" class="row">
+                        <div class="formControls col-xs-4 ">
+                            <input type="text" class="input-text " autocomplete="off" value="" onfocus="clearError(this)" placeholder="请输入类别名" name="CategoryName" />
+                            <label class="error hidden">请输入类别名</label>
+                        </div>
+                        <div class="formControls col-xs-4 hidden" data-bind="btn-add">
+                            <button class="btn btn-primary radius btn-xs float-left" onclick="subForm(this,'@Url.Action("Add")')">保存</button>
+                            <button class="btn btn-default radius btn-xs float-left" onclick="removeParent(this)">取消</button>
+                        </div>
+                        <div class="formControls col-xs-4 hidden" data-bind="btn-edit">
+                            <button class="btn btn-primary radius btn-xs float-left" onclick="subForm(this,'@Url.Action("Edit")')">保存</button>
+                            <button class="btn btn-default radius btn-xs float-left" onclick="cancelEdit(this)">取消</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</article>
+
+@Scripts.Render("~/bundles/datatable")
+<script type="text/javascript">
+    var tempTr2;
+    var table2 = null;
+    $(function () {
+        table2 = initializeTable();
+
+        $("#btn_add").click(function () {
+            $("#categoryId,#categoryParentId").val(0);
+            if ($("#tbTableP div[data-bind=category-form]").length > 0) {
+                $("#tbTableP input[name=CategoryName]").focus();
+                top.layer.alert("当前有未编辑完的项目，请操作完成后再进行添加", 3);
+                return false;
+            }
+
+            $("#tableCategory2 div[data-bind=btn-add]").removeClass("hidden");
+            $("#tableCategory2 div[data-bind=btn-edit]").addClass("hidden");
+            var trCount = $("#tbTableP tbody tr").length + 1;
+            $("#tableCategory2").find("td:first").html(trCount);
+            $("#tbTableP tbody").append($("#tableCategory2 tbody").html());
+        })
+
+        //测试数据
+        $("#btnTest").click(function () {
+            parent[pageIndex()].reloadParCategory();
+        })
+    });
+
+
+    function category_deit(obj, id, parentId) {
+        if ($("#tbTableP div[data-bind=category-form]").length > 0) {
+            $("#tbTableP input[name=CategoryName]").focus();
+            top.layer.alert("当前有未编辑完的项目，请操作完成后再进行添加", 3);
+            return false;
+        }
+
+        $("#categoryId").val(id);
+        $("#categoryParentId").val(parentId);
+        var categroyVal = $(obj).attr("data-bind");
+        $("#tableCategory2 div[data-bind=btn-add]").addClass("hidden");
+        $("#tableCategory2 div[data-bind=btn-edit]").removeClass("hidden");
+        var trCount = $(obj).parents("tr").find("td:first").html();
+        $("#tableCategory2").find("td:first").html(trCount);
+        tempTr2 = $(obj).parents("tr").html();
+        $(obj).parents("tr").addClass("bg-warning").empty().html($("#tableCategory2 tbody tr:first").html());
+
+        $("#tbTableP").find("input[name=CategoryName]").val(categroyVal);
+    }
+
+    function clearError(obj) {
+        $(obj).removeClass("error").siblings().addClass("hidden");
+    }
+    function cancelEdit(obj) {
+        $(obj).parents("tr").empty().html(tempTr2).removeClass("bg-warning");
+    }
+
+    function removeParent(obj) {
+        $(obj).parents("tr").remove();
+    }
+
+    function subForm(obj, url) {
+        if ($("#tbTableP input[name=CategoryName]").val().length <= 0) {
+            $("#tbTableP input[name=CategoryName]").siblings("label").removeClass("hidden");
+            $("#tbTableP input[name=CategoryName]").addClass("error");
+            return false;
+        }
+
+        $.ajax({
+            url: url,
+            type: "Post",
+            data: { "CategoryName": $("#tbTableP input[name=CategoryName]").val(), "CategoryType": $("#categoryType").val(), "Id": $("#categoryId").val(), ParentId: $("#categoryParentId").val() },
+            dataType: "json",
+            success: function (data) {
+                if (data.isSuccess) {
+                    layer.msg("操作成功");
+                    table2.ajax.reload();
+                    parent[pageIndex()].reloadParCategory();
+                } else {
+                    top.layer.alert(data.message, 3);
+                }
+            }
+        })
+    }
+
+    function initializeTable() {
+        var dataTable = $('#tbTableP').DataTable({
+            "serverSide": true,
+            "ajax": {
+                "url": "@Url.Action("GetJsonData")",
+                "type": "post",
+                "data": function (data) {
+                    data.pageIndex = (data.start / data.length) + 1;
+                    data.categoryType = $("#categoryType").val();
+                    data.isParent = true;
+                }
+            },
+            "columns": [
+                { "defaultContent": "" },
+                { "mDataProp": "CategoryName" },
+                 { "mDataProp": "State" },
+                { "mDataProp": "CreateTime" },
+                 { "mDataProp": "UserName" },
+                { "defaultContent": "" }
+            ],
+            "columnDefs": [
+             {
+                 "targets": [2],
+                 "data": "State",
+                 "render": function (data, type, full) {
+                     var result = data;
+                     if (data > 0) {
+                         result = "<span class=\"label label-success radius\">已上架</span>";
+                     } else {
+                         result = "<span class=\"label label-danger radius\">已下架</span>";
+                     }
+
+                     return result;
+                 }
+             },
+            {
+                "targets": [-1],
+                "data": "Id",
+                "render": function (data, type, full) {
+                    var tmpString = "<a data-bind='" + full.CategoryName + "'  onClick=\"category_deit(this," + data + "," + full.ParentId + ")\" href=\"javascript:;\" title=\"编辑\">编辑</a>";
+                    if (full.State == 0)
+                        tmpString += "<a href=\"javascript:;\" onClick=\"category_publish('@Url.Action("Publish")'," + data + ")\"  title=\"上架\">上架</a>";
+                    else
+                        tmpString += "<a href=\"javascript:;\" onClick=\"category_shelves('@Url.Action("Shelves")'," + data + ")\"  title=\"下架\">下架</a>";
+                    tmpString += "<a href=\"javascript:;\" onClick=\"category_del('类别','@Url.Action("Delete")'," + data + ")\"  title=\"删除\">删除</a>";
+
+                    return tmpString;
+                }
+            }
+            ],
+            "fnDrawCallback": function () {
+                var api = this.api();
+                var startIndex = api.context[0]._iDisplayStart;
+                api.column(0).nodes().each(function (cell, i) {
+                    cell.innerHTML = startIndex + i + 1;
+                });
+            },
+            "rowCallback": function (row, data, displayIndex) {
+                $(row).attr("class", "text-c").attr("data-bind", data.Id);
+                $(row).children('td').eq(2).attr("class", "td-status");
+                $(row).children('td').eq(5).attr("class", "td-manage");
+            },
+            "initComplete": function (settings, json) {
+            },
+            language: {
+                lengthMenu: '',
+                loadingRecords: '数据加载中...',
+                paginate: {
+                    previous: "上一页",
+                    next: "下一页",
+                    first: "",
+                    last: ""
+                },
+                zeroRecords: "暂无数据",
+
+                info: "<span class='pagesStyle'>总共<span class='recordsStyle'> _TOTAL_ 条,计 _PAGES_ </span>页，当前显示 _START_ -- _END_ 条记录 </span>",
+                infoEmpty: "0条记录",
+                infoFiltered: ""
+            },
+            "searching": false,
+            "ordering": false,
+            "autoWidth": false,
+            "iDisplayLength": 50,
+            "processing": true,
+            //destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题
+
+        });
+
+        return dataTable;
+    }
+
+    /*删除*/
+    function category_del(title, action, id) {
+        top.layer.confirm('确认要删除该' + title + '吗？', function (e) {
+            $.ajax({
+                url: action,
+                type: "post",
+                data: { id: id },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        var index = top.layer.alert('操作成功！', {
+                            icon: 6,
+                            closeBtn: 0,
+                            yes: function () {
+                                table2.ajax.reload();
+                                parent[pageIndex()].reloadParCategory();
+                                top.layer.close(index);
+                            }
+                        });
+                    } else {
+                        top.layer.alert('操作失败！', { icon: 5 });
+                    }
+                },
+                error: function (data) { top.layer.alert('操作失败！', { icon: 5 }); }
+            })
+        });
+    }
+
+
+    /*上架*/
+    function category_publish(action, id) {
+        top.layer.confirm('确认要上架吗？', function (e) {
+            $.ajax({
+                url: action,
+                type: "post",
+                data: { id: id },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        var index = top.layer.alert('操作成功！', {
+                            icon: 6,
+                            closeBtn: 0,
+                            yes: function () {
+                                table2.ajax.reload();
+                                parent[pageIndex()].reloadParCategory();
+                                top.layer.close(index);
+                            }
+                        });
+                    } else {
+                        top.layer.alert('操作失败！', { icon: 5 });
+                    }
+                },
+                error: function (data) { top.layer.alert('操作失败！', { icon: 5 }); }
+            })
+        });
+    }
+
+    /*下架*/
+    function category_shelves(action, id) {
+        top.layer.confirm('确认要下架吗？', function (e) {
+            $.ajax({
+                url: action,
+                type: "post",
+                data: { id: id },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        var index = top.layer.alert('操作成功！', {
+                            icon: 6,
+                            closeBtn: 0,
+                            yes: function () {
+                                table2.ajax.reload();
+                                parent[pageIndex()].reloadParCategory();
+                                top.layer.close(index);
+                            }
+                        });
+                    } else {
+                        top.layer.alert('操作失败！', { icon: 5 });
+                    }
+                },
+                error: function (data) { top.layer.alert('操作失败！', { icon: 5 }); }
+            })
+        });
+    }
+
+</script>

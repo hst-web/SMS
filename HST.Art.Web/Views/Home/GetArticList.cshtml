@@ -1,0 +1,77 @@
+﻿@using HST.Art.Core
+@using HST.Art.Web
+@model PageListViewModel<WebNewsViewModel>
+
+@{ 
+    SectionType secType = (SectionType)ViewBag.SectionType;
+}
+
+@if (Model == null || Model.Count <= 0)
+{
+    <p class="not-data">暂无数据</p>
+}
+else
+{
+    <div class="dataTables_wrapper">
+        @foreach (var item in Model)
+        {
+            <div class="list_list">
+               @switch (secType)
+               {
+                   case SectionType.Industry:
+                    <a href="@Url.Action("industry", new { qtype = QSType.detail, id=item.Id,fctype=item.Category })">
+                        <div class="list_img fl"><img src="@item.HeadImg" onerror="nofind()" /></div>
+                        <div class="list_cons fr">
+                            <h6>@item.Title</h6>
+
+                            <p>@(item.Synopsis)</p>
+                            <span>@item.CreateTime.ToLongDateString()</span>
+                        </div>
+                    </a>
+                       break;
+                   case SectionType.Association:
+                    <a href="@Url.Action("association", new { qtype = QSType.detail, id=item.Id,fctype=item.Category })">
+                        <div class="list_img fl"><img src="@item.HeadImg" onerror="nofind()" /></div>
+                        <div class="list_cons fr">
+                            <h6>@item.Title</h6>
+
+                            <p>@(item.Synopsis)</p>
+                            <span>@item.CreateTime.ToLongDateString()</span>
+                        </div>
+                    </a>
+                       break;
+                   case SectionType.Examination:
+                    <a href="@Url.Action("examination", new { qtype = QSType.detail, id=item.Id,fctype=item.Category, pctype=item.ParCategory })">
+                        <div class="list_img fl"><img src="@item.HeadImg" onerror="nofind()" /></div>
+                        <div class="list_cons fr">
+                            <h6>@item.Title</h6>
+
+                            <p>@(item.Synopsis)</p>
+                            <span>@item.CreateTime.ToLongDateString()</span>
+                        </div>
+                    </a>
+                       break;
+                   case SectionType.Social:
+                    <a href="@Url.Action("social", new { qtype = QSType.detail, id=item.Id,fctype=item.Category })">
+                        <div class="list_img fl"><img src="@item.HeadImg" onerror="nofind()" /></div>
+                        <div class="list_cons fr">
+                            <h6>@item.Title</h6>
+
+                            <p>@(item.Synopsis)</p>
+                            <span>@item.CreateTime.ToLongDateString()</span>
+                        </div>
+                    </a>
+                       break;
+               }
+  
+            </div>
+        }
+
+        <div class="dataTables_info">
+            <span class="pagesStyle">总共<span class="recordsStyle">@Model.TotalItemCount 条,计 @Model.TotalPageCount </span>页，当前显示 @Model.StartRecordIndex - @Model.EndRecordIndex 条记录 </span>
+        </div>
+        <div class="dataTables_paginate paging_simple_numbers">
+            @Html.Page(Model.CurrentPageIndex, Model.TotalPageCount, "changePageIndex")
+        </div>
+    </div>
+}

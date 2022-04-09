@@ -1,0 +1,55 @@
+﻿@using cncbk_resource.Common
+@using cncbk_resource.Models
+@using Newtonsoft.Json;
+@model PageListViewModel<ResourceViewModel>
+@{int num = 1; }
+
+<table id="tbTable" class="table table-border table-bordered table-bg table-sort dataTable no-footer">
+    <thead>
+        <tr class="text-c">
+            <th width="8%">序号</th>
+            <th width="18%">标题</th>
+            <th width="11%">所属资料包</th>
+            @foreach (KeyValueViewModel item in ViewBag.memberTypes)
+            {
+                <th width="10%">@item.Value</th>
+            }
+            <th width="13%">管理</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var m in Model)
+        {
+            <tr class="text-c" id="tb_tr_@(m.Id)">
+                <td>@((Model.CurrentPageIndex - 1)*Model.PageSize + num)</td>
+                <td>@m.Title</td>
+                <td>@m.PackageName</td>
+                @foreach (KeyValueViewModel item in ViewBag.memberTypes)
+                {
+                    MemberTypeViewModel mtvm = m.MemberTypes.Where(g => g.Id == item.Key).FirstOrDefault();
+
+                    <td data-id="tb_td_@m.Id" data-bind="@item.Key">
+                        <select class="selectpicker form-control" multiple title="请选择权限" data-live-search="false" data-selected-text-format="count > 4">
+                            @foreach (KeyValueViewModel per in ViewBag.permissions)
+                            {
+                                <option value="@per.Key" @(mtvm!=null&&mtvm.ResPermissionIds.Contains(per.Key)?"selected":"")>@per.Value</option>
+                            }
+                        </select>
+                    </td>
+                }
+                <td class="td-manage">
+                    <a href="javascript:void(0)"  onclick="res_save(@m.Id)" title="保存">保存</a>
+                    <a href="javascript:void(0)" onclick="res_detail('资料查看','@Url.Action("Detail","Resource")',@m.Id)" title="查看">查看</a>
+                </td>
+            </tr>
+            num++;
+        }
+    </tbody>
+</table>
+<div class="dataTables_info">
+    <span class="pagesStyle">总共<span class="recordsStyle">@Model.TotalItemCount 条,计 @Model.TotalPageCount </span>页，当前显示 @Model.StartRecordIndex - @Model.EndRecordIndex 条记录 </span>
+</div>
+<div class="dataTables_paginate paging_simple_numbers">
+    @Html.Page(Model.CurrentPageIndex, Model.TotalPageCount, "changePageIndex")
+</div>

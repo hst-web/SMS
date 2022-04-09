@@ -1,0 +1,26 @@
+﻿@using HST.Art.Web
+@using HST.Art.Core
+
+@model DetailViewModel
+<div class="list_fr fr details">
+    <h4 class="title">@Model.Title</h4>
+    <p class="tip">@Model.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</p>
+    <div>
+        @if (string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="not-data">暂无数据</p>
+        }
+        else
+        {
+            @Html.Raw(Model.Description)
+        }
+
+    </div>
+    @if (!string.IsNullOrEmpty(Model.FileUrl))
+    {
+        <div style="margin:12px auto">
+            <a href="@Model.FileUrl">@Model.FileName</a>
+        </div>
+    }
+
+</div>

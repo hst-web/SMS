@@ -1,0 +1,151 @@
+﻿<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+@using cncbk_resource.Models
+@Styles.Render("~/bootstrap")
+@Styles.Render("~/appcss")
+@model  FilterViewModel
+    <style>
+    .table-bordered>thead>tr>td, .table-bordered>thead>tr>th{border-bottom-width:0px;border-left-width:0px}
+    .table-bordered>tbody>tr>td{border-left-width:0px;border-bottom-width:0px;}
+    .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{vertical-align:middle;line-height:20px}
+    .table-bordered{border:1px solid #ddd;border-bottom: 1px solid #ddd !important;border-right-width: 0px;}
+     </style>
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 用户学习资料 <span class="c-gray en">&gt;</span> 用户权限 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray search-wrap" style="margin-top:-10px">
+        <span class="label-inline">标题：</span>
+        <input type="text" id="resTitle" placeholder="请输入标题关键字" class="input-text lg inline" />
+        <span class="label-inline">所属资料包：</span>
+        <select name="sel_orderstate" id="sel_resPage" class="select select-box inline">
+            <option value="0">全部</option>
+            @foreach (KeyValueViewModel item in ViewBag.packges)
+            {
+                <option value="@item.Key">@item.Value</option>
+            }
+        </select>
+        <button name="search" id="search" class="btn btn-success ml-10" type="button" style="border-radius:0px"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+    </div>
+    <div class="mt-30">
+        <div class="dataTables_wrapper no-footer">
+            <div id="tbTable_processing" class="dataTables_processing" style="display: none;">处理中...</div>
+            <div id="tbTable_wrapper">
+
+            </div>
+        </div>
+    </div>
+    @using (Ajax.BeginForm("Get", new { }, new AjaxOptions { OnFailure = "showException", OnSuccess = "initEvent", UpdateTargetId = "tbTable_wrapper", OnBegin = "showLoading", OnComplete = "hideLoading" }, new { id = "searchByRequest" }))
+    {
+        @Html.Hidden("PageIndex", Model.PageIndex)
+        @Html.Hidden("PageSize", Model.PageSize)
+        <input type="hidden" name="resName" id="resName" value="" autocomplete="off" />
+        <input type="hidden" name="packgeId" id="resPackgeId" value="" autocomplete="off" />
+    }
+</div>
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/ajaxAsync")
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            changeQueryCondition();
+            $("#search").click(function () {
+                changeQueryCondition();
+            });
+
+            //输入名称回车查询
+            $("#resTitle").keypress(function (e) {
+                if (e.which == 13) {
+                    changeQueryCondition();
+                    $("#search").focus();
+                }
+            });
+        });
+
+
+        /*资料-详情*/
+        function res_detail(title, url, id) {
+            var index = layer.open({
+                type: 2,
+                title: title,
+                area: ['750px', '600px'],
+                content: url + "?id=" + id
+            });
+        }
+
+        /*保存*/
+        function res_save(id) {
+            var trjson = getTrJson(id);
+            layer.confirm('确认要保存该设置吗？', function (e) {
+                $.ajax({
+                    url: "@Url.Action("Save")",
+                    type: "post",
+                    data: { id: id, json: trjson },
+                    success: function (data) {
+                        if (data == "ok") {
+                            layer.alert('操作成功！', {
+                                icon: 6,
+                                closeBtn: 0,
+                                yes: function () {
+                                    changeQueryCondition();
+                                    layer.closeAll();
+                                }
+                            });
+                        } else if (data == "error") {
+                            layer.alert('操作失败！', { icon: 5 });
+                        }
+                        else {
+                            layer.alert(data, { icon: 7 });
+                        }
+                    },
+                    error: function (data) { layer.alert('操作失败！', { icon: 5 }); }
+                })
+            });
+        }
+
+        function getTrJson(id) {
+            var stringBuild = new StringBuffer();
+            stringBuild.append("[");
+            var conTr = $("#tb_tr_" + id);
+            var conTd = conTr.find("td[data-id=tb_td_" + id + "]");
+            conTd.each(function () {
+                stringBuild.append("{");
+                var mtId = $(this).attr("data-bind");
+                var perIds = $(this).find(".selectpicker").selectpicker('val');
+                if(perIds==null){perIds=""}
+                stringBuild.append("'id':" + mtId+",");
+                stringBuild.append("'ResPermissionIds':["+perIds+"]");
+                stringBuild.append("},");
+            })
+
+            var jsStr = trimEnd(stringBuild.toString());
+
+            jsStr += "]";
+
+            return jsStr;
+        }
+
+        function initEvent() {
+            $(".selectpicker").selectpicker();
+        }
+
+        //改变筛选条件
+        function changeQueryCondition() {
+            $("#resName").val($("#resTitle").val());
+            $("#resPackgeId").val($("#sel_resPage").val());
+            $("#PageIndex").val(1);//页索引置为1
+            $("#searchByRequest").submit();
+        }
+
+        //改变索引页
+        function changePageIndex(index) {
+            $("#PageIndex").val(index);
+            $("#searchByRequest").submit();
+        }
+    </script>
+}

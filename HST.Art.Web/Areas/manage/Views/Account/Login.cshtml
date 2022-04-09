@@ -1,0 +1,79 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model  HST.Art.Web.LoginViewModel
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="lib/html5shiv.js"></script>
+    <script type="text/javascript" src="lib/respond.min.js"></script>
+    <![endif]-->
+    @Scripts.Render("~/bundles/saos")
+    @Scripts.Render("~/bundles/validate")
+    @Styles.Render("~/appcss")
+    @Styles.Render("~/login")
+    <!--[if IE 6]>
+    <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script>DD_belatedPNG.fix('*');</script>
+    <![endif]-->
+    <title>登录</title>
+</head>
+<body>
+    @using (Html.BeginForm("Login", "Account", new { RetrunUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "frmLogin" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="wrap">
+            <div class="wpn">
+                <div class="form-data pos">
+                    <img src="/Content/lib/h-ui.admin/images/logo.png" class="head-logo">
+                    <div class="change-login">
+                        <p class="account_number on">账号登录</p>
+                    </div>
+                    <div class="form1">
+                        <p class="p-input pos">
+                            @Html.TextBoxFor(m => m.Account, new { placeholder = "请输入用户名" })
+                            @Html.ValidationMessageFor(m => m.Account, null, new { @class = "error-lable login-error" })
+                        </p>
+                        <p class="p-input pos">
+                            @Html.PasswordFor(m => m.Password, new { placeholder = "请输入密码"})
+                            @Html.ValidationMessageFor(m => m.Password, null, new { @class = "error-lable login-error" })
+                            @Html.ValidationMessage("ErrorMessage", null, new { @class = "error-lable login-error", id = "password_error" })
+                        </p>
+                    </div>
+                    <div class="r-forget cl">
+                        <a href="javascript:layer.alert('请联系管理员对账户进行操作！', { icon: 8 });" class="y">忘记密码</a>
+                    </div>
+                    <button class="lang-btn log-btn" id="btn_login">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script>
+        $(function () {
+            $("#btn_login").click(function () {
+                if ($("#frmLogin").valid()) {
+                    $("#frmLogin").submit();
+                    $("#password_error").html("");
+                    $(this).html("正在登录...").css("opacity", "0.8").attr("disabled", "disabled");
+                }
+            });
+
+            $(".input-text").keypress(function (e) {
+                if (e.which == 13) {
+                    $("#btn_login").click();
+                }
+            })
+        })
+    </script>
+</body>
+</html>

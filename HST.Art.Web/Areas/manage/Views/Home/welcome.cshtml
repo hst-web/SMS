@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "我的桌面";
+}
+@Styles.Render("~/appcss")
+@Styles.Render("~/patternfly")
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/D-C3")
+
+<style>
+    .card-pf {
+        box-shadow: 1px 1px 10px 0px rgba(3,3,3,.175);
+    }
+</style>
+<div class="page-container">
+    <div class="col-xs-12">
+        <div class="card-pf card-pf-utilization">
+            <div class="card-pf-heading">
+                <p class="card-pf-heading-details">最近 30 天</p>
+                <h2 class="card-pf-title">
+                    系统分析
+                </h2>
+            </div>
+            <div class="card-pf-body">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h3 class="card-pf-subtitle">资料包统计</h3>
+                        <p class="card-pf-utilization-details">
+                            <span class="card-pf-utilization-card-details-count" id="package_total"></span>
+                            <span class="card-pf-utilization-card-details-description">
+                                <span class="card-pf-utilization-card-details-line-1">总数</span>
+                            </span>
+                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="package_enable"></span>
+                            <span class="card-pf-utilization-card-details-description">
+                                <span class="card-pf-utilization-card-details-line-1">启用数</span>
+                            </span>
+                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="package_disable"></span>
+                            <span class="card-pf-utilization-card-details-description">
+                                <span class="card-pf-utilization-card-details-line-1">禁用数</span>
+                            </span>
+                        </p>
+
+                        <div id="chart-pf-donut-2"></div>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <h3 class="card-pf-subtitle">资料统计</h3>
+                        <p class="card-pf-utilization-details">
+                            <span class="card-pf-utilization-card-details-count" id="res_total"></span>
+                            <span class="card-pf-utilization-card-details-description">
+                                <span class="card-pf-utilization-card-details-line-1">总数</span>
+                            </span>
+                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="res_enable"></span>
+                            <span class="card-pf-utilization-card-details-description">
+                                <span class="card-pf-utilization-card-details-line-1">启用数</span>
+                            </span>
+                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="res_disable"></span>
+                            <span class="card-pf-utilization-card-details-description">
+                                <span class="card-pf-utilization-card-details-line-1">禁用数</span>
+                            </span>
+                        </p>
+
+                        <div id="chart-pf-donut-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+
+
+    });
+    @*var PackageAnaylsisVM = new Vue({
+        created: function () {
+            var url = "@Url.Action("ResPackageStatistics")";
+            this.$http.get(url).then(function (data) {
+                if (data != null) {
+                    $("#package_total").text(data.body.TotalCount);
+                    $("#package_enable").text(data.body.EnableCount);
+                    $("#package_disable").text(data.body.DisableCount);
+                    var donutConfig = $().c3ChartDefaults().getDefaultDonutConfig('A');
+                    donutConfig.bindto = '#chart-pf-donut-2';
+                    donutConfig.color = {
+                        pattern: ["#3f9c35", "#F44337"]
+                    };
+                    donutConfig.data = {
+                        type: "donut",
+                        columns: [
+                        ],
+                        groups: [
+                          ["启用", "禁用"]
+                        ],
+                        order: null
+                    };
+                    donutConfig.tooltip = {
+                        contents: function (d) {
+                            return '<span class="donut-tooltip-pf" style="white-space: nowrap;">' +
+                                    Math.round(d[0].ratio * 100) + '%' + '' + d[0].name +
+                                    '</span>';
+                        }
+                    };
+                    if (donutConfig != null) {
+                        if (data.body.DisableCount > 0) {
+                            donutConfig.data.columns = [
+                                ["启用", data.body.EnableCount],
+                                ["禁用", data.body.DisableCount]
+                            ];
+                        } else {
+                            donutConfig.data.columns = [
+                                   ["启用", data.body.EnableCount]
+                            ];
+                        }
+                    }
+                    var chart3 = c3.generate(donutConfig);
+                    var donutChartTitle = d3.select("#chart-pf-donut-2").select('text.c3-chart-arcs-title');
+                    donutChartTitle.text("");
+                    donutChartTitle.insert('tspan').text(data.body.TotalCount).classed('donut-title-big-pf', true).attr('dy', 0).attr('x', 0);
+                    donutChartTitle.insert('tspan').text("资料包总数").classed('donut-title-small-pf', true).attr('dy', 20).attr('x', 0);
+
+
+
+                }
+            }, function (data) {
+            });
+        }
+    });
+
+    var ResAnaylsisVM = new Vue({
+        created: function () {
+            var url = "@Url.Action("ResourceStatistics")";
+            this.$http.get(url).then(function (data) {
+                if (data != null) {
+                    $("#res_total").text(data.body.TotalCount);
+                    $("#res_enable").text(data.body.EnableCount);
+                    $("#res_disable").text(data.body.DisableCount);
+                    var donutConfig = $().c3ChartDefaults().getDefaultDonutConfig('A');
+                    donutConfig.bindto = '#chart-pf-donut-3';
+                    donutConfig.color = {
+                        pattern: ["#3f9c35", "#F44337"]
+                    };
+                    donutConfig.data = {
+                        type: "donut",
+                        columns: [
+                        ],
+                        groups: [
+                          ["启用", "禁用"]
+                        ],
+                        order: null
+                    };
+                    donutConfig.tooltip = {
+                        contents: function (d) {
+                            return '<span class="donut-tooltip-pf" style="white-space: nowrap;">' +
+                                    Math.round(d[0].ratio * 100) + '%' + '' + d[0].name +
+                                    '</span>';
+                        }
+                    };
+                    if (donutConfig != null) {
+                        if (data.body.DisableCount > 0) {
+                            donutConfig.data.columns = [
+                                ["启用", data.body.EnableCount],
+                                ["禁用", data.body.DisableCount]
+                            ];
+                        }else
+                        {
+                            donutConfig.data.columns = [
+                                   ["启用", data.body.EnableCount]
+                            ];
+                        }
+                    }
+                    var chart3 = c3.generate(donutConfig);
+                    var donutChartTitle = d3.select("#chart-pf-donut-3").select('text.c3-chart-arcs-title');
+                    donutChartTitle.text("");
+                    donutChartTitle.insert('tspan').text(data.body.TotalCount).classed('donut-title-big-pf', true).attr('dy', 0).attr('x', 0);
+                    donutChartTitle.insert('tspan').text("资料总数").classed('donut-title-small-pf', true).attr('dy', 20).attr('x', 0);
+
+
+
+                }
+            }, function (data) {
+            });
+        }
+    });*@
+</script>

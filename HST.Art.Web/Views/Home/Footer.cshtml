@@ -1,0 +1,26 @@
+﻿@using HST.Art.Web
+@using HST.Art.Core
+
+@model Organization
+<div class="foot_fl fl">
+    <p><span style="margin-bottom:5px"><img src="@Model.WeChat" onerror="nofind()" /></span>扫码关注我们</p>
+</div>
+
+<div class="foot_conts fl">
+    <b>联系我们</b>
+    <p>@Model.Name</p>
+    @if (!string.IsNullOrEmpty(Model.Address))
+    {
+        <p>地址：@(Model.Address)</p>
+    }
+    @if (!string.IsNullOrEmpty(Model.Telephone))
+    {
+        <p>电话：@(Model.Telephone)</p>
+    }
+    @if (!string.IsNullOrEmpty(Model.Email))
+    {
+        <p>邮箱：@(Model.Email)</p>
+    }
+   
+</div>
+<p class="fr index_ab"><a href="@Url.Action("about","home")"><i></i> 关于我们</a></p>

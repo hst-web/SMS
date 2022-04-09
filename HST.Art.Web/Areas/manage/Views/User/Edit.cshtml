@@ -1,0 +1,136 @@
+﻿@{
+    Layout = null;
+}
+
+@using HST.Art.Web
+@using HST.Art.Core
+
+@model  UserViewModel
+
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+@Styles.Render("~/appcss")
+<style type="text/css">
+    .form-horizontal .form-label {
+        text-align: right;
+    }
+</style>
+<article class="page-container">
+    @using (Ajax.BeginForm("Edit", "User", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "formSuccess(data)", OnBegin = "disSubmit('sub_btn')", OnComplete = "enSubmit('sub_btn')" }, new { id = "", @class = "form form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.UserName)
+        @Html.HiddenFor(m => m.Password)
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>用户名：</label>
+            <div class="formControls col-xs-6 ">
+                <input type="text" disabled class="input-text" value="@Model.UserName" />
+
+            </div>
+            @if (ViewBag.IsSupAdmin)
+            {
+                <div class="col-xs-3">
+                    <button class="btn btn-default radius" style="height:auto;padding:6px 10px;font-size:12px" onclick="initPwd()" type="button">初始化密码</button>
+                </div>
+            }
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>姓名：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.TextBoxFor(m => m.RealName, new { placeholder = "请输入姓名", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.RealName, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>手机号：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.TextBoxFor(m => m.Phone, new { placeholder = "请输入手机号", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.Phone, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 ">邮箱：</label>
+            <div class="formControls col-xs-6 ">
+                @Html.TextBoxFor(m => m.Email, new { placeholder = "请输入邮箱", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.Email, null, new { @class = "error-lable" })
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-3 ">状态：</label>
+            <div class="formControls col-xs-6 ">
+                @if (Model.IsSupAdmin || ViewBag.IsSelf)
+                {
+                    <input type="text" disabled class="input-text" value="已上架" />
+                    @Html.HiddenFor(m => m.State)
+                }
+                else
+                {
+                    <select class="select select-box" name="State">
+                        <option value="@((int)PublishState.Upper)" @(Model.State == (int)PublishState.Upper ? "selected" : "")>上架</option>
+                        <option value="@((int)PublishState.Lower)" @(Model.State == (int)PublishState.Lower ? "selected" : "")>下架</option>
+                    </select>
+                }
+            </div>
+
+        </div>
+
+        <div class="row cl">
+            <div id="btn_submit" class="col-xs-6  col-xs-offset-3 col-sm-offset-2 mt-10">
+
+                <button class="btn btn-primary radius" type="submit" id="sub_btn">保存</button>
+                <input name="" type="button" onclick="layer_close();" class="btn btn-default radius " value="取消">
+            </div>
+        </div>
+    }
+</article>
+<script type="text/javascript">
+    $(function () {
+    })
+
+    function initPwd() {
+        layer.confirm('初始化密码为手机号后6位，您确定要初始化吗？', function (e) {
+            $.ajax({
+                url: "@Url.Action("InitPwd")",
+                type: "post",
+                data: { uid: @Model.Id },
+                success: function (data) {
+                    if (data == "ok") {
+                        layer.alert('初始化成功！', { icon: 6 });
+                    } else if (data == "error") {
+                        layer.alert('操作失败！', { icon: 5 });
+                    }
+                    else {
+                        layer.alert(data, { icon: 7 });
+                    }
+                },
+                error: function (data) { layer.alert('操作失败！', { icon: 5 }); }
+            })
+        })
+    }
+
+    function formSuccess(result) {
+        if (result != null) {
+            if (result.isSuccess) {
+                var index = parent.layer.getFrameIndex(window.name);
+                layer.alert('保存成功！', {
+                    icon: 6,
+                    closeBtn: 0,
+                    yes: function () {
+                        if (parent[1] != null) {
+                            parent[pageIndex()].table1.ajax.reload();
+                        } else {
+                            parent.table1.ajax.reload();
+                        }
+                        parent.layer.close(index);
+                    }
+                });
+            } else
+                layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+        } else
+            layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+    }
+
+</script>

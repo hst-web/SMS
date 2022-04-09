@@ -1,0 +1,354 @@
+﻿@{
+    Layout = null;
+}
+
+@using HST.Art.Web
+@using HST.Art.Core
+@using HST.Utillity
+
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+@Styles.Render("~/appcss")
+
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span><a href="javascript:void(0)" onclick="location.reload()">类别设置</a> </nav>
+<article class="page-container">
+    <div class="tabBar cl" id="tabBarList">
+        <span data-type="@CategoryType.Industry" class="current">@CategoryType.Industry.GetDescription()</span>
+        <span data-type="@CategoryType.Association" class="">@CategoryType.Association.GetDescription()</span>
+        <span data-type="@CategoryType.Examination" class="">@CategoryType.Examination.GetDescription()</span>
+        <span data-type="@CategoryType.Social" class="">@CategoryType.Social.GetDescription()</span>
+        <span data-type="@CategoryType.Member" class="">@CategoryType.Member.GetDescription()</span>
+        <span data-type="@CategoryType.Download" class="">@CategoryType.Download.GetDescription()</span>
+    </div>
+
+    <div class="tabCon tab-show">
+        <div class="cl pd-10  mt-10 search-wrap" style="padding-left:0px;padding-right:0px">
+            <button class="btn btn-primary float-right ml-20 hidden" id="btnParent" onclick="category_parent('大类管理','@Url.Action("List")')" type="button">大类管理</button>
+            <button name="search" class="btn btn-primary  float-right" id="btn_add" type="button">添加类别</button>
+            <span class="help-block help-tip  " style="font-size:13px">添加和编辑类别将在表格中完成，便于您对类别的维护</span>
+        </div>
+        <div style="margin-top:-10px">
+            <table id="tbTable" class="table table-border table-bordered table-bg table-sort">
+                <thead>
+                    <tr class="text-c">
+                        <th width="8%">序号</th>
+                        <th style="display:none">所属类别</th>
+                        <th>类别名称</th>
+                        <th width="10%">状态</th>
+                        <th width="15%">创建时间</th>
+                        <th width="10%">创建人</th>
+                        <th width="15%">操作</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="hidden">
+        <input type="hidden" id="categoryType" value="@ViewBag.DefaultCategory" />
+        <input type="hidden" id="categoryId" value="0" />
+        <input type="hidden" id="categoryParentId" value="0" />
+        <select class="hidden" id="selEnabled">
+            <option value="0">所属类别</option>
+            @foreach (CategoryDictionary item in ViewBag.EnabledCategory)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+        <select class="hidden" id="selAll">
+            <option value="0">所属类别</option>
+            @foreach (CategoryDictionary item in ViewBag.AllCategory)
+            {
+                <option value="@item.Id">@item.Name</option>
+            }
+        </select>
+
+        <table id="tableCategory1">
+            <tr class="text-c bg-warning">
+                <td>1</td>
+                <td colspan="5">
+                    <div data-bind="category-form" class="row">
+                        <div class="formControls col-xs-4  hidden">
+                            <select class="select select-box" name="selParCategory" onchange="bindCategory(this)"></select>
+                        </div>
+                        <div class="formControls col-xs-4 ">
+                            <input type="text" class="input-text " autocomplete="off" value="" onfocus="clearError(this)" placeholder="请输入类别名" name="CategoryName" />
+                            <label class="error hidden">请输入类别名</label>
+                        </div>
+                        <div class="formControls col-xs-4 hidden" data-bind="btn-add">
+                            <button class="btn btn-primary radius btn-xs float-left" onclick="subForm(this,'@Url.Action("Add")')">保存</button>
+                            <button class="btn btn-default radius btn-xs float-left" onclick="removeParent(this)">取消</button>
+                        </div>
+                        <div class="formControls col-xs-4 hidden" data-bind="btn-edit">
+                            <button class="btn btn-primary radius btn-xs float-left" onclick="subForm(this,'@Url.Action("Edit")')">保存</button>
+                            <button class="btn btn-default radius btn-xs float-left" onclick="cancelEdit(this)">取消</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</article>
+
+@Scripts.Render("~/bundles/datatable")
+<script type="text/javascript">
+    var tempTr;
+    var table1 = null;
+    $(function () {
+        table1 = initializeTable();
+        $("#tabBarList span").each(function () {
+            $(this).click(function () {
+                $(this).addClass("current").siblings().removeClass("current");
+                var attrType = $(this).attr("data-type");
+                if (attrType != '@CategoryType.UnKnown') {
+                    if (attrType == '@CategoryType.Examination') {
+                        $("#btnParent").removeClass("hidden");
+                        $('#tbTable').find('th:eq(1)').show();
+                    } else {
+                        $("#btnParent").addClass("hidden");
+                        $('#tbTable').find('th:eq(1)').hide();
+                    }
+
+                    $("#categoryType").val(attrType);
+                    table1.ajax.reload();
+                }
+            })
+        });
+
+        $("#btn_add").click(function () {
+            $("#categoryId,#categoryParentId").val(0);
+            if ($("#tbTable div[data-bind=category-form]").length > 0) {
+                $("#tbTable input[name=CategoryName]").focus();
+                top.layer.alert("当前有未编辑完的项目，请操作完成后再进行添加", 3);
+                return false;
+            }
+
+            if ($("#categoryType").val() == '@CategoryType.Examination') {
+                $("#tableCategory1 select").parent().removeClass("hidden");
+                $("#tableCategory1 tbody td:last").attr("colspan", 6);
+            } else {
+                $("#tableCategory1 select").parent().addClass("hidden");
+                $("#tableCategory1 tbody td:last").attr("colspan", 5);
+            }
+
+            $("#tableCategory1 select").empty().html($("#selEnabled").html());
+            $("#tableCategory1 div[data-bind=btn-add]").removeClass("hidden");
+            $("#tableCategory1 div[data-bind=btn-edit]").addClass("hidden");
+            var trCount = $("#tbTable tbody tr").length + 1;
+            $("#tableCategory1").find("td:first").html(trCount);
+            $("#tbTable tbody").append($("#tableCategory1 tbody").html());
+        })
+    });
+
+    function bindCategory(obj) {
+        $("#categoryParentId").val($(obj).val());
+        $(obj).removeClass("error");
+    }
+
+    function clearError(obj) {
+        $(obj).removeClass("error").siblings().addClass("hidden");
+    }
+    function cancelEdit(obj) {
+        $(obj).parents("tr").empty().html(tempTr).removeClass("bg-warning");
+    }
+
+    function removeParent(obj) {
+        $(obj).parents("tr").remove();
+    }
+
+    function subForm(obj, url) {
+        if ($("#tbTable input[name=CategoryName]").val().length <= 0) {
+            $("#tbTable input[name=CategoryName]").siblings("label").removeClass("hidden");
+            $("#tbTable input[name=CategoryName]").addClass("error");
+            return false;
+        }
+
+        if ($("#categoryType").val() == '@CategoryType.Examination' && $("#tbTable select[name=selParCategory]").val() <= 0) {
+            $("#tbTable select[name=selParCategory]").addClass("error");
+            return false;
+        }
+
+        $.ajax({
+            url: url,
+            type: "Post",
+            data: { "CategoryName": $("#tbTable input[name=CategoryName]").val(), "CategoryType": $("#categoryType").val(), "Id": $("#categoryId").val(), ParentId: $("#categoryParentId").val() },
+            dataType: "json",
+            success: function (data) {
+                if (data.isSuccess) {
+                    layer.msg("操作成功");
+                    table1.ajax.reload();
+                } else {
+                    top.layer.alert(data.message, 3);
+                }
+            }
+        })
+
+    }
+
+    function reloadParCategory() {
+        console.log("获取类别被执行了");
+        $.ajax({
+            url: "@Url.Action("GetParentCategory")",
+            type: "Get",          
+            dataType: "json",
+            success: function (data) {
+                var sbAll = new StringBuffer();
+                var sbEnabled = new StringBuffer();
+                $.each(data.allList, function (i, v) {
+                    sbAll.append("<option value='" + v.Id + "'>" + v.Name + "</option>");
+                });
+
+                $.each(data.enabledList, function (i, v) {
+                    sbEnabled.append("<option value='" + v.Id + "'>" + v.Name + "</option>");
+                });
+
+
+                $("#selAll").empty().append("<option value='0'>所属类别</option>").append(sbAll.toString());
+                $("#selEnabled").empty().append("<option value='0'>所属类别</option>").append(sbEnabled.toString());
+            }
+        })
+    }
+
+    function category_parent(title, url) {
+        if ($("#tbTable div[data-bind=category-form]").length > 0) {
+            top.layer.alert("当前有未编辑完的项目，请操作完成后再进行大类管理", 3);
+            return false;
+        }
+
+        var index = top.layer.open({
+            type: 2,
+            title: title,
+            area: ['950px', '650px'],
+            content: url
+        });
+    }
+
+    function category_deit(obj, id, parentId) {
+        if ($("#tbTable div[data-bind=category-form]").length > 0) {
+            $("#tbTable input[name=CategoryName]").focus();
+            top.layer.alert("当前有未编辑完的项目，请操作完成后再进行添加", 3);
+            return false;
+        }
+
+        if (parentId > 0) {
+            $("#tableCategory1 select").parent().removeClass("hidden");
+            $("#tableCategory1 tbody td:last").attr("colspan", 6);
+        } else {
+            $("#tableCategory1 select").parent().addClass("hidden");
+            $("#tableCategory1 tbody td:last").attr("colspan", 5);
+        }
+
+        $("#categoryId").val(id);
+        $("#categoryParentId").val(parentId);
+        $("#tableCategory1 select").empty().html($("#selAll").html());
+        var categroyVal = $(obj).attr("data-bind");
+        $("#tableCategory1 div[data-bind=btn-add]").addClass("hidden");
+        $("#tableCategory1 div[data-bind=btn-edit]").removeClass("hidden");
+        var trCount = $(obj).parents("tr").find("td:first").html();
+        $("#tableCategory1").find("td:first").html(trCount);
+        tempTr = $(obj).parents("tr").html();
+        $(obj).parents("tr").addClass("bg-warning").empty().html($("#tableCategory1 tbody tr:first").html());
+
+        $("#tbTable").find("input[name=CategoryName]").val(categroyVal);
+        $("#tbTable").find("select").val(parentId);
+    }
+
+    function initializeTable() {
+        var dataTable = $('#tbTable').DataTable({
+            "serverSide": true,
+            "ajax": {
+                "url": "@Url.Action("GetJsonData")",
+                "type": "post",
+                "data": function (data) {
+                    data.pageIndex = (data.start / data.length) + 1;
+                    data.categoryType = $("#categoryType").val();
+                    data.isParent = false;
+                }
+            },
+            "columns": [
+                { "defaultContent": "" },
+                { "mDataProp": "ParentName" },
+                { "mDataProp": "CategoryName" },
+                 { "mDataProp": "State" },
+                { "mDataProp": "CreateTime" },
+                 { "mDataProp": "UserName" },
+                { "defaultContent": "" }
+            ],
+            "columnDefs": [
+             {
+                 "targets": [3],
+                 "data": "State",
+                 "render": function (data, type, full) {
+                     var result = data;
+                     if (data > 0) {
+                         result = "<span class=\"label label-success radius\">已上架</span>";
+                     } else {
+                         result = "<span class=\"label label-danger radius\">已下架</span>";
+                     }
+
+                     return result;
+                 }
+             },
+            {
+                "targets": [-1],
+                "data": "Id",
+                "render": function (data, type, full) {
+                    var tmpString = "<a data-bind='" + full.CategoryName + "'  onClick=\"category_deit(this," + data + "," + full.ParentId + ")\" href=\"javascript:;\" title=\"编辑\">编辑</a>";
+                    if (full.State == 0)
+                        tmpString += "<a href=\"javascript:;\" onClick=\"obj_publish('@Url.Action("Publish")'," + data + ")\"  title=\"上架\">上架</a>";
+                    else
+                        tmpString += "<a href=\"javascript:;\" onClick=\"obj_shelves('@Url.Action("Shelves")'," + data + ")\"  title=\"下架\">下架</a>";
+                    tmpString += "<a href=\"javascript:;\" onClick=\"obj_del('类别','@Url.Action("Delete")'," + data + ")\"  title=\"删除\">删除</a>";
+
+                    return tmpString;
+                }
+            }
+            ],
+            "fnDrawCallback": function () {
+                var api = this.api();
+                var startIndex = api.context[0]._iDisplayStart;
+                api.column(0).nodes().each(function (cell, i) {
+                    cell.innerHTML = startIndex + i + 1;
+                });
+            },
+            "rowCallback": function (row, data, displayIndex) {
+                $(row).attr("class", "text-c").attr("data-bind", data.Id);
+                if ($("#categoryType").val() == '@CategoryType.Examination') {
+                    $(row).children('td').eq(1).css("display", "block");
+                } else {
+                    $(row).children('td').eq(1).css("display", "none");
+                }
+
+                $(row).children('td').eq(3).attr("class", "td-status");
+                $(row).children('td').eq(6).attr("class", "td-manage");
+            },
+            "initComplete": function (settings, json) {
+            },
+            language: {
+                lengthMenu: '',
+                loadingRecords: '数据加载中...',
+                paginate: {
+                    previous: "上一页",
+                    next: "下一页",
+                    first: "",
+                    last: ""
+                },
+                zeroRecords: "暂无数据",
+
+                info: "<span class='pagesStyle'>总共<span class='recordsStyle'> _TOTAL_ 条,计 _PAGES_ </span>页，当前显示 _START_ -- _END_ 条记录 </span>",
+                infoEmpty: "0条记录",
+                infoFiltered: ""
+            },
+            "searching": false,
+            "ordering": false,
+            "autoWidth": false,
+            "iDisplayLength": 50,
+            "processing": true,
+            //destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题
+
+        });
+
+        return dataTable;
+    }
+
+</script>

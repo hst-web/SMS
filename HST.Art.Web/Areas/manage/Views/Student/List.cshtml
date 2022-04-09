@@ -1,0 +1,231 @@
+﻿@using HST.Art.Web
+@using HST.Art.Core
+@using HST.Utillity
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span>证书管理 <span class="c-gray en">&gt;</span> 学员证书 <a class="btn btn-primary radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="cl pd-10 bg-1 bk-gray mt-10 search-wrap">
+        <span class="label-inline">筛选：</span>
+        <select name="sel_orderstate" id="sel_filType" class="select select-box sm inline">
+            <option value="">请选择筛选条件</option>
+            <option value="@((int)SearchType.Name)">学员姓名</option>
+            <option value="@((int)SearchType.Number)">证书编号</option>
+            <option value="@((int)SearchType.Area)">所在地区</option>
+            <option value="@((int)SearchType.Type)">证书类别</option>
+        </select>
+        <input type="text" id="sel_filVal" placeholder="请输入筛选关键字" class="input-text lg inline hidden" />
+        <select name="sel_orderstate" id="sel_type" class="select select-box sm inline hidden" style="width:150px">
+            <option value="">请选择证书类别</option>
+            <option value="@((int)CertificateType.Prize)">获奖证书</option>
+            <option value="@((int)CertificateType.Train)">学员认证</option>
+        </select>
+        <select name="sel_orderstate" id="sel_area" class="select select-box sm inline hidden" style="width:150px">
+            <option value="">请选择所在地区</option>
+            @foreach (KeyValuePair<int, string> item in ViewBag.AreaCity)
+            {
+                <option value="@item.Key">@item.Value</option>
+            }
+        </select>
+        <button name="search" id="search" class="btn btn-success ml-20" type="button"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
+        <button class="btn btn-primary ml-20" onclick="stu_add('新建证书','@Url.Action("Add")')" type="button">新建证书</button>
+        <button class="btn btn-default" onclick="stu_import('批量导入','@Url.Action("Import")')" type="button">批量导入</button>
+    </div>
+    <div class="mt-10">
+        <table id="tbTable" class="table table-border table-bordered table-bg table-sort">
+            <thead>
+                <tr class="text-c">
+                    <th width="8%">序号</th>
+                    <th width="9%">姓名</th>
+                    <th width="8%">性别</th>
+                    <th width="10%">证书编号</th>
+                    <th width="10%">所在地区</th>
+                    <th width="10%">证书类别</th>
+                    <th width="9%">状态</th>
+                    <th width="8%">创建人</th>
+                    <th width="12%">创建时间</th>
+                    <th width="12%">操作</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        var table1 = null;
+        $(function () {
+            table1 = initializeTable();
+            $("#search").click(function () {
+                table1.ajax.reload();
+            });
+
+            //输入名称回车查询
+            $("#sel_filVal").keypress(function (e) {
+                if (e.which == 13) {
+                    table1.ajax.reload();
+                    $("#search").focus();
+                }
+            });
+
+            $("#sel_filType").change(function () {
+                if ($(this).val() == "") {
+                    $("#sel_filVal").addClass("hidden");
+                    $("#sel_area").addClass("hidden");
+                    $("#sel_type").addClass("hidden");
+                }
+               else if ($(this).val() == '@((int)SearchType.Type)') {
+                    $("#sel_type").removeClass("hidden");
+                    $("#sel_area").addClass("hidden");
+                    $("#sel_filVal").addClass("hidden");
+                } else if ($(this).val() == '@((int)SearchType.Area)') {
+                    $("#sel_filVal").addClass("hidden");
+                    $("#sel_area").removeClass("hidden");
+                    $("#sel_type").addClass("hidden");
+                } else {
+                    $("#sel_filVal").removeClass("hidden");
+                    $("#sel_area").addClass("hidden");
+                    $("#sel_type").addClass("hidden");
+                }
+
+                $("#sel_filVal,#sel_area,#sel_type").val("");
+            })
+        });
+
+        /*编辑*/
+        function stu_edit(title, url, id) {
+            var index = top.layer.open({
+                type: 2,
+                title: title,
+                area: ['750px', '500px'],
+                content: url + "?id=" + id
+            });
+        }
+
+        /*添加*/
+        function stu_add(title, url) {
+            var index = top.layer.open({
+                type: 2,
+                title: title,
+                area: ['750px', '500px'],
+                content: url
+            });
+        }
+
+        function stu_import(title, url) {
+            var index = top.layer.open({
+                type: 2,
+                title: title,
+                area: ['750px', '500px'],
+                content: url
+            });
+        }
+
+        
+        function getFilterVal() {
+            if ($("#sel_filType").val() == '@((int)SearchType.Type)') {
+                return $("#sel_type").val();
+            } else if ($("#sel_filType").val() == '@((int)SearchType.Area)') {
+                return $("#sel_area").val();
+            } else {
+                return $("#sel_filVal").val();
+            }
+
+        }
+
+        function initializeTable() {
+            var dataTable = $('#tbTable').DataTable({
+                "serverSide": true,
+                "ajax": {
+                    "url": "@Url.Action("GetJsonData")",
+                    "type": "post",
+                    "data": function (data) {
+                        data.pageIndex = (data.start / data.length) + 1;
+                        data.filterKey = $("#sel_filType").val();
+                        data.filterVal = getFilterVal();
+                    }
+                },
+                "columns": [
+                      { "defaultContent": "" },
+                      { "mDataProp": "StudentName" },
+                       { "mDataProp": "GenderName" },
+                      { "mDataProp": "Number" },
+                      { "mDataProp": "Area" },
+                      { "mDataProp": "CategoryName" },
+                      { "mDataProp": "State" },
+                      { "mDataProp": "UserName" },
+                      { "mDataProp": "CreateTime" },
+                      { "defaultContent": "" }
+
+                ],
+                "columnDefs": [
+                 {
+                     "targets": [6],
+                     "data": "State",
+                     "render": function (data, type, full) {
+                         var result = data;
+                         if (data > 0) {
+                             result = "<span class=\"label label-success radius\">已上架</span>";
+                         } else {
+                             result = "<span class=\"label label-danger radius\">已下架</span>";
+                         }
+
+                         return result;
+                     }
+                 },
+                {
+                    "targets": [-1],
+                    "data": "Id",
+                    "render": function (data, type, full) {
+                        var tmpString = "<a  onClick=\"stu_edit('修改证书','@Url.Action("Edit")'," + data + ")\" href=\"javascript:;\" title=\"编辑\">编辑</a>";
+                        if (full.State == 0)
+                            tmpString += "<a href=\"javascript:;\" onClick=\"obj_publish('@Url.Action("Publish")'," + data + ")\"  title=\"上架\">上架</a>";
+                        else
+                            tmpString += "<a href=\"javascript:;\" onClick=\"obj_shelves('@Url.Action("Shelves")'," + data + ")\"  title=\"下架\">下架</a>";
+                        tmpString += "<a href=\"javascript:;\" onClick=\"obj_del('证书','@Url.Action("Delete")'," + data + ")\"  title=\"删除\">删除</a>";
+
+                        return tmpString;
+                    }
+                }
+                ],
+                "fnDrawCallback": function () {
+                    var api = this.api();
+                    var startIndex = api.context[0]._iDisplayStart;
+                    api.column(0).nodes().each(function (cell, i) {
+                        cell.innerHTML = startIndex + i + 1;
+                    });
+                },
+                "rowCallback": function (row, data, displayIndex) {
+                    $(row).attr("class", "text-c");
+                    $(row).children('td').eq(6).attr("class", "td-status");
+                    $(row).children('td').eq(9).attr("class", "td-manage");
+                },
+                "initComplete": function (settings, json) {
+
+                },
+                language: {
+                    lengthMenu: '',
+                    loadingRecords: '数据加载中...',
+                    paginate: {
+                        previous: "上一页",
+                        next: "下一页",
+                        first: "",
+                        last: ""
+                    },
+                    zeroRecords: "暂无数据",
+
+                    info: "<span class='pagesStyle'>总共<span class='recordsStyle'> _TOTAL_ 条,计 _PAGES_ </span>页，当前显示 _START_ -- _END_ 条记录 </span>",
+                    infoEmpty: "0条记录",
+                    infoFiltered: ""
+                },
+                "searching": false,
+                "ordering": false,
+                "autoWidth": false,
+                "iDisplayLength": 10,
+                "processing": true,
+                //destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题
+
+            });
+            return dataTable;
+        }
+
+    </script>
+}

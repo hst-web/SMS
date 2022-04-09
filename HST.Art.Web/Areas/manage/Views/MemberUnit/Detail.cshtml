@@ -1,0 +1,32 @@
+﻿@{
+    Layout = null;
+}
+
+@using HST.Art.Web
+@using HST.Art.Core
+
+@model  MemberUnitViewModel
+
+@Scripts.Render("~/bundles/saos")
+@Styles.Render("~/appcss")
+<style type="text/css">
+    p{font-size:14px}
+       img{max-width:100% !important}
+</style>
+<article class="page-container">
+    <div class="form-horizontal">
+        <div class="row cl">
+            <div class="col-xs-12">
+                @if (string.IsNullOrEmpty(Model.Description))
+                {
+                    <p style="text-align:center;margin-top:20%">暂无详情信息</p>
+                }
+                else
+                {
+                    @Html.Raw(Model.Description)
+                }
+               
+            </div>
+        </div>
+    </div>
+</article>

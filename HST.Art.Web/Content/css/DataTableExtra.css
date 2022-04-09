@@ -1,0 +1,12 @@
+﻿body {
+}
+
+table.table-td-c td {
+    text-align: center;
+}
+table.table-td-l td {
+    text-align: left;
+}
+table.table-td-r td {
+    text-align: right;
+}

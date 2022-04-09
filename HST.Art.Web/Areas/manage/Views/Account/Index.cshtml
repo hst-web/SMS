@@ -1,0 +1,198 @@
+﻿
+@using HST.Art.Web
+@using HST.Art.Core
+
+@model AccountViewModel
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 个人信息 <a class="btn btn-primary radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+
+
+    <div class="form">
+        <div id="tab-system" class="HuiTab">
+
+            <div class="tabBar cl">
+                <span class="current">个人信息</span>
+                <span class="">修改密码</span>
+            </div>
+            <div class="tabCon user-wrap" style="display: block;">
+                @using (Ajax.BeginForm("Update", "Account", new AjaxOptions() { HttpMethod = "Post", OnSuccess = "formSuccess(data)", OnBegin = "disSubmit('sub_btn')", OnComplete = "enSubmit('sub_btn')" }, new { id = "", @class = "form form-horizontal" }))
+            {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id)
+                    <div class="row cl">
+                        <label class="form-label col-xs-2">
+                            用户名：
+                        </label>
+                        <div class="formControls text col-xs-6">
+                            @Model.UserName
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <label class="form-label col-xs-2 "><span class="c-red">*</span>
+                            姓名：
+                        </label>
+                        <div class="formControls text col-xs-3">
+                            @Html.TextBoxFor(m => m.RealName, new { placeholder = "请输入姓名", @class = "input-text" })
+                            @Html.ValidationMessageFor(m => m.RealName, null, new { @class = "error-lable" })
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <label class="form-label col-xs-2"><span class="c-red">*</span>
+                            手机：
+                        </label>
+                        <div class="formControls text col-xs-3">
+                            @Html.TextBoxFor(m => m.Phone, new { placeholder = "请输入手机号", @class = "input-text" })
+                            @Html.ValidationMessageFor(m => m.Phone, null, new { @class = "error-lable" })
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <label class="form-label col-xs-2 ">
+                            邮箱：
+                        </label>
+                        <div class="formControls text col-xs-3">
+                            @Html.TextBoxFor(m => m.Email, new { placeholder = "请输入邮箱", @class = "input-text" })
+                            @Html.ValidationMessageFor(m => m.Email, null, new { @class = "error-lable" })
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <div id="btn_submit" class="col-xs-6  col-xs-offset-2  mt-10">
+                            <button class="btn btn-primary radius" type="submit" id="sub_btn">保存</button>                         
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="tabCon user-wrap" style="display: none;">
+                <form id="form-admin" class="form-horizontal">
+                    <div class="row cl">
+                        <label class="form-label col-xs-2 "><span class="c-red">*</span>原密码：</label>
+                        <div class="formControls  col-xs-3">
+                            <input type="password" class="input-text" autocomplete="off" value="" placeholder="原密码" id="oldPwd" name="oldPwd">
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <label class="form-label col-xs-2"><span class="c-red">*</span>新密码：</label>
+                        <div class="formControls  col-xs-3">
+                            <input type="password" class="input-text" autocomplete="off" value="" placeholder="新密码" id="newPwd" name="newPwd">
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <label class="form-label col-xs-2" style="padding-right:0px"><span class="c-red">*</span>确认密码：</label>
+                        <div class="formControls col-xs-3">
+                            <input type="password" class="input-text" autocomplete="off" placeholder="确认新密码" id="renewPwd" name="renewPwd">
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <div class="col-xs-8  col-xs-offset-2  mt-10">
+                            <button class="btn btn-primary radius" type="submit">修改</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("#tab-system").Huitab({
+                index: 0
+            });
+
+            $("#form-admin").validate({
+                rules: {
+                    oldPwd: {
+                        required: true,
+                        minlength: 6
+                    },
+                    newPwd: {
+                        required: true,
+                        passwordCheck:true,
+                        minlength: 6
+                    },
+                    renewPwd: {
+                        required: true,
+                        minlength: 6,
+                        equalTo: "#newPwd"
+                    }
+
+                },
+                messages: {
+                    oldPwd: {
+                        required: "请输入原密码",
+                    },
+                    newPwd: {
+                        required: "请输入新密码",
+                    },
+                    renewPwd: {
+                        required: "请输入确认新密码",
+                        equalTo: "确认新密码与新密码不一致"
+                    }
+                },
+                onkeyup: false,
+                focusCleanup: true,
+                success: "valid",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit({
+                        type: 'post',
+                        url: "@Url.Action("UpdatePwd")",
+                        success: function (data) {
+                            if (data == "ok") {
+                                layer.alert('修改成功，请重新登录！', {
+                                    icon: 6,
+                                    closeBtn: 0,
+                                    yes: function () {
+                                        layer.closeAll();
+                                        parent.location.reload();
+                                    }
+                                });
+                            } else if (data == "error") {
+                                layer.alert('修改失败！', { icon: 5 });
+                            } else {
+                                layer.alert(data, { icon: 7 });
+                            }
+                        },
+                        error: function (XmlHttpRequest, textStatus, errorThrown) {
+                            layer.alert('修改失败！', { icon: 5 });
+                        }
+                    });
+                }
+            });
+
+            $.validator.addMethod("passwordCheck", function (value, element, params) {
+                var checkPwd = /(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9-*/+.~!#$%^&*()\S]{2,}/g;
+                return this.optional(element)||(checkPwd.test(value));
+            }, "密码需含数字和字母，不能包含空字符");
+        });
+
+        function formSuccess(result) {
+            if (result != null) {
+                if (result == "ok") {
+                    layer.alert('保存成功！', {
+                        icon: 6,
+                        closeBtn: 0,
+                        yes: function () {
+                            layer.closeAll();
+                            location.reload();
+                        }
+                    });
+                } else
+                    layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+            } else
+                layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+        }
+    </script>
+}

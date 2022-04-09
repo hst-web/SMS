@@ -1,0 +1,15 @@
+﻿@using HST.Art.Web
+@using HST.Art.Core
+
+@model Organization
+<a href="@Url.Action("Index", "Home")" class="fl logo"><img src="/Content/image/logo.jpg" /></a>
+<div class="fr top_fr">
+    @if (!string.IsNullOrEmpty(Model.Telephone))
+    {
+        <p><i class="iconfont icon-dianhua"></i>@Model.Telephone</p>
+    }
+    @if (!string.IsNullOrEmpty(Model.Email))
+    {
+        <p><i class="iconfont icon-email-icon"></i>@Model.Email</p>
+    }
+</div>

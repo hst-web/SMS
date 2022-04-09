@@ -1,0 +1,237 @@
+﻿@using HST.Art.Web
+@using HST.Art.Core
+
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统设置 <span class="c-gray en">&gt;</span> 账户管理 <a class="btn btn-primary radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="cl pd-10 bg-1 bk-gray mt-10 search-wrap">
+        <span class="label-inline">筛选：</span>
+        <select name="sel_orderstate" id="sel_filType" class="select select-box sm inline">
+            <option value="">请选择筛选条件</option>
+            <option value="@((int)SearchType.Number)">手机号</option>
+            <option value="@((int)SearchType.Name)">姓名</option>
+            <option value="@((int)SearchType.State)">状态</option>
+        </select>
+        <input type="text" id="sel_filVal" placeholder="请输入筛选关键字" class="input-text lg inline hidden" />
+        <select name="sel_orderstate" id="sel_state" class="select select-box sm inline hidden" style="min-width:150px">
+            <option value="">请选择账户状态</option>
+            <option value="@((int)PublishState.Upper)">已上架</option>
+            <option value="@((int)PublishState.Lower)">已下架</option>
+        </select>
+        <button name="search" id="search" class="btn btn-success ml-20" type="button"><i class="Hui-iconfont">&#xe665;</i> 查询</button>
+        @if (ViewBag.IsSupAdmin)
+        {
+            <button class="btn btn-primary" onclick="user_add('新建账户','@Url.Action("Add")')" type="button">新建账户</button>
+        }
+        <input type="hidden" id="is_admin" value="@ViewBag.IsSupAdmin" />
+        <input type="hidden" id="user_id" value="@ViewBag.UserId" />
+    </div>
+    <div class="mt-10">
+        <table id="tbTable" class="table table-border table-bordered table-bg table-sort">
+            <thead>
+                <tr class="text-c">
+                    <th width="8%">序号</th>
+                    <th width="12%">用户名</th>
+                    <th width="12%">姓名</th>
+                    <th width="12%">手机号</th>
+                    <th width="12%">邮箱</th>
+                    <th width="8%">状态</th>
+                    <th width="15%">创建时间</th>
+                    <th width="15%">操作</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        var table1 = null;
+        $(function () {
+            table1 = initializeTable();
+            $("#search").click(function () {
+                table1.ajax.reload();
+            });
+
+            //输入名称回车查询
+            $("#sel_filVal").keypress(function (e) {
+                if (e.which == 13) {
+                    table1.ajax.reload();
+                    $("#search").focus();
+                }
+            });
+
+            $("#sel_filType").change(function () {
+                if ($(this).val() == "") {
+                    $("#sel_state").addClass("hidden");
+                    $("#sel_filVal").addClass("hidden");
+                }
+                else if ($(this).val() == '@((int)SearchType.State)') {
+                    $("#sel_state").removeClass("hidden");
+                    $("#sel_filVal").addClass("hidden");
+                } else {
+                    $("#sel_filVal").removeClass("hidden");
+                    $("#sel_state").addClass("hidden");
+                }
+
+                $("#sel_filVal,#sel_state").val("");
+            })
+        });
+
+        /*编辑*/
+        function user_deit(title, url, id) {
+            var index = top.layer.open({
+                type: 2,
+                title: title,
+                area: ['750px', '480px'],
+                content: url + "?id=" + id
+            });
+        }
+
+        /*添加*/
+        function user_add(title, url) {
+            var index = top.layer.open({
+                type: 2,
+                title: title,
+                area: ['750px', '520px'],
+                content: url
+            });
+        }
+
+        function initPwd(id) {
+            layer.confirm('初始化密码为手机号后6位，您确定要初始化吗？', function (e) {
+                $.ajax({
+                    url: "@Url.Action("InitPwd")",
+                    type: "post",
+                    data: { uid: id },
+                    success: function (data) {
+                        if (data == "ok") {
+                            layer.alert('初始化成功！', { icon: 6 });
+                        } else if (data == "error") {
+                            layer.alert('操作失败！', { icon: 5 });
+                        }
+                        else {
+                            layer.alert(data, { icon: 7 });
+                        }
+                    },
+                    error: function (data) { layer.alert('操作失败！', { icon: 5 }); }
+                })
+            })
+        }
+
+        function getFilterVal() {
+            if ($("#sel_filType").val() == '@((int)SearchType.State)') {
+                return $("#sel_state").val();
+            } else {
+                return $("#sel_filVal").val();
+            }
+
+        }
+
+        function initializeTable() {
+            var dataTable = $('#tbTable').DataTable({
+                "serverSide": true,
+                "ajax": {
+                    "url": "@Url.Action("GetJsonData")",
+                    "type": "post",
+                    "data": function (data) {
+                        data.pageIndex = (data.start / data.length) + 1;
+                        data.filterKey = $("#sel_filType").val();
+                        data.filterVal = getFilterVal();
+                    }
+                },
+                "columns": [
+                      { "defaultContent": "" },
+                      { "mDataProp": "UserName" },
+                    { "mDataProp": "RealName" },
+                      { "mDataProp": "Phone" },
+                      { "mDataProp": "Email" },
+                       { "mDataProp": "State" },
+                       { "mDataProp": "CreateTime" },
+                      { "defaultContent": "" }
+
+                ],
+                "columnDefs": [
+                 {
+                     "targets": [5],
+                     "data": "State",
+                     "render": function (data, type, full) {
+                         var result = data;
+                         if (data > 0) {
+                             result = "<span class=\"label label-success radius\">已上架</span>";
+                         } else {
+                             result = "<span class=\"label label-danger radius\">已下架</span>";
+                         }
+
+                         return result;
+                     }
+                 },
+                {
+                    "targets": [-1],
+                    "data": "Id",
+                    "render": function (data, type, full) {
+                        var isAdmin = $("#is_admin").val();
+                        var tmpString = "<a  onClick=\"user_deit('修改账户','@Url.Action("Edit")'," + data + ")\" href=\"javascript:;\" title=\"编辑\">编辑</a>";
+                        if (isAdmin) {
+                            if ($("#user_id").val() == data) {
+                                tmpString += "<a href=\"javascript:;\" onClick=\"initPwd(" + data + ")\"  title=\"初始化密码\">初始化密码</a>";
+                            } else {
+                                if (full.State == 0)
+                                    tmpString += "<a href=\"javascript:;\" onClick=\"obj_publish('@Url.Action("Publish")'," + data + ")\"  title=\"上架\">上架</a>";
+                                else
+                                    tmpString += "<a href=\"javascript:;\" onClick=\"obj_shelves('@Url.Action("Shelves")'," + data + ")\"  title=\"下架\">下架</a>";
+                                tmpString += "<a href=\"javascript:;\" onClick=\"initPwd(" + data + ")\"  title=\"初始化密码\">初始化密码</a>";
+                                tmpString += "<a href=\"javascript:;\" onClick=\"obj_del('账户','@Url.Action("Delete")'," + data + ")\"  title=\"删除\">删除</a>";
+                            }
+                        } else {
+                            if ($("#user_id").val() != data) {
+                                tmpString = "不可操作";
+                            }
+                        }
+
+                        return tmpString;
+                    }
+                }
+                ],
+                "fnDrawCallback": function () {
+                    var api = this.api();
+                    var startIndex = api.context[0]._iDisplayStart;
+                    api.column(0).nodes().each(function (cell, i) {
+                        cell.innerHTML = startIndex + i + 1;
+                    });
+                },
+                "rowCallback": function (row, data, displayIndex) {
+                    $(row).attr("class", "text-c");
+                    $(row).children('td').eq(5).attr("class", "td-status");
+                    $(row).children('td').eq(7).attr("class", "td-manage");
+                },
+                "initComplete": function (settings, json) {
+
+                },
+                language: {
+                    lengthMenu: '',
+                    loadingRecords: '数据加载中...',
+                    paginate: {
+                        previous: "上一页",
+                        next: "下一页",
+                        first: "",
+                        last: ""
+                    },
+                    zeroRecords: "暂无数据",
+
+                    info: "<span class='pagesStyle'>总共<span class='recordsStyle'> _TOTAL_ 条,计 _PAGES_ </span>页，当前显示 _START_ -- _END_ 条记录 </span>",
+                    infoEmpty: "0条记录",
+                    infoFiltered: ""
+                },
+                "searching": false,
+                "ordering": false,
+                "autoWidth": false,
+                "iDisplayLength": 10,
+                "processing": true,
+                //destroy: true, //Cannot reinitialise DataTable,解决重新加载表格内容问题
+
+            });
+            return dataTable;
+        }
+
+    </script>
+}
