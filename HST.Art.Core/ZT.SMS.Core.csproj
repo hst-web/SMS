@@ -57,6 +57,7 @@
     <Compile Include="Common\KeyValueObj.cs" />
     <Compile Include="IServices\ICategoryDictionaryService.cs" />
     <Compile Include="IServices\IIntegratedService.cs" />
+    <Compile Include="IServices\IMessageRecordService.cs" />
     <Compile Include="IServices\IRotationChartService.cs" />
     <Compile Include="IServices\IFileDownloadService.cs" />
     <Compile Include="IServices\IBaseService.cs" />
@@ -73,9 +74,11 @@
     <Compile Include="Models\FilterEntityModel.cs" />
     <Compile Include="Models\FlagUpdHandle.cs" />
     <Compile Include="Models\MemberUnit.cs" />
+    <Compile Include="Models\MessageRecord.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Common\DataEntity.cs" />
     <Compile Include="Models\Organization.cs" />
+    <Compile Include="Models\Query\MessageRecordQuery.cs" />
     <Compile Include="Models\RotationChart.cs" />
     <Compile Include="Models\SystemLog.cs" />
     <Compile Include="Models\Setting.cs" />

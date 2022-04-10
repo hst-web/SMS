@@ -226,6 +226,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Areas\manage\Controllers\MemberUnitController.cs" />
+    <Compile Include="Areas\manage\Controllers\MessageRecordController.cs" />
     <Compile Include="Areas\manage\Controllers\StudentController.cs" />
     <Compile Include="Areas\manage\Controllers\DownloadController.cs" />
     <Compile Include="Areas\manage\Controllers\TeacherController.cs" />
@@ -2299,6 +2300,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\manage\Models\" />
+    <Folder Include="Areas\manage\Views\MessageRecord\" />
     <Folder Include="Controllers\" />
     <Folder Include="uploadFiles\" />
     <Folder Include="Views\" />

@@ -58,6 +58,7 @@
     <Compile Include="ArticleService.cs" />
     <Compile Include="CategoryDictionaryService.cs" />
     <Compile Include="IntegratedService.cs" />
+    <Compile Include="MessageRecordService.cs" />
     <Compile Include="RotationChartService.cs" />
     <Compile Include="FileDownloadService.cs" />
     <Compile Include="TeaCertificateService.cs" />

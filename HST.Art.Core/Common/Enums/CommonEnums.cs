@@ -351,4 +351,25 @@ namespace ZT.SMS.Core
         /// </summary>
         Error = 2
     }
+
+
+    /// <summary>
+    /// 日志类型
+    /// </summary>
+    public enum MsgSendState
+    {
+        /// <summary>
+        /// 未发送
+        /// </summary>
+        Unsent = 0,
+        /// <summary>
+        /// 发送失败
+        /// </summary>
+        SendFailed = 1,
+
+        /// <summary>
+        /// 发送成功 
+        /// </summary>
+        SendSuccess = 2
+    }
 }

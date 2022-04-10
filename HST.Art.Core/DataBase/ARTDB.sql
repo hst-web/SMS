@@ -530,3 +530,67 @@ alter table UserRole
       references Role (Id)
 go
 
+if exists (select 1
+            from  sysindexes
+           where  id    = object_id('MessageRecord')
+            and   name  = 'Index_state_date'
+            and   indid > 0
+            and   indid < 255)
+   drop index MessageRecord.Index_state_date
+go
+
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('MessageRecord')
+            and   type = 'U')
+   drop table MessageRecord
+go
+
+/*==============================================================*/
+/* Table: MessageRecord                                        */
+/*==============================================================*/
+create table MessageRecord (
+   Id                   int                  identity,
+   MessageId            varchar(50)          not null,
+   ToAddress            varchar(50)          not null,
+   SendDate             datetime             null,
+   MsgData              nvarchar(800)        null,
+   State                int                  null default 0,
+   OperatorId           int                  null,
+   CreateDate           datetime             null default getdate(),
+   IsDeleted            bit                  null default 0,
+   constraint PK_MessageRecord primary key (Id),
+   constraint AK_UK_MESSAGEID_MESSAGER unique (MessageId)
+)
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('MessageRecord')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'State')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'MessageRecord', 'column', 'State'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '0:未发送
+   1:发送失败
+   2:发送成功',
+   'user', @CurrentUser, 'table', 'MessageRecord', 'column', 'State'
+go
+
+/*==============================================================*/
+/* Index: Index_state_date                                      */
+/*==============================================================*/
+create index Index_state_date on MessageRecord (
+State ASC,
+CreateDate ASC
+)
+go
+

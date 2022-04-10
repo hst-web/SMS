@@ -27,13 +27,13 @@ namespace ASP
     using System.Web.Security;
     using System.Web.UI;
     using System.Web.WebPages;
-    using ZT.SMS.Web;
     
     #line 1 "..\..\Areas\manage\Views\Home\Index.cshtml"
     using ZT.SMS.Core;
     
     #line default
     #line hidden
+    using ZT.SMS.Web;
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("RazorGenerator", "2.0.0.0")]
     [System.Web.WebPages.PageVirtualPathAttribute("~/Areas/manage/Views/Home/Index.cshtml")]
@@ -199,47 +199,26 @@ WriteLiteral(">\r\n\r\n        <dl");
 
 WriteLiteral(" class=\"single-dt\"");
 
-WriteLiteral(">\r\n            <dt");
+WriteLiteral(">\r\n            ");
+
+WriteLiteral("\r\n            <dt");
 
 WriteLiteral(" class=\"selected\"");
 
-WriteLiteral(" ><a");
-
-WriteLiteral(" data-href=\"");
-
-            
-            #line 36 "..\..\Areas\manage\Views\Home\Index.cshtml"
-                                           Write(Url.Action("Edit","Home"));
-
-            
-            #line default
-            #line hidden
-WriteLiteral("\"");
-
-WriteLiteral(" data-title=\"企业信息\"");
-
-WriteLiteral(" href=\"javascript:void(0)\"");
-
-WriteLiteral("><i");
-
-WriteLiteral(" class=\"iconfont icon-qiyexinxi\"");
-
-WriteLiteral(" style=\"font-size:18px\"");
-
-WriteLiteral("></i>企业信息</a></dt>\r\n            <dt><a");
+WriteLiteral("><a");
 
 WriteLiteral(" data-href=\"");
 
             
             #line 37 "..\..\Areas\manage\Views\Home\Index.cshtml"
-                         Write(Url.Action("List","MemberUnit"));
+                                          Write(Url.Action("List","MemberUnit"));
 
             
             #line default
             #line hidden
 WriteLiteral("\"");
 
-WriteLiteral(" data-title=\"协会会员\"");
+WriteLiteral(" data-title=\"短信箱\"");
 
 WriteLiteral(" href=\"javascript:void(0)\"");
 
@@ -247,7 +226,7 @@ WriteLiteral("><i");
 
 WriteLiteral(" class=\"iconfont icon-danwei\"");
 
-WriteLiteral("></i>协会会员</a></dt>           \r\n        </dl>\r\n        <dl");
+WriteLiteral("></i>短信箱</a></dt>           \r\n        </dl>\r\n        <dl");
 
 WriteLiteral(" class=\"list-dt\"");
 
@@ -354,15 +333,15 @@ WriteLiteral(" data-href=\"");
 
             
             #line 60 "..\..\Areas\manage\Views\Home\Index.cshtml"
-                                             Write(Url.Action("Edit", "home"));
+                                             Write(Url.Action("List", "MemberUnit"));
 
             
             #line default
             #line hidden
 WriteLiteral("\"");
 
-WriteLiteral(">企业信息</span>\r\n                    <em></em>\r\n                </li>\r\n            <" +
-"/ul>\r\n        </div>\r\n        <div");
+WriteLiteral(">短信箱</span>\r\n                    <em></em>\r\n                </li>\r\n            </" +
+"ul>\r\n        </div>\r\n        <div");
 
 WriteLiteral(" class=\"Hui-tabNav-more btn-group\"");
 
@@ -412,14 +391,14 @@ WriteLiteral(" scrolling=\"yes\"");
 
 WriteLiteral(" frameborder=\"0\"");
 
-WriteAttribute("src", Tuple.Create(" src=\"", 3889), Tuple.Create("\"", 3922)
+WriteAttribute("src", Tuple.Create(" src=\"", 3913), Tuple.Create("\"", 3952)
             
             #line 70 "..\..\Areas\manage\Views\Home\Index.cshtml"
-, Tuple.Create(Tuple.Create("", 3895), Tuple.Create<System.Object, System.Int32>(Url.Action("Edit", "home")
+, Tuple.Create(Tuple.Create("", 3919), Tuple.Create<System.Object, System.Int32>(Url.Action("List", "MemberUnit")
             
             #line default
             #line hidden
-, 3895), false)
+, 3919), false)
 );
 
 WriteLiteral("></iframe>\r\n        </div>\r\n    </div>\r\n</section>\r\n\r\n<div");
