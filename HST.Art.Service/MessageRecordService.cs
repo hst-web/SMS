@@ -10,13 +10,19 @@ using System.Linq;
 using ZT.SMS.Data;
 using System;
 using System.Text.RegularExpressions;
+using ZT.Utillity;
+using System.Web.Configuration;
+using System.Web;
 
 namespace ZT.SMS.Service
 {
     public class MessageRecordService : ServiceBase, IMessageRecordService
     {
         MessageRecordProvider _MessageRecordProvider = new MessageRecordProvider();
-
+        IntegratedProvider _interProvider = new IntegratedProvider();
+        private static string signId = WebConfigurationManager.AppSettings["SignId"].ToString();
+        private static string templateId = WebConfigurationManager.AppSettings["TemplateId"].ToString();
+        //signId, string templateId
         public MessageRecord Get(int id)
         {
             //参数验证
@@ -65,6 +71,7 @@ namespace ZT.SMS.Service
             return _MessageRecordProvider.Add(MessageRecordInfo);
         }
 
+        #region 状态操作
         public bool Delete(int id)
         {
             if (id < 1)
@@ -133,6 +140,9 @@ namespace ZT.SMS.Service
             });
         }
 
+        #endregion
+
+
         public bool Update(MessageRecord MessageRecordInfo)
         {
             //参数验证
@@ -191,6 +201,56 @@ namespace ZT.SMS.Service
             }
 
             return _MessageRecordProvider.Update(messageRecordInfos, out failList);
+        }
+
+        public bool Send(MessageRecord sendMsg)
+        {
+            PreconditionUtil.checkNotNull(sendMsg, "参数校验失败");
+            PreconditionUtil.checkArgument(!string.IsNullOrEmpty(sendMsg.MessageId), "订单编号不能为空");
+            PreconditionUtil.checkArgument(!string.IsNullOrEmpty(sendMsg.ToAddress), "联系方式不能为空");
+            PreconditionUtil.checkArgument(!DateTime.MinValue.Equals(sendMsg.MsgData.OrderDate), "订单日期不能为空");
+
+            string content = string.Format("{0}||{1}", sendMsg.MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), sendMsg.MessageId);
+            FGSMSResponse response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsg.ToAddress);
+            if (response.code == 0)
+            {
+                sendMsg.SendState = MsgSendState.SendSuccess;
+                sendMsg.MsgData.MsgNo.Add(response.msg_no);
+                _MessageRecordProvider.Send(sendMsg);
+            }
+            else
+            {
+                sendMsg.SendState = MsgSendState.SendFailed;
+                if (!string.IsNullOrEmpty(response.msg_no))
+                    sendMsg.MsgData.MsgNo.Add(response.msg_no);
+                _MessageRecordProvider.Send(sendMsg);
+
+            }
+            // 记录日志
+            AddLog(sendMsg, response);
+
+            // 余额不足结束流程
+            if (response.code == 15)
+            {
+                throw new BizException(response.code.ToString(), response.errorMsg);
+            }
+
+            return response.success;
+        }
+
+        private void AddLog(MessageRecord sendMsg, FGSMSResponse response)
+        {
+            SystemLog sLog = new SystemLog();
+            sLog.ActionName = "SendSMS";
+            sLog.ClientIp = HttpContext.Current.Session["IP"].ToString();
+            sLog.ControllerName = "MessageRecordService.Send";
+            sLog.ResultLog = JsonUtils.Serialize(response);
+            sLog.Source = LogSource.Admin;
+            sLog.Type = response.success ? LogType.Info : LogType.Error;
+            sLog.UserAgent = sendMsg.MessageId;
+            sLog.UserId = sendMsg.OperatorId;
+            sLog.ReqParameter = JsonUtils.Serialize(sendMsg);
+            _interProvider.AddLog(sLog);
         }
     }
 }

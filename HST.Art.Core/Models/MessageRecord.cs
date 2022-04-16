@@ -13,11 +13,12 @@ namespace ZT.SMS.Core
         public string MessageId { get; set; }
         public string ToAddress { get; set; }
         public DateTime SendDate { get; set; }
-        public string MsgData { get; set; }
+        public MsgDataInfo MsgData { get; set; }
         public int OperatorId { get; set; }
         private DateTime _createdate = DateTime.Now;
         private bool _isdeleted = false;
         public MsgSendState SendState { get; set; }
+        public string Remark { get; set; }
 
         /// <summary>
         /// 
@@ -35,5 +36,28 @@ namespace ZT.SMS.Core
             set { _isdeleted = value; }
             get { return _isdeleted; }
         }
+    }
+
+    public class MsgDataInfo
+    {
+        public DateTime OrderDate { get; set; }
+
+        public string OrderName { get; set; }
+
+        public List<string> MsgNo
+        {
+            get
+            {
+                return msgNo;
+            }
+
+            set
+            {
+                msgNo = value;
+            }
+        }
+
+        private List<string> msgNo = new List<string>();
+
     }
 }

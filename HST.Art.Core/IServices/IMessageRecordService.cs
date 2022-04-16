@@ -17,5 +17,6 @@ namespace ZT.SMS.Core
         bool Update(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);
         bool Add(MessageRecord messageRecordInfo);
         bool Add(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);
+        bool Send(MessageRecord sendMsg);
     }
 }

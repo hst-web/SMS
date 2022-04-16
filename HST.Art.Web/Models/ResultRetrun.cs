@@ -34,4 +34,23 @@ namespace ZT.SMS.Web
             sign = 0;
         }
     }
+
+    public class StatisticalResult
+    {
+        public StatisticalResult() { }
+        public StatisticalResult(int totalCount)
+        {
+            this.totalCount = totalCount;
+        }
+
+        private int totalCount;
+        public int SuccessCount { get; set; }
+        public int FailCount
+        {
+            get
+            {
+                return totalCount - SuccessCount;
+            }
+        }
+    }
 }

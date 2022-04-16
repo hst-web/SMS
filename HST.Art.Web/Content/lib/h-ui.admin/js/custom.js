@@ -224,6 +224,40 @@ function obj_publish(action, id) {
     });
 }
 
+/*发送*/
+function obj_send(title, action, id) {
+    top.layer.confirm('确认要' + title + '吗？', function (e) {
+        $.ajax({
+            url: action,
+            type: "post",
+            data: { id: id },
+            success: function (data) {
+                if (data.isSuccess) {
+                    top.layer.alert('发送成功！', {
+                        icon: 6,
+                        closeBtn: 0,
+                        yes: function () {
+                            if (parent[1] != null) {
+                                parent[pageIndex()].table1.ajax.reload();
+                            } else if (parent.table1 != null) {
+                                parent.table1.ajax.reload();
+                            } else {
+                                parent[0].table1.ajax.reload();
+                            }
+                            parent.layer.closeAll();
+                        }
+                    });
+                } else if (data.message != null) {
+                    top.layer.alert(data.message, { icon: 8 });
+                } else {
+                    top.layer.alert('发送失败！', { icon: 5 });
+                }
+            },
+            error: function (data) { top.layer.alert('发送失败！', { icon: 5 }); }
+        })
+    });
+}
+
 /*下架*/
 function obj_shelves(action, id) {
     top.layer.confirm('确认要下架吗？', function (e) {
@@ -379,7 +413,7 @@ function loadPage(title) {
 }
 
 function pasteImg(e) {
-  
+
     var a = e.editor.document;
     var b = a.find("img");
     var count = b.count();

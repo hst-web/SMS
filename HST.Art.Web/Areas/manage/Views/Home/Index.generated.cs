@@ -211,7 +211,7 @@ WriteLiteral(" data-href=\"");
 
             
             #line 37 "..\..\Areas\manage\Views\Home\Index.cshtml"
-                                          Write(Url.Action("List","MemberUnit"));
+                                          Write(Url.Action("List", "MessageRecord"));
 
             
             #line default
@@ -333,7 +333,7 @@ WriteLiteral(" data-href=\"");
 
             
             #line 60 "..\..\Areas\manage\Views\Home\Index.cshtml"
-                                             Write(Url.Action("List", "MemberUnit"));
+                                             Write(Url.Action("List", "MessageRecord"));
 
             
             #line default
@@ -391,14 +391,14 @@ WriteLiteral(" scrolling=\"yes\"");
 
 WriteLiteral(" frameborder=\"0\"");
 
-WriteAttribute("src", Tuple.Create(" src=\"", 3913), Tuple.Create("\"", 3952)
+WriteAttribute("src", Tuple.Create(" src=\"", 3920), Tuple.Create("\"", 3962)
             
             #line 70 "..\..\Areas\manage\Views\Home\Index.cshtml"
-, Tuple.Create(Tuple.Create("", 3919), Tuple.Create<System.Object, System.Int32>(Url.Action("List", "MemberUnit")
+, Tuple.Create(Tuple.Create("", 3926), Tuple.Create<System.Object, System.Int32>(Url.Action("List", "MessageRecord")
             
             #line default
             #line hidden
-, 3919), false)
+, 3926), false)
 );
 
 WriteLiteral("></iframe>\r\n        </div>\r\n    </div>\r\n</section>\r\n\r\n<div");

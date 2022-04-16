@@ -1,0 +1,109 @@
+﻿@{
+    Layout = null;
+}
+
+@using ZT.SMS.Web
+@using ZT.SMS.Core
+@using ZT.Utillity
+@model  MsgViewModel
+
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+@Styles.Render("~/appcss")
+<style>
+    .progress{
+        width:auto;
+        margin-top:30px
+    }
+
+    .progress, .progress-bar, .sr-only{
+        height:20px
+    }
+</style>
+<article class="page-container">
+    <div class="progress"><div class="progress-bar"><span class="sr-only" id="aaaa" style="width:25%"></span></div></div>
+    <input type="button"  id="testBtn" name="name" value="test" />
+</article>
+
+<script type="text/javascript">
+    $(function () {
+
+        $("#testBtn").click(function () {
+   
+            @*$.getJSON('@Url.Action("CheckProcess")', function (res) {
+                alert(res);
+                $('.sr-only').width(res + '%'); //根据获得的进度改变进度条
+            });*@
+        });
+
+        @*var sitv = setInterval(function () {
+            $.getJSON('@Url.Action("CheckProcess")', function (res) {
+                console.log(res);
+                $('.sr-only').width(res + '%'); //根据获得的进度改变进度条
+            });
+        }, 1000); //setInterval()每隔1秒获取一次后台的进度值*@
+
+
+        $.ajax({
+            url: '@Url.Action("BatchSend")',
+            type: "post",
+            async: true,
+            success: function (data) {
+                alert(data.isSuccess);
+                if (data.isSuccess) {
+                    //clearInterval(sitv);
+                    //var index = parent.layer.getFrameIndex(window.name);
+                    top.layer.alert('发送成功！', {
+                        icon: 6,
+                        closeBtn: 0,
+                        yes: function () {
+                            if (parent[1] != null) {
+                                parent[pageIndex()].table1.ajax.reload();
+                            } else if (parent.table1 != null) {
+                                parent.table1.ajax.reload();
+                            } else {
+                                parent[0].table1.ajax.reload();
+                            }
+                            parent.layer.closeAll();
+                        }
+                    });
+                } else if (data.message != null) {
+                    top.layer.alert(data.message, { icon: 8 });
+                } else {
+                    top.layer.alert('发送失败！', { icon: 5 });
+                }
+            },
+            error: function (data) { top.layer.alert('发送失败！', { icon: 5 }); }
+        })
+    });
+
+    function addPro(res) {
+        alert(res);
+        $('.sr-only').width(res + '%');
+    }
+
+    function formSuccess(result) {
+        if (result != null) {
+            if (result.isSuccess) {
+                var index = parent.layer.getFrameIndex(window.name);
+                layer.alert('保存成功！', {
+                    icon: 6,
+                    closeBtn: 0,
+                    yes: function () {
+                        if (parent[1] != null) {
+                            parent[pageIndex()].table1.ajax.reload();
+                        } else {
+                            parent.table1.ajax.reload();
+                        }
+                        parent.layer.close(index);
+                    }
+                });
+            } else if (result.message != null) {
+                layer.alert(result.message, { icon: 8 });
+            } else
+                layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+        } else
+            layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+    }
+</script>

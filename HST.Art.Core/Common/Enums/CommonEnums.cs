@@ -307,6 +307,10 @@ namespace ZT.SMS.Core
         /// </summary>
         Rotation,
         /// <summary>
+        /// 短信信息
+        /// </summary>
+        SMS,
+        /// <summary>
         /// 其他
         /// </summary>
         Other
@@ -349,7 +353,8 @@ namespace ZT.SMS.Core
         /// <summary>
         /// 错误日志
         /// </summary>
-        Error = 2
+        Error = 2,
+        Info=3
     }
 
 

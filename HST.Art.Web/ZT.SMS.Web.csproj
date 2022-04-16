@@ -346,6 +346,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>List.cshtml</DependentUpon>
     </Compile>
+    <Compile Include="Areas\manage\Views\MessageRecord\Add.generated.cs">
+      <DependentUpon>Add.cshtml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Areas\manage\Views\MessageRecord\Edit.generated.cs">
+      <DependentUpon>Edit.cshtml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Areas\manage\Views\MessageRecord\Import.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Import.cshtml</DependentUpon>
+    </Compile>
+    <Compile Include="Areas\manage\Views\MessageRecord\List.generated.cs">
+      <DependentUpon>List.cshtml</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Areas\manage\Views\Shared\_Layout.generated.cs">
       <DependentUpon>_Layout.cshtml</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -415,6 +435,9 @@
     <Compile Include="Common\CookiesEvent.cs" />
     <Compile Include="Common\LowerCaseUrlRoute.cs" />
     <Compile Include="Common\PageHtmlhelper.cs" />
+    <Compile Include="Common\ProgressBar.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Common\Rand.cs" />
     <Compile Include="Areas\manage\Controllers\AccountController.cs" />
     <Compile Include="Areas\manage\Controllers\HomeController.cs">
@@ -441,6 +464,7 @@
     <Compile Include="Models\DownloadViewModel.cs" />
     <Compile Include="Models\SidebarViewModel.cs" />
     <Compile Include="Models\StuViewModel.cs" />
+    <Compile Include="Models\MsgViewModel.cs" />
     <Compile Include="Models\TeaViewModel.cs" />
     <Compile Include="Models\UserViewModel.cs" />
     <Compile Include="Models\ResourcePackageViewModel.cs" />
@@ -2103,6 +2127,23 @@
       <Generator>RazorGenerator</Generator>
       <LastGenOutput>Reminder.generated.cs</LastGenOutput>
     </None>
+    <Content Include="Areas\manage\Views\MessageRecord\Add.cshtml">
+      <Generator>RazorGenerator</Generator>
+      <LastGenOutput>Add.generated.cs</LastGenOutput>
+    </Content>
+    <Content Include="Areas\manage\Views\MessageRecord\Edit.cshtml">
+      <Generator>RazorGenerator</Generator>
+      <LastGenOutput>Edit.generated.cs</LastGenOutput>
+    </Content>
+    <Content Include="Areas\manage\Views\MessageRecord\Import.cshtml">
+      <Generator>RazorGenerator</Generator>
+      <LastGenOutput>Import.generated.cs</LastGenOutput>
+    </Content>
+    <Content Include="Areas\manage\Views\MessageRecord\List.cshtml">
+      <Generator>RazorGenerator</Generator>
+      <LastGenOutput>List.generated.cs</LastGenOutput>
+    </Content>
+    <Content Include="Areas\manage\Views\MessageRecord\Progress.cshtml" />
     <None Include="Areas\manage\Views\web.config" />
     <None Include="Areas\manage\Views\Teacher\Add.cshtml">
       <Generator>RazorGenerator</Generator>
@@ -2258,6 +2299,7 @@
     <Content Include="Content\lib\ali-iconfont\iconfont.ttf" />
     <Content Include="Content\lib\ali-iconfont\iconfont.woff" />
     <Content Include="Content\lib\ali-iconfont\iconfont.woff2" />
+    <Content Include="Content\信息导入模板.xlsx" />
     <None Include="Properties\PublishProfiles\art.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -2300,7 +2342,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\manage\Models\" />
-    <Folder Include="Areas\manage\Views\MessageRecord\" />
     <Folder Include="Controllers\" />
     <Folder Include="uploadFiles\" />
     <Folder Include="Views\" />

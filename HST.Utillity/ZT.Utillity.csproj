@@ -118,6 +118,9 @@
     <Compile Include="Data\ConverterHelper.cs" />
     <Compile Include="Cookie\Cookiehelper.cs" />
     <Compile Include="DataBase\DBHelper.cs" />
+    <Compile Include="Data\JsonUtils.cs" />
+    <Compile Include="Message\FGSMSHelper.cs" />
+    <Compile Include="Message\HttpTool.cs" />
     <Compile Include="Net\EnumExtensions.cs" />
     <Compile Include="Security\EncryptHelper.cs" />
     <Compile Include="Data\MathHelper.cs" />
@@ -148,6 +151,7 @@
     <Compile Include="Security\HashHelper.cs" />
     <Compile Include="Security\RandomHelper.cs" />
     <Compile Include="Security\RsaHelper.cs" />
+    <Compile Include="ValidCode\CollectionUtils.cs" />
     <Compile Include="ValidCode\ValidateCoder.cs" />
     <Compile Include="ValidCode\ValidateCodeType.cs" />
     <Compile Include="ValidCode\ValidateHelper.cs" />

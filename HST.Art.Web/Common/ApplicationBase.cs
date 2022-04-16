@@ -56,6 +56,20 @@ namespace ZT.SMS.Web
             }
         }
 
+        public bool IsAdmin
+        {
+            get
+            {
+                Account account = GetAccount();
+                if (account != null)
+                {
+                    return account.IsAdmin;
+                }
+
+                return false;
+            }
+        }
+
         public string UserAgent
         {
             get
@@ -301,7 +315,7 @@ namespace ZT.SMS.Web
             if (cell == null) return "";
             switch (cell.CellType)
             {
-                case CellType.Numeric: return DateUtil.IsCellDateFormatted(cell) ? cell.DateCellValue.ToString("yyyy-M-d") : cell.NumericCellValue.ToString();
+                case CellType.Numeric: return DateUtil.IsCellDateFormatted(cell) ? cell.DateCellValue.ToString("yyyy-MM-dd") : cell.NumericCellValue.ToString();
                 case CellType.String: return cell.StringCellValue;
                 case CellType.Boolean: return cell.BooleanCellValue.ToString();
                 case CellType.Error: return cell.ErrorCellValue.ToString();
@@ -313,6 +327,7 @@ namespace ZT.SMS.Web
         private void FillAgent()
         {
             var agent = new { UserAgent = Request.UserAgent, Platform = Request.Browser.Platform, Version = Request.Browser.Version, BrowserName = Request.Browser.Browser, BrowserType = Request.Browser.Type, IPAddress = Request.UserHostAddress };
+            HttpContext.Session["IP"] = Request.UserHostAddress;
             PlatformAgent.Set(JsonConvert.SerializeObject(agent));
         }
 

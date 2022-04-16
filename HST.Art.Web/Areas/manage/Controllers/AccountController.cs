@@ -27,7 +27,6 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
                 bool result = LoginBase(model.Account, model.Password);
                 if (result)
                 {
-                    AddLog("login", Constant.LOG_LOGIN_SUCCESS, string.Format(Constant.LOG_ACCOUNT_USER_NAME, model.Account), LogType.Operation);
                     return RedirectLogin();
                 }
                 else
@@ -46,8 +45,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
         }
 
         public ActionResult LoginOut()
-        {
-            AddLog("logout", Constant.LOG_LOGOUT_SUCCESS, string.Format(Constant.LOG_ACCOUNT_USER_NAME, UserName), LogType.Operation);
+        {       
             LogoutBase();
             return RedirectLogin();
         }

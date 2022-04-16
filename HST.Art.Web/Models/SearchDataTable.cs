@@ -57,6 +57,30 @@ namespace ZT.SMS.Web
         public string ReserveField { get; set; }
     }
 
+
+    public class MsgViewQuery
+    {
+        public string MsgId { get; set; }
+        public string CreateDate { get; set; }
+
+        public int SendState
+        {
+            get
+            {
+                return sendState;
+            }
+
+            set
+            {
+                sendState = value;
+            }
+        }
+
+        private int sendState = -1;
+
+
+    }
+
     /// <summary>
     /// 筛选类别
     /// </summary>

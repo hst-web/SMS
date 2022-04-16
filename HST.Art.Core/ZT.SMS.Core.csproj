@@ -51,10 +51,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\BizException.cs" />
     <Compile Include="Common\Condition.cs" />
     <Compile Include="Common\Constant.cs" />
     <Compile Include="Common\Enums\CommonEnums.cs" />
     <Compile Include="Common\KeyValueObj.cs" />
+    <Compile Include="Common\PreconditionUtil.cs" />
     <Compile Include="IServices\ICategoryDictionaryService.cs" />
     <Compile Include="IServices\IIntegratedService.cs" />
     <Compile Include="IServices\IMessageRecordService.cs" />

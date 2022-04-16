@@ -47,7 +47,7 @@ namespace ZT.SMS.Data
         {
             List<MessageRecord> MessageRecordList = new List<MessageRecord>();
             IList<DbParameter> parameList = new List<DbParameter>();
-            string whereSort = GetWhereStr(condition,ref parameList);
+            string whereSort = GetWhereStr(condition, ref parameList);
             DBHelper dbHelper = new DBHelper(ConnectionString, DbProviderType.SqlServer);
 
             string strSql = @"SELECT Id, MessageId, ToAddress,SendDate, MsgData, [State], OperatorId,CreateDate from MessageRecord where IsDeleted=0 " + whereSort;
@@ -100,7 +100,7 @@ namespace ZT.SMS.Data
 
             parameList.Add(new SqlParameter("@pageSize", condition.PageSize));
             parameList.Add(new SqlParameter("@pageIndex", condition.PageIndex));
-        
+
             string strSql = @"SELECT  [Id]
                                       ,[MessageId]
                                       ,[ToAddress]
@@ -144,12 +144,14 @@ namespace ZT.SMS.Data
             MessageRecordInfo.MessageId = reader["MessageId"].ToString();
             MessageRecordInfo.ToAddress = reader["ToAddress"].ToString();
             MessageRecordInfo.SendState = (MsgSendState)reader["State"];
-            MessageRecordInfo.MsgData = reader["MsgData"].ToString();
+            string msgDataStr = reader["MsgData"].ToString();
+            MessageRecordInfo.MsgData = string.IsNullOrEmpty(msgDataStr) ? new MsgDataInfo() : JsonUtils.Deserialize<MsgDataInfo>(msgDataStr);
             MessageRecordInfo.OperatorId = Convert.ToInt32(reader["OperatorId"].ToString());
             MessageRecordInfo.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
             if (ReaderExists(reader, "SendDate") && DBNull.Value != reader["SendDate"])
             {
-                MessageRecordInfo.SendDate = Convert.ToDateTime(reader["SendDate"]);
+                DateTime sendDt = Convert.ToDateTime(reader["SendDate"]);
+                MessageRecordInfo.SendDate = sendDt.CompareTo(DateTime.Parse("1900-01-01")) > 0 ? Convert.ToDateTime(reader["SendDate"]) : DateTime.MinValue;
             }
 
             return MessageRecordInfo;
@@ -204,11 +206,11 @@ namespace ZT.SMS.Data
             List<DbParameter> parametersList = new List<DbParameter>();
             parametersList.Add(new SqlParameter("@MessageId", MessageRecordInfo.MessageId));
             parametersList.Add(new SqlParameter("@ToAddress", MessageRecordInfo.ToAddress));
-            parametersList.Add(new SqlParameter("@SendDate", MessageRecordInfo.SendDate));
-            parametersList.Add(new SqlParameter("@MsgData", MessageRecordInfo.MsgData));
+            parametersList.Add(new SqlParameter("@SendDate", GetSendDate(MessageRecordInfo.SendDate)));
+            parametersList.Add(new SqlParameter("@MsgData", GetMsgDataStr(MessageRecordInfo.MsgData)));
             parametersList.Add(new SqlParameter("@State", (int)MessageRecordInfo.SendState));
             parametersList.Add(new SqlParameter("@OperatorId", MessageRecordInfo.OperatorId));
-           
+
             return dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
         }
 
@@ -230,18 +232,27 @@ namespace ZT.SMS.Data
                 parametersList = new List<DbParameter>();
                 parametersList.Add(new SqlParameter("@MessageId", item.MessageId));
                 parametersList.Add(new SqlParameter("@ToAddress", item.ToAddress));
-                parametersList.Add(new SqlParameter("@SendDate", item.SendDate));
-                parametersList.Add(new SqlParameter("@MsgData", item.MsgData));
+                parametersList.Add(new SqlParameter("@SendDate", GetSendDate(item.SendDate)));
+                parametersList.Add(new SqlParameter("@MsgData", GetMsgDataStr(item.MsgData)));
                 parametersList.Add(new SqlParameter("@State", (int)item.SendState));
                 parametersList.Add(new SqlParameter("@OperatorId", item.OperatorId));
-
-                success = dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
-                if (!success)
+                try
                 {
-                    failList.Add(item);
+                    success = dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
+                    if (!success)
+                    {
+                        item.Remark = item.Remark + "添加数据库失败";
+                        failList.Add(item);
+                    }
                 }
-
+                catch (Exception ex)
+                {
+                    item.Remark = item.Remark + "添加数据库失败: ex.Message";
+                    failList.Add(item);
+                    Logger.Error(this, "批量添加失败,meeageId=" + item.MessageId + "exception:" + ex.Message, ex);
+                }
             }
+
 
             return success && failList.Count == 0;
         }
@@ -265,15 +276,26 @@ namespace ZT.SMS.Data
 
             List<DbParameter> parametersList = new List<DbParameter>();
             parametersList.Add(new SqlParameter("@ID", MessageRecordInfo.Id));
-            parametersList.Add(new SqlParameter("@SendDate", MessageRecordInfo.SendDate));
+            parametersList.Add(new SqlParameter("@SendDate", GetSendDate(MessageRecordInfo.SendDate)));
             parametersList.Add(new SqlParameter("@MessageId", MessageRecordInfo.MessageId));
             parametersList.Add(new SqlParameter("@ToAddress", MessageRecordInfo.ToAddress));
-            parametersList.Add(new SqlParameter("@MsgData", MessageRecordInfo.MsgData));
+            parametersList.Add(new SqlParameter("@MsgData", GetMsgDataStr(MessageRecordInfo.MsgData)));
             parametersList.Add(new SqlParameter("@State", (int)MessageRecordInfo.SendState));
             parametersList.Add(new SqlParameter("@OperatorId", MessageRecordInfo.OperatorId));
             return dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
         }
 
+
+        public bool Send(MessageRecord MessageRecordInfo)
+        {
+            DBHelper dbHelper = new DBHelper(ConnectionString, DbProviderType.SqlServer);
+            string strSql = @"Update MessageRecord   Set [SendDate]=getdate() ,[State]=@State,[MsgData]=@MsgData  Where ID=@ID";
+            List<DbParameter> parametersList = new List<DbParameter>();
+            parametersList.Add(new SqlParameter("@State", (int)MessageRecordInfo.SendState));
+            parametersList.Add(new SqlParameter("@ID", MessageRecordInfo.Id));
+            parametersList.Add(new SqlParameter("@MsgData", GetMsgDataStr(MessageRecordInfo.MsgData)));
+            return dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
+        }
 
         public bool Update(List<MessageRecord> MessageRecordInfos, out List<MessageRecord> failList)
         {
@@ -295,17 +317,25 @@ namespace ZT.SMS.Data
                 parametersList = new List<DbParameter>();
                 parametersList.Add(new SqlParameter("@ID", item.Id));
                 parametersList.Add(new SqlParameter("@MessageId", item.MessageId));
-                parametersList.Add(new SqlParameter("@SendDate", item.SendDate));
+                parametersList.Add(new SqlParameter("@SendDate", GetSendDate(item.SendDate)));
                 parametersList.Add(new SqlParameter("@ToAddress", item.ToAddress));
-                parametersList.Add(new SqlParameter("@MsgData", item.MsgData));
+                parametersList.Add(new SqlParameter("@MsgData", GetMsgDataStr(item.MsgData)));
                 parametersList.Add(new SqlParameter("@State", (int)item.SendState));
                 parametersList.Add(new SqlParameter("@OperatorId", item.OperatorId));
-
-                success = dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
-                if (!success)
+                try
+                {
+                    success = dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
+                    if (!success)
+                    {
+                        failList.Add(item);
+                    }
+                }
+                catch (Exception ex)
                 {
                     failList.Add(item);
+                    Logger.Error(this, "批量更新失败,meeageId=" + item.MessageId + "exception:" + ex.Message, ex);
                 }
+
 
             }
 
@@ -326,6 +356,21 @@ namespace ZT.SMS.Data
             parametersList.Add(new SqlParameter("@id", id));
 
             return dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
+        }
+
+        private object GetSendDate(DateTime dt)
+        {
+            if (dt == null || dt.Equals(DateTime.MinValue))
+            {
+                return "";
+            }
+
+            return dt;
+        }
+
+        private string GetMsgDataStr(MsgDataInfo info)
+        {
+            return JsonUtils.Serialize(info == null ? new MsgDataInfo() : info);
         }
         #endregion
     }

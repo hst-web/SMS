@@ -70,11 +70,11 @@ namespace ZT.Utillity
             /// <returns></returns>
         public static bool IsMobile(string source)
         {
-            return Regex.IsMatch(source, @"^[1][3-8]\d{9}$", RegexOptions.IgnoreCase);
+            return Regex.IsMatch(source, @"^[1][3-9]\d{9}$", RegexOptions.IgnoreCase);
         }
         public static bool HasMobile(string source)
         {
-            return Regex.IsMatch(source, @"[1][3-8]\d{9}", RegexOptions.IgnoreCase);
+            return Regex.IsMatch(source, @"[1][3-9]\d{9}", RegexOptions.IgnoreCase);
         }
         #endregion
 

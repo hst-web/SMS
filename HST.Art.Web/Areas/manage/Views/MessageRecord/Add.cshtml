@@ -1,0 +1,83 @@
+﻿@{
+    Layout = null;
+}
+
+@using ZT.SMS.Web
+@using ZT.SMS.Core
+@using ZT.Utillity
+@model  MsgViewModel
+
+@Scripts.Render("~/bundles/saos")
+@Scripts.Render("~/bundles/ajaxAsync")
+@Scripts.Render("~/bundles/validate")
+@Styles.Render("~/appcss")
+<style type="text/css">
+    .form-horizontal .form-label {
+        text-align: right;
+    }
+</style>
+<article class="page-container">
+    @using (Ajax.BeginForm("Add", "MessageRecord", new { }, new AjaxOptions() { HttpMethod = "Post", OnSuccess = "formSuccess(data)", OnBegin = "disSubmit('sub_btn')", OnComplete = "enSubmit('sub_btn')" }, new { id = "", @class = "form form-horizontal" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Id, new { @Value = 0 })
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>订单编号：</label>
+            <div class="formControls col-xs-7 ">
+                @Html.TextBoxFor(m => m.Number, new { placeholder = "请输入订单编号", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.Number, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>手机号码：</label>
+            <div class="formControls col-xs-7 ">
+                @Html.TextBoxFor(m => m.Phone, new { placeholder = "请输入手机号", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.Phone, null, new { @class = "error-lable" })
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>订单日期：</label>
+            <div class="formControls col-xs-7 ">
+                @Html.TextBoxFor(m => m.OrderDate, new { placeholder = "请输入订单日期", onclick = "WdatePicker()", autocomplete = "off", @class = "input-text Wdate" })
+                @Html.ValidationMessageFor(m => m.OrderDate, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-6 "><b>注：</b>新建的信息默认为&nbsp;<span class="label label-primary radius">未发送</span>&nbsp;状态</label>
+        </div>
+
+        <div class="row cl">
+            <div id="btn_submit" class="col-xs-6  col-xs-offset-3 col-sm-offset-2 mt-10">
+                <button class="btn btn-primary radius" type="submit" id="sub_btn">保存</button>
+                <input name="" type="button" onclick="layer_close();" class="btn btn-default radius " value="取消">
+            </div>
+        </div>
+    }
+</article>
+
+<script type="text/javascript">
+    function formSuccess(result) {
+        if (result != null) {
+            if (result.isSuccess) {
+                var index = parent.layer.getFrameIndex(window.name);
+                layer.alert('保存成功！', {
+                    icon: 6,
+                    closeBtn: 0,
+                    yes: function () {
+                        if (parent[1] != null) {
+                            parent[pageIndex()].table1.ajax.reload();
+                        } else {
+                            parent.table1.ajax.reload();
+                        }
+                        parent.layer.close(index);
+                    }
+                });
+            } else if (result.message != null) {
+                layer.alert(result.message, { icon: 8 });
+            } else
+                layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+        } else
+            layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+    }
+</script>
