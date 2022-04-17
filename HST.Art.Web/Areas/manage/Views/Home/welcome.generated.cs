@@ -145,7 +145,7 @@ WriteLiteral(" class=\"card-pf-utilization-card-details-count\"");
 
 WriteLiteral(" id=\"package_total\"");
 
-WriteLiteral("></span>\r\n                            <span");
+WriteLiteral(">50</span>\r\n                            <span");
 
 WriteLiteral(" class=\"card-pf-utilization-card-details-description\"");
 
@@ -162,7 +162,7 @@ WriteLiteral(" class=\"card-pf-utilization-card-details-count\"");
 
 WriteLiteral(" id=\"package_enable\"");
 
-WriteLiteral("></span>\r\n                            <span");
+WriteLiteral(">40</span>\r\n                            <span");
 
 WriteLiteral(" class=\"card-pf-utilization-card-details-description\"");
 
@@ -179,7 +179,7 @@ WriteLiteral(" class=\"card-pf-utilization-card-details-count\"");
 
 WriteLiteral(" id=\"package_disable\"");
 
-WriteLiteral("></span>\r\n                            <span");
+WriteLiteral(">10</span>\r\n                            <span");
 
 WriteLiteral(" class=\"card-pf-utilization-card-details-description\"");
 
@@ -259,7 +259,47 @@ WriteLiteral(" id=\"chart-pf-donut-3\"");
 
 WriteLiteral("></div>\r\n                    </div>\r\n                </div>\r\n            </div>\r\n" +
 "        </div>\r\n    </div>\r\n</div>\r\n<script>\r\n    $(function () {\r\n\r\n\r\n    });\r\n" +
-"    ");
+"    var PackageAnaylsisVM = new Vue({\r\n        created: function () {\r\n         " +
+"   var url = \"");
+
+            
+            #line 78 "..\..\Areas\manage\Views\Home\welcome.cshtml"
+                  Write(Url.Action("ResPackageStatistics"));
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\";\r\n            this.$http.get(url).then(function (data) {\r\n                if (d" +
+"ata != null) {\r\n                    $(\"#package_total\").text(30);\r\n             " +
+"       $(\"#package_enable\").text(20);\r\n                    $(\"#package_disable\")" +
+".text(10);\r\n                    var donutConfig = $().c3ChartDefaults().getDefau" +
+"ltDonutConfig(\'A\');\r\n                    donutConfig.bindto = \'#chart-pf-donut-2" +
+"\';\r\n                    donutConfig.color = {\r\n                        pattern: " +
+"[\"#3f9c35\", \"#F44337\",\"#aaa\"]\r\n                    };\r\n                    donut" +
+"Config.data = {\r\n                        type: \"donut\",\r\n                       " +
+" columns: [\r\n                        ],\r\n                        groups: [\r\n    " +
+"                      [\"启用\", \"禁用\",\"其他\"]\r\n                        ],\r\n           " +
+"             order: null\r\n                    };\r\n                    donutConfi" +
+"g.tooltip = {\r\n                        contents: function (d) {\r\n               " +
+"             return \'<span class=\"donut-tooltip-pf\" style=\"white-space: nowrap;\"" +
+">\' +\r\n                                    Math.round(d[0].ratio * 100) + \'%\' + \'" +
+"\' + d[0].name +\r\n                                    \'</span>\';\r\n               " +
+"         }\r\n                    };\r\n                    if (donutConfig != null)" +
+" {\r\n                        //if (data.body.DisableCount > 0) {\r\n               " +
+"         //    donutConfig.data.columns = [\r\n                        //        [" +
+"\"启用\", data.body.EnableCount],\r\n                        //        [\"禁用\", data.bod" +
+"y.DisableCount]\r\n                        //    ];\r\n                        //} e" +
+"lse {\r\n                            donutConfig.data.columns = [\r\n               " +
+"                    [\"启用\", 30],\r\n                                   [\"禁用\", 10],\r" +
+"\n                                     [\"其他\", 10]\r\n                            ];" +
+"\r\n                        //}\r\n                    }\r\n                    var ch" +
+"art3 = c3.generate(donutConfig);\r\n                    var donutChartTitle = d3.s" +
+"elect(\"#chart-pf-donut-2\").select(\'text.c3-chart-arcs-title\');\r\n                " +
+"    donutChartTitle.text(\"\");\r\n                    donutChartTitle.insert(\'tspan" +
+"\').text(50).classed(\'donut-title-big-pf\', true).attr(\'dy\', 0).attr(\'x\', 0);\r\n   " +
+"                 donutChartTitle.insert(\'tspan\').text(\"资料包总数\").classed(\'donut-ti" +
+"tle-small-pf\', true).attr(\'dy\', 20).attr(\'x\', 0);\r\n\r\n\r\n\r\n                }\r\n    " +
+"        }, function (data) {\r\n            });\r\n        }\r\n    });\r\n\r\n    ");
 
 WriteLiteral("\r\n</script>\r\n");
 

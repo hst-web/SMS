@@ -53,6 +53,14 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
 
         }
 
+        //ResPackageStatistics
+
+        public ActionResult ResPackageStatistics()
+        {
+            ResultRetrun rmodel = new ResultRetrun();
+            return Json(rmodel, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Edit()
         {
             Organization model = orgService.GetByNumber(Constant.INIT_ORG_NUMBER);

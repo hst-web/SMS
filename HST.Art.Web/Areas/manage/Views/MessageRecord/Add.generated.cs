@@ -204,7 +204,7 @@ WriteLiteral("><span");
 
 WriteLiteral(" class=\"c-red\"");
 
-WriteLiteral(">*</span>手机号码：</label>\r\n            <div");
+WriteLiteral(">*</span>商品名称：</label>\r\n            <div");
 
 WriteLiteral(" class=\"formControls col-xs-7 \"");
 
@@ -214,7 +214,7 @@ WriteLiteral("                ");
 
             
             #line 34 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
-           Write(Html.TextBoxFor(m => m.Phone, new { placeholder = "请输入手机号", @class = "input-text" }));
+           Write(Html.TextBoxFor(m => m.OrderName, new { placeholder = "请输入商品名称", @class = "input-text" }));
 
             
             #line default
@@ -225,6 +225,46 @@ WriteLiteral("                ");
 
             
             #line 35 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
+           Write(Html.ValidationMessageFor(m => m.OrderName, null, new { @class = "error-lable" }));
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\r\n            </div>\r\n        </div>\r\n");
+
+WriteLiteral("        <div");
+
+WriteLiteral(" class=\"row cl\"");
+
+WriteLiteral(">\r\n            <label");
+
+WriteLiteral(" class=\"form-label col-xs-3 \"");
+
+WriteLiteral("><span");
+
+WriteLiteral(" class=\"c-red\"");
+
+WriteLiteral(">*</span>手机号码：</label>\r\n            <div");
+
+WriteLiteral(" class=\"formControls col-xs-7 \"");
+
+WriteLiteral(">\r\n");
+
+WriteLiteral("                ");
+
+            
+            #line 41 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
+           Write(Html.TextBoxFor(m => m.Phone, new { placeholder = "请输入手机号", @class = "input-text" }));
+
+            
+            #line default
+            #line hidden
+WriteLiteral("\r\n");
+
+WriteLiteral("                ");
+
+            
+            #line 42 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
            Write(Html.ValidationMessageFor(m => m.Phone, null, new { @class = "error-lable" }));
 
             
@@ -233,7 +273,7 @@ WriteLiteral("                ");
 WriteLiteral("\r\n            </div>\r\n        </div>\r\n");
 
             
-            #line 38 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
+            #line 45 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
 
 
             
@@ -260,7 +300,7 @@ WriteLiteral(">\r\n");
 WriteLiteral("                ");
 
             
-            #line 42 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
+            #line 49 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
            Write(Html.TextBoxFor(m => m.OrderDate, new { placeholder = "请输入订单日期", onclick = "WdatePicker()", autocomplete = "off", @class = "input-text Wdate" }));
 
             
@@ -271,7 +311,7 @@ WriteLiteral("\r\n");
 WriteLiteral("                ");
 
             
-            #line 43 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
+            #line 50 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
            Write(Html.ValidationMessageFor(m => m.OrderDate, null, new { @class = "error-lable" }));
 
             
@@ -294,7 +334,7 @@ WriteLiteral(" class=\"label label-primary radius\"");
 WriteLiteral(">未发送</span>&nbsp;状态</label>\r\n        </div>\r\n");
 
             
-            #line 49 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
+            #line 56 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
 
 
             
@@ -333,7 +373,7 @@ WriteLiteral(" value=\"取消\"");
 WriteLiteral(">\r\n            </div>\r\n        </div>\r\n");
 
             
-            #line 56 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
+            #line 63 "..\..\Areas\manage\Views\MessageRecord\Add.cshtml"
     }
 
             

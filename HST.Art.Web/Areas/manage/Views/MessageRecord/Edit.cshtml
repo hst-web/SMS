@@ -29,6 +29,13 @@
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-3 "><span class="c-red">*</span>商品名称：</label>
+            <div class="formControls col-xs-7 ">
+                @Html.TextBoxFor(m => m.OrderName, new { placeholder = "请输入商品名称", @class = "input-text" })
+                @Html.ValidationMessageFor(m => m.OrderName, null, new { @class = "error-lable" })
+            </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-3 "><span class="c-red">*</span>手机号码：</label>
             <div class="formControls col-xs-7 ">
                 @Html.TextBoxFor(m => m.Phone, new { placeholder = "请输入手机号", @class = "input-text" })

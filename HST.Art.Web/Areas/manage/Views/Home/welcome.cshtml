@@ -27,15 +27,15 @@
                     <div class="col-xs-6">
                         <h3 class="card-pf-subtitle">资料包统计</h3>
                         <p class="card-pf-utilization-details">
-                            <span class="card-pf-utilization-card-details-count" id="package_total"></span>
+                            <span class="card-pf-utilization-card-details-count" id="package_total">50</span>
                             <span class="card-pf-utilization-card-details-description">
                                 <span class="card-pf-utilization-card-details-line-1">总数</span>
                             </span>
-                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="package_enable"></span>
+                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="package_enable">40</span>
                             <span class="card-pf-utilization-card-details-description">
                                 <span class="card-pf-utilization-card-details-line-1">启用数</span>
                             </span>
-                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="package_disable"></span>
+                            <span style="margin-left:40px" class="card-pf-utilization-card-details-count" id="package_disable">10</span>
                             <span class="card-pf-utilization-card-details-description">
                                 <span class="card-pf-utilization-card-details-line-1">禁用数</span>
                             </span>
@@ -73,25 +73,25 @@
 
 
     });
-    @*var PackageAnaylsisVM = new Vue({
+    var PackageAnaylsisVM = new Vue({
         created: function () {
             var url = "@Url.Action("ResPackageStatistics")";
             this.$http.get(url).then(function (data) {
                 if (data != null) {
-                    $("#package_total").text(data.body.TotalCount);
-                    $("#package_enable").text(data.body.EnableCount);
-                    $("#package_disable").text(data.body.DisableCount);
+                    $("#package_total").text(30);
+                    $("#package_enable").text(20);
+                    $("#package_disable").text(10);
                     var donutConfig = $().c3ChartDefaults().getDefaultDonutConfig('A');
                     donutConfig.bindto = '#chart-pf-donut-2';
                     donutConfig.color = {
-                        pattern: ["#3f9c35", "#F44337"]
+                        pattern: ["#3f9c35", "#F44337","#aaa"]
                     };
                     donutConfig.data = {
                         type: "donut",
                         columns: [
                         ],
                         groups: [
-                          ["启用", "禁用"]
+                          ["启用", "禁用","其他"]
                         ],
                         order: null
                     };
@@ -103,21 +103,23 @@
                         }
                     };
                     if (donutConfig != null) {
-                        if (data.body.DisableCount > 0) {
+                        //if (data.body.DisableCount > 0) {
+                        //    donutConfig.data.columns = [
+                        //        ["启用", data.body.EnableCount],
+                        //        ["禁用", data.body.DisableCount]
+                        //    ];
+                        //} else {
                             donutConfig.data.columns = [
-                                ["启用", data.body.EnableCount],
-                                ["禁用", data.body.DisableCount]
+                                   ["启用", 30],
+                                   ["禁用", 10],
+                                     ["其他", 10]
                             ];
-                        } else {
-                            donutConfig.data.columns = [
-                                   ["启用", data.body.EnableCount]
-                            ];
-                        }
+                        //}
                     }
                     var chart3 = c3.generate(donutConfig);
                     var donutChartTitle = d3.select("#chart-pf-donut-2").select('text.c3-chart-arcs-title');
                     donutChartTitle.text("");
-                    donutChartTitle.insert('tspan').text(data.body.TotalCount).classed('donut-title-big-pf', true).attr('dy', 0).attr('x', 0);
+                    donutChartTitle.insert('tspan').text(50).classed('donut-title-big-pf', true).attr('dy', 0).attr('x', 0);
                     donutChartTitle.insert('tspan').text("资料包总数").classed('donut-title-small-pf', true).attr('dy', 20).attr('x', 0);
 
 
@@ -128,7 +130,7 @@
         }
     });
 
-    var ResAnaylsisVM = new Vue({
+    @*var ResAnaylsisVM = new Vue({
         created: function () {
             var url = "@Url.Action("ResourceStatistics")";
             this.$http.get(url).then(function (data) {

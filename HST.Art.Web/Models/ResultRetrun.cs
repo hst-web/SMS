@@ -35,21 +35,68 @@ namespace ZT.SMS.Web
         }
     }
 
-    public class StatisticalResult
+    public class ProgressResult
     {
-        public StatisticalResult() { }
-        public StatisticalResult(int totalCount)
+        public ProgressResult() { }
+        public ProgressResult(int totalCount)
         {
             this.totalCount = totalCount;
         }
 
         private int totalCount;
+        private int count;
+
         public int SuccessCount { get; set; }
+        /// <summary>
+        /// 结束标记
+        /// </summary>
+        public bool EndTag { get; set; }
+        public string Message { get; set; }
+        public int Speed
+        {
+            get
+            {
+                if (count > 0)
+                {
+                    int curSpe = count * 100 / TotalCount;
+                    if (curSpe >= 100)
+                    {
+                        EndTag = true;
+                        return 100;
+                    }
+
+                    return curSpe;
+                }
+
+                return count;
+            }
+        }
+
         public int FailCount
         {
             get
             {
-                return totalCount - SuccessCount;
+                return TotalCount - SuccessCount;
+            }
+        }
+
+        public int Count
+        {
+            set
+            {
+                count = value;
+            }
+            get
+            {
+                return count;
+            }
+        }
+
+        public int TotalCount
+        {
+            get
+            {
+                return totalCount;
             }
         }
     }

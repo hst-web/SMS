@@ -87,20 +87,6 @@ WriteLiteral(" class=\"page-container\"");
 
 WriteLiteral(">\r\n    <div");
 
-WriteLiteral(" class=\"progress\"");
-
-WriteLiteral("><div");
-
-WriteLiteral(" class=\"progress-bar\"");
-
-WriteLiteral("><span");
-
-WriteLiteral(" class=\"sr-only\"");
-
-WriteLiteral(" style=\"width:25%\"");
-
-WriteLiteral("></span></div></div>\r\n    <div");
-
 WriteLiteral(" class=\"cl pd-10 bg-1 bk-gray mt-10 search-wrap\"");
 
 WriteLiteral(">\r\n        <span");
@@ -135,38 +121,38 @@ WriteLiteral(" value=\"-1\"");
 
 WriteLiteral(">全部状态</option>\r\n            <option");
 
-WriteAttribute("value", Tuple.Create(" value=\"", 905), Tuple.Create("\"", 940)
+WriteAttribute("value", Tuple.Create(" value=\"", 792), Tuple.Create("\"", 827)
             
-            #line 14 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 913), Tuple.Create<System.Object, System.Int32>((int)MsgSendState.Unsent
+            #line 13 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+, Tuple.Create(Tuple.Create("", 800), Tuple.Create<System.Object, System.Int32>((int)MsgSendState.Unsent
             
             #line default
             #line hidden
-, 913), false)
+, 800), false)
 );
 
 WriteLiteral(">未发送</option>\r\n            <option");
 
-WriteAttribute("value", Tuple.Create(" value=\"", 975), Tuple.Create("\"", 1014)
+WriteAttribute("value", Tuple.Create(" value=\"", 862), Tuple.Create("\"", 901)
             
-            #line 15 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 983), Tuple.Create<System.Object, System.Int32>((int)MsgSendState.SendFailed
+            #line 14 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+, Tuple.Create(Tuple.Create("", 870), Tuple.Create<System.Object, System.Int32>((int)MsgSendState.SendFailed
             
             #line default
             #line hidden
-, 983), false)
+, 870), false)
 );
 
 WriteLiteral(">发送失败</option>\r\n            <option");
 
-WriteAttribute("value", Tuple.Create(" value=\"", 1050), Tuple.Create("\"", 1090)
+WriteAttribute("value", Tuple.Create(" value=\"", 937), Tuple.Create("\"", 977)
             
-            #line 16 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 1058), Tuple.Create<System.Object, System.Int32>((int)MsgSendState.SendSuccess
+            #line 15 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+, Tuple.Create(Tuple.Create("", 945), Tuple.Create<System.Object, System.Int32>((int)MsgSendState.SendSuccess
             
             #line default
             #line hidden
-, 1058), false)
+, 945), false)
 );
 
 WriteLiteral(">发送成功</option>\r\n        </select>\r\n        <span");
@@ -199,92 +185,134 @@ WriteLiteral("><i");
 
 WriteLiteral(" class=\"Hui-iconfont\"");
 
-WriteLiteral(">&#xe665;</i> 查询</button>\r\n        <button");
+WriteLiteral(">&#xe665;</i> 查询</button>\r\n        ");
 
-WriteLiteral(" class=\"btn btn-default \"");
-
-WriteAttribute("onclick", Tuple.Create(" onclick=\"", 1474), Tuple.Create("\"", 1520)
-, Tuple.Create(Tuple.Create("", 1484), Tuple.Create("msg_add(\'新建信息\',\'", 1484), true)
-            
-            #line 21 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 1500), Tuple.Create<System.Object, System.Int32>(Url.Action("Add")
-            
-            #line default
-            #line hidden
-, 1500), false)
-, Tuple.Create(Tuple.Create("", 1518), Tuple.Create("\')", 1518), true)
-);
-
-WriteLiteral(" type=\"button\"");
-
-WriteLiteral(">新建</button>\r\n        <button");
+WriteLiteral("\r\n        <button");
 
 WriteLiteral(" class=\"btn btn-primary \"");
 
-WriteAttribute("onclick", Tuple.Create(" onclick=\"", 1589), Tuple.Create("\"", 1641)
-, Tuple.Create(Tuple.Create("", 1599), Tuple.Create("msg_import(\'批量导入\',\'", 1599), true)
+WriteAttribute("onclick", Tuple.Create(" onclick=\"", 1480), Tuple.Create("\"", 1532)
+, Tuple.Create(Tuple.Create("", 1490), Tuple.Create("msg_import(\'批量导入\',\'", 1490), true)
             
-            #line 22 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 1618), Tuple.Create<System.Object, System.Int32>(Url.Action("Import")
+            #line 21 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+, Tuple.Create(Tuple.Create("", 1509), Tuple.Create<System.Object, System.Int32>(Url.Action("Import")
             
             #line default
             #line hidden
-, 1618), false)
-, Tuple.Create(Tuple.Create("", 1639), Tuple.Create("\')", 1639), true)
+, 1509), false)
+, Tuple.Create(Tuple.Create("", 1530), Tuple.Create("\')", 1530), true)
 );
 
 WriteLiteral(" type=\"button\"");
 
 WriteLiteral(">导入</button>\r\n        <button");
 
-WriteLiteral(" class=\"btn btn-warning float-right\"");
+WriteLiteral(" class=\"btn btn-warning\"");
 
-WriteAttribute("onclick", Tuple.Create(" onclick=\"", 1721), Tuple.Create("\"", 1775)
-, Tuple.Create(Tuple.Create("", 1731), Tuple.Create("batch_send(\'一键发送\',\'", 1731), true)
+WriteAttribute("onclick", Tuple.Create(" onclick=\"", 1600), Tuple.Create("\"", 1719)
+, Tuple.Create(Tuple.Create("", 1610), Tuple.Create("batch_send(\'一键发送\',\'", 1610), true)
             
-            #line 23 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 1750), Tuple.Create<System.Object, System.Int32>(Url.Action("Progress")
+            #line 22 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+, Tuple.Create(Tuple.Create("", 1629), Tuple.Create<System.Object, System.Int32>(Url.Action("Progress", new { state = (int)MsgSendState.Unsent })
             
             #line default
             #line hidden
-, 1750), false)
-, Tuple.Create(Tuple.Create("", 1773), Tuple.Create("\')", 1773), true)
+, 1629), false)
+, Tuple.Create(Tuple.Create("", 1694), Tuple.Create("\',\'", 1694), true)
+            
+            #line 22 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+                                                        , Tuple.Create(Tuple.Create("", 1697), Tuple.Create<System.Object, System.Int32>(MsgSendState.Unsent
+            
+            #line default
+            #line hidden
+, 1697), false)
+, Tuple.Create(Tuple.Create("", 1717), Tuple.Create("\')", 1717), true)
 );
 
 WriteLiteral(" type=\"button\"");
 
-WriteLiteral(">一键发送</button>\r\n\r\n        <button");
+WriteLiteral(">一键发送</button>\r\n\r\n        ");
 
-WriteLiteral(" class=\"btn btn-warning \"");
+WriteLiteral("\r\n        <div");
 
-WriteAttribute("onclick", Tuple.Create(" onclick=\"", 1848), Tuple.Create("\"", 1893)
-, Tuple.Create(Tuple.Create("", 1858), Tuple.Create("msg_test(\'", 1858), true)
-            
-            #line 25 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 1868), Tuple.Create<System.Object, System.Int32>(Url.Action("Progress")
-            
-            #line default
-            #line hidden
-, 1868), false)
-, Tuple.Create(Tuple.Create("", 1891), Tuple.Create("\')", 1891), true)
-);
+WriteLiteral(" class=\"dropdown btn-group float-right\"");
+
+WriteLiteral(">\r\n            <button");
+
+WriteLiteral(" class=\"btn btn-default dropdown-toggle\"");
 
 WriteLiteral(" type=\"button\"");
 
-WriteLiteral(">测试</button>\r\n        <input");
+WriteLiteral(" data-toggle=\"dropdown\"");
+
+WriteLiteral(">\r\n                更多 <i");
+
+WriteLiteral(" class=\"Hui-iconfont\"");
+
+WriteLiteral(">&#xe6d5;</i>\r\n            </button>\r\n            <div");
+
+WriteLiteral(" class=\"dropdown-menu right\"");
+
+WriteLiteral(">\r\n                <a");
+
+WriteLiteral(" class=\"dropdown-item\"");
+
+WriteLiteral(" href=\"javascript:;\"");
+
+WriteAttribute("onclick", Tuple.Create(" onclick=\"", 2210), Tuple.Create("\"", 2256)
+, Tuple.Create(Tuple.Create("", 2220), Tuple.Create("msg_add(\'新建信息\',\'", 2220), true)
+            
+            #line 30 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+      , Tuple.Create(Tuple.Create("", 2236), Tuple.Create<System.Object, System.Int32>(Url.Action("Add")
+            
+            #line default
+            #line hidden
+, 2236), false)
+, Tuple.Create(Tuple.Create("", 2254), Tuple.Create("\')", 2254), true)
+);
+
+WriteLiteral(">新建信息</a>\r\n                ");
+
+WriteLiteral("\r\n                <a");
+
+WriteLiteral(" class=\"dropdown-item\"");
+
+WriteLiteral(" href=\"javascript:;\"");
+
+WriteAttribute("onclick", Tuple.Create("onclick=\"", 2412), Tuple.Create("\"", 2538)
+, Tuple.Create(Tuple.Create("", 2421), Tuple.Create("batch_send(\'一键发送\',\'", 2421), true)
+            
+            #line 32 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+        , Tuple.Create(Tuple.Create("", 2440), Tuple.Create<System.Object, System.Int32>(Url.Action("Progress", new { state = (int)MsgSendState.SendFailed })
+            
+            #line default
+            #line hidden
+, 2440), false)
+, Tuple.Create(Tuple.Create("", 2509), Tuple.Create("\',\'", 2509), true)
+            
+            #line 32 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+                                                                                , Tuple.Create(Tuple.Create("", 2512), Tuple.Create<System.Object, System.Int32>(MsgSendState.SendFailed
+            
+            #line default
+            #line hidden
+, 2512), false)
+, Tuple.Create(Tuple.Create("", 2536), Tuple.Create("\')", 2536), true)
+);
+
+WriteLiteral(">失败批量发送</a>\r\n            </div>\r\n        </div>\r\n        <input");
 
 WriteLiteral(" type=\"hidden\"");
 
 WriteLiteral(" id=\"is_admin\"");
 
-WriteAttribute("value", Tuple.Create(" value=\"", 1964), Tuple.Create("\"", 1991)
+WriteAttribute("value", Tuple.Create(" value=\"", 2630), Tuple.Create("\"", 2657)
             
-            #line 26 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-, Tuple.Create(Tuple.Create("", 1972), Tuple.Create<System.Object, System.Int32>(ViewBag.IsSupAdmin
+            #line 35 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+, Tuple.Create(Tuple.Create("", 2638), Tuple.Create<System.Object, System.Int32>(ViewBag.IsSupAdmin
             
             #line default
             #line hidden
-, 1972), false)
+, 2638), false)
 );
 
 WriteLiteral(" />\r\n    </div>\r\n    <div");
@@ -303,13 +331,17 @@ WriteLiteral(" class=\"text-c\"");
 
 WriteLiteral(">\r\n                    <th");
 
-WriteLiteral(" width=\"8%\"");
+WriteLiteral(" width=\"5%\"");
 
 WriteLiteral(">序号</th>\r\n                    <th");
 
-WriteLiteral(" width=\"20%\"");
+WriteLiteral(" width=\"15%\"");
 
 WriteLiteral(">订单编号</th>\r\n                    <th");
+
+WriteLiteral(" width=\"18%\"");
+
+WriteLiteral(">商品名称</th>\r\n                    <th");
 
 WriteLiteral(" width=\"10%\"");
 
@@ -319,7 +351,7 @@ WriteLiteral(" width=\"10%\"");
 
 WriteLiteral(">订单日期</th>\r\n                    <th");
 
-WriteLiteral(" width=\"10%\"");
+WriteLiteral(" width=\"8%\"");
 
 WriteLiteral(">状态</th>\r\n                    <th");
 
@@ -331,7 +363,7 @@ WriteLiteral(" width=\"11%\"");
 
 WriteLiteral(">创建时间</th>\r\n                    <th");
 
-WriteLiteral(" width=\"20%\"");
+WriteLiteral(" width=\"12%\"");
 
 WriteLiteral(">操作</th>\r\n                </tr>\r\n            </thead>\r\n        </table>\r\n    </di" +
 "v>\r\n</div>\r\n\r\n");
@@ -357,7 +389,6 @@ WriteLiteral(@">
                     $(""#search"").focus();
                 }
             });
-
         });
 
         /*编辑*/
@@ -391,45 +422,52 @@ WriteLiteral(@">
 
 
         function msg_test(url) {
+            alert(1);
+        }
+
+        /*发送*/
+        function batch_send(title, action, state) {
             $.ajax({
                 url: '");
 
             
-            #line 97 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
-                 Write(Url.Action("BatchSend"));
+            #line 111 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+                 Write(Url.Action("CheckSupportSend"));
 
             
             #line default
             #line hidden
-WriteLiteral("\',\r\n                type: \"post\",\r\n                async: false,\r\n               " +
-" success: function (data) {\r\n                    if (data.isSuccess) {\r\n        " +
-"                //clearInterval(sitv);\r\n                        //var index = pa" +
-"rent.layer.getFrameIndex(window.name);\r\n                        top.layer.alert(" +
-"\'发送成功！\', {\r\n                            icon: 6,\r\n                            cl" +
-"oseBtn: 0,\r\n                            yes: function () {\r\n                    " +
-"            if (parent[1] != null) {\r\n                                    parent" +
-"[pageIndex()].table1.ajax.reload();\r\n                                } else if (" +
-"parent.table1 != null) {\r\n                                    parent.table1.ajax" +
-".reload();\r\n                                } else {\r\n                          " +
-"          parent[0].table1.ajax.reload();\r\n                                }\r\n  " +
-"                              parent.layer.closeAll();\r\n                        " +
-"    }\r\n                        });\r\n                    } else if (data.message " +
-"!= null) {\r\n                        top.layer.alert(data.message, { icon: 8 });\r" +
-"\n                    } else {\r\n                        top.layer.alert(\'发送失败！\', " +
-"{ icon: 5 });\r\n                    }\r\n                },\r\n                error:" +
-" function (data) { top.layer.alert(\'发送失败！\', { icon: 5 }); }\r\n            })\r\n   " +
-"     }\r\n\r\n        /*发送*/\r\n        function batch_send(title, action) {\r\n        " +
-"    var aaa= top.layer.confirm(\'确认要\' + title + \'吗？\', function (e) {\r\n           " +
-"     top.layer.close(aaa);\r\n                var index = top.layer.open({\r\n      " +
-"              type: 2,\r\n                    title: \"正在发送中...\",\r\n                " +
-"    area: [\'750px\', \'200px\'],\r\n                    content: action\r\n            " +
-"    });\r\n        \r\n     \r\n\r\n            });\r\n        }\r\n\r\n        function initi" +
-"alizeTable() {\r\n            var dataTable = $(\'#tbTable\').DataTable({\r\n         " +
-"       \"serverSide\": true,\r\n                \"ajax\": {\r\n                    \"url\"" +
-": \"");
+WriteLiteral(@"',
+                type: ""get"",
+                data: { state: state },
+                success: function (data) {
+                    if (data.isSuccess) {
+                        top.layer.confirm('确认要' + title + '吗？', function (e) {
+                            var index = top.layer.open({
+                                type: 2,
+                                title: ""正在发送中..."",
+                                area: ['750px', '200px'],
+                                content: action
+                            });
+                        });
+                    } else {
+                        top.layer.alert(data.message, { icon: 8 });
+                    }
+                },
+                error: function (data) {
+                    top.layer.alert('操作失败！' + data, { icon: 5 });
+                }
+            })        
+        }
+
+        function initializeTable() {
+            var dataTable = $('#tbTable').DataTable({
+                ""serverSide"": true,
+                ""ajax"": {
+                    ""url"": """);
 
             
-            #line 148 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+            #line 138 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
                        Write(Url.Action("GetJsonData"));
 
             
@@ -441,27 +479,28 @@ WriteLiteral("\",\r\n                    \"type\": \"post\",\r\n                
 "          data.MsgId = $(\"#sel_filVal\").val();\r\n                        data.Cre" +
 "ateDate = $(\"#sel_date\").val();\r\n                    }\r\n                },\r\n    " +
 "            \"columns\": [\r\n                      { \"defaultContent\": \"\" },\r\n     " +
-"                 { \"mDataProp\": \"Number\" },\r\n                       { \"mDataProp" +
-"\": \"Phone\" },\r\n                      { \"mDataProp\": \"OrderDate\" },\r\n            " +
-"          { \"mDataProp\": \"State\" },\r\n                      { \"mDataProp\": \"SendD" +
-"ate\" },\r\n                      { \"mDataProp\": \"CreateTime\" },\r\n                 " +
-"     { \"defaultContent\": \"\" }\r\n\r\n                ],\r\n                \"columnDefs" +
-"\": [\r\n                 {\r\n                     \"targets\": [4],\r\n                " +
-"     \"data\": \"State\",\r\n                     \"render\": function (data, type, full" +
-") {\r\n                         var result = data;\r\n                         if (d" +
-"ata > 1) {\r\n                             result = \"<span class=\\\"label label-suc" +
-"cess radius\\\">发送成功</span>\";\r\n                         } else if (data < 1) {\r\n  " +
-"                           result = \"<span class=\\\"label label-primary radius\\\">" +
-"未发送</span>\";\r\n                         } else {\r\n                             re" +
-"sult = \"<span class=\\\"label label-danger radius\\\">发送失败</span>\";\r\n               " +
-"          }\r\n\r\n                         return result;\r\n                     }\r\n" +
-"                 },\r\n        {\r\n            \"targets\": [-1],\r\n            \"data\"" +
-": \"Id\",\r\n            \"render\": function (data, type, full) {\r\n                va" +
-"r isAdmin = $(\"#is_admin\").val();\r\n                var tmpString = \"<button clas" +
-"s=\'btn btn-primary size-MINI\' onclick=\\\"msg_edit(\'修改信息\',\'");
+"                 { \"mDataProp\": \"Number\" },\r\n                        { \"mDataPro" +
+"p\": \"OrderName\" },\r\n                         { \"mDataProp\": \"Phone\" },\r\n        " +
+"              { \"mDataProp\": \"OrderDate\" },\r\n                      { \"mDataProp\"" +
+": \"State\" },\r\n                      { \"mDataProp\": \"SendDate\" },\r\n              " +
+"        { \"mDataProp\": \"CreateTime\" },\r\n                      { \"defaultContent\"" +
+": \"\" }\r\n\r\n                ],\r\n                \"columnDefs\": [\r\n                 " +
+"{\r\n                     \"targets\": [5],\r\n                     \"data\": \"State\",\r\n" +
+"                     \"render\": function (data, type, full) {\r\n                  " +
+"       var result = data;\r\n                         if (data > 1) {\r\n           " +
+"                  result = \"<span class=\\\"label label-success radius\\\">发送成功</spa" +
+"n>\";\r\n                         } else if (data < 1) {\r\n                         " +
+"    result = \"<span class=\\\"label label-primary radius\\\">未发送</span>\";\r\n         " +
+"                } else {\r\n                             result = \"<span class=\\\"l" +
+"abel label-danger radius\\\">发送失败</span>\";\r\n                         }\r\n\r\n        " +
+"                 return result;\r\n                     }\r\n                 },\r\n  " +
+"      {\r\n            \"targets\": [-1],\r\n            \"data\": \"Id\",\r\n            \"r" +
+"ender\": function (data, type, full) {\r\n                var isAdmin = $(\"#is_admi" +
+"n\").val();\r\n                var tmpString = \"<button class=\'btn btn-primary size" +
+"-MINI\' onclick=\\\"msg_edit(\'修改信息\',\'");
 
             
-            #line 190 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+            #line 181 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
                                                                                                  Write(Url.Action("Edit"));
 
             
@@ -472,7 +511,7 @@ WriteLiteral("\',\" + data + \")\\\" type=\'button\'>编辑</button>\";\r\n     
 "onclick=\\\"obj_send(\'发送\',\'");
 
             
-            #line 192 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+            #line 183 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
                                                                                                 Write(Url.Action("Send"));
 
             
@@ -483,7 +522,7 @@ WriteLiteral("\',\" + data + \")\\\" type=\'button\'>发送</button>\";\r\n     
 "INI\' onclick=\\\"obj_send(\'重新发送\',\'");
 
             
-            #line 194 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+            #line 185 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
                                                                                                   Write(Url.Action("Send"));
 
             
@@ -494,7 +533,7 @@ WriteLiteral("\',\" + data + \")\\\" type=\'button\'>重新发送</button>\";\r\
 "=\\\"obj_del(\'消息\',\'");
 
             
-            #line 196 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
+            #line 187 "..\..\Areas\manage\Views\MessageRecord\List.cshtml"
                                                                                               Write(Url.Action("Delete"));
 
             

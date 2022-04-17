@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace ZT.SMS.Web.Areas.manage.Controllers
 {
@@ -50,7 +51,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             IList<MsgViewModel> gmList = new List<MsgViewModel>();
 
             if (data != null && data.DataT != null)
-                gmList = data.DataT.Select(g => new MsgViewModel() { Id = g.Id, UserId = g.OperatorId, Number = g.MessageId, State = g.SendState, CreateTime = g.CreateDate.ToString("yyyy-MM-dd HH:mm"), Phone = g.ToAddress, SendDate = g.SendDate == null || g.SendDate == DateTime.MinValue ? "--" : g.SendDate.ToString("yyyy-MM-dd HH:mm"), OrderDate = DateTime.MinValue.Equals(g.MsgData.OrderDate) ? "--" : g.MsgData.OrderDate.ToString("yyyy-MM-dd") }).ToList();
+                gmList = data.DataT.Select(g => new MsgViewModel() { Id = g.Id, UserId = g.OperatorId, Number = g.MessageId, State = g.SendState, CreateTime = g.CreateDate.ToString("yyyy-MM-dd HH:mm"), Phone = g.ToAddress, SendDate = g.SendDate == null || g.SendDate == DateTime.MinValue ? "--" : g.SendDate.ToString("yyyy-MM-dd HH:mm"), OrderDate = DateTime.MinValue.Equals(g.MsgData.OrderDate) ? "--" : g.MsgData.OrderDate.ToString("yyyy-MM-dd"), OrderName = g.MsgData.OrderName }).ToList();
 
             return Json(new
             {
@@ -76,6 +77,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
                     Id = data.Id,
                     Number = data.MessageId,
                     Phone = data.ToAddress,
+                    OrderName = data.MsgData.OrderName,
                     OrderDate = DateTime.MinValue.Equals(data.MsgData.OrderDate) ? "" : data.MsgData.OrderDate.ToString("yyyy-MM-dd")
                 });
             else
@@ -95,8 +97,8 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             {
                 MessageRecord data = msgService.Get(model.Id);
                 data.MessageId = model.Number;
-                data.SendState = model.State;
                 data.ToAddress = model.Phone;
+                data.MsgData.OrderName = model.OrderName;
                 data.MsgData.OrderDate = Convert.ToDateTime(model.OrderDate);
                 data.OperatorId = UserId;
                 rmodel.isSuccess = msgService.Update(data);
@@ -136,7 +138,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
                     OperatorId = UserId,
                     SendState = MsgSendState.Unsent,
                     ToAddress = model.Phone,
-                    MsgData = new MsgDataInfo() { OrderDate = Convert.ToDateTime(model.OrderDate) }
+                    MsgData = new MsgDataInfo() { OrderDate = Convert.ToDateTime(model.OrderDate), OrderName = model.OrderName }
                 };
                 rmodel.isSuccess = msgService.Add(msgModel);
             }
@@ -145,11 +147,22 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
         }
         #endregion
 
-        public ActionResult Progress()
+        public ActionResult Progress(MsgSendState state)
         {
+            string cacheKey = Guid.NewGuid().ToString("N");
 
-            HttpContext.Response.Write("<script>alert(1)</script>");
-            HttpContext.Response.Flush();
+            Task task = new Task(() =>
+            {
+                //BatchSendSMS(cacheKey, MsgSendState.SendSuccess);
+            });
+            task.Start();
+
+            if (task.IsCompleted)
+            {
+                Logger.Info(this, "task 执行结束");
+            }
+
+            ViewBag.CacheKey = cacheKey;
             return View();
         }
 
@@ -173,6 +186,12 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
         {
             ResultRetrun rmodel = new ResultRetrun();
             MessageRecord data = msgService.Get(id);
+            if (data.SendState == MsgSendState.SendSuccess)
+            {
+                rmodel.message = "该消息已经发送成功,不能重复发送";
+                return Json(rmodel, JsonRequestBehavior.AllowGet);
+            }
+
             try
             {
                 rmodel.isSuccess = msgService.Send(data);
@@ -188,26 +207,14 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             return Json(rmodel, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        /// 暂不使用
+        /// </summary>
+        /// <returns></returns>
         public JsonResult BatchSend()
         {
             ResultRetrun rmodel = new ResultRetrun();
             List<MessageRecord> data = msgService.GetAll(new MessageRecordQuery() { SendState = (int)MsgSendState.Unsent });
-
-
-            //BackgroundWorker backgroundWorker = new BackgroundWorker();
-            //backgroundWorker.DoWork += (s, e1) =>
-            //{
-            //    List<MessageRecord> recordArgument = e1.Argument as List<MessageRecord>;
-            //    //BatchSendSMS(recordArgument);
-            //};
-
-            //backgroundWorker.RunWorkerCompleted += (s, e1) =>
-            //{
-
-
-            //};
-            //backgroundWorker.RunWorkerAsync(data);
-
 
             for (int i = 0; i < data.Count; i++)
             {
@@ -232,28 +239,61 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             return Json(rmodel, JsonRequestBehavior.AllowGet);
         }
 
-        private void BatchSendSMS(List<MessageRecord> recordData, out StatisticalResult result)
+        private void BatchSendSMS(string cacheKey, MsgSendState state)
         {
-            result = new StatisticalResult(recordData.Count);
-            int totalCount = recordData.Count;
-            for (int i = 0; i < recordData.Count; i++)
+            List<MessageRecord> recordData = msgService.GetAll(new MessageRecordQuery() { SendState = (int)state });
+            ProgressResult result = new ProgressResult(recordData.Count);
+
+            try
             {
-                ResultRetrun rmodel = new ResultRetrun();
-                msgService.Send(recordData[i]);
-                rmodel.isSuccess = true;
-                rmodel.sign = (i + 1) * 100 / totalCount;
-                Thread.Sleep(5);
-                ViewBag.ProData = rmodel;
-                result.SuccessCount += 1;
+                for (int i = 0; i < recordData.Count; i++)
+                {
+                    result.Count += 1;
+                    if (msgService.Send(recordData[i]))
+                    {
+                        result.SuccessCount += 1;
+                    }
+
+                    Logger.Info(typeof(MessageRecordController), "BatchSendSMS=" + cacheKey + ";data=" + JsonUtils.Serialize(result));
+                    CacheHelper.Set(cacheKey, result);
+                    Thread.Sleep(5);
+                }
+            }
+            catch (BizException biz)
+            {
+                result.Message = biz.Message;
+                result.EndTag = true;
+                CacheHelper.Set(cacheKey, result);
+            }
+            catch (Exception ex)
+            {
+                result.Message = "系统错误:" + ex.Message;
+                result.EndTag = true;
+                CacheHelper.Set(cacheKey, result);
+            }
+            finally
+            {
+                Logger.Info(typeof(MessageRecordController), "BatchSendSMS End Result=" + cacheKey + ";data=" + JsonUtils.Serialize(result));
             }
         }
 
-        [HttpGet]
-        public JsonResult CheckProcess()
+        public JsonResult CheckProcess(string cacheKey)
         {
-            ResultRetrun rmodel = new ResultRetrun();
-            int aaaa = 10;
-            return Json(aaaa, JsonRequestBehavior.AllowGet);
+            ProgressResult rmodel = CacheHelper.Get(cacheKey) as ProgressResult;
+
+            if (rmodel == null)
+            {
+                rmodel = new ProgressResult();
+                rmodel.EndTag = true;
+                rmodel.Message = "没有要处理数据,任务结束";
+            }
+
+            if (rmodel.EndTag)
+            {
+                CacheHelper.Remove(cacheKey);
+            }
+
+            return Json(rmodel, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
@@ -273,6 +313,27 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             else
                 rmodel.isSuccess = true;
             return Json(rmodel.isSuccess, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult CheckSupportSend(MsgSendState state)
+        {
+            ResultRetrun rmodel = new ResultRetrun();
+
+            if (state == MsgSendState.SendSuccess)
+            {
+                rmodel.message = "当前状态不支持批量发送";
+                return Json(rmodel.isSuccess, JsonRequestBehavior.AllowGet);
+            }
+            List<MessageRecord> recordData = msgService.GetAll(new MessageRecordQuery() { SendState = (int)state });
+
+            if (CollectionUtils.IsEmpty(recordData))
+            {
+                rmodel.message = "没有要发送的数据";
+            }
+            else
+                rmodel.isSuccess = true;
+            return Json(rmodel, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Import()
@@ -320,7 +381,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
                     msgList.RemoveAll(g => !string.IsNullOrEmpty(g.Remark));
                     bool result = msgService.Add(msgList, out failOutList);
 
-                    if (!result&& CollectionUtils.IsNotEmpty(failOutList))
+                    if (!result && CollectionUtils.IsNotEmpty(failOutList))
                     {
                         failList.AddRange(failOutList);
                     }

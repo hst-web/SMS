@@ -20,6 +20,7 @@ namespace ZT.SMS.Service
     {
         MessageRecordProvider _MessageRecordProvider = new MessageRecordProvider();
         IntegratedProvider _interProvider = new IntegratedProvider();
+        private static readonly object objLock = new object();
         private static string signId = WebConfigurationManager.AppSettings["SignId"].ToString();
         private static string templateId = WebConfigurationManager.AppSettings["TemplateId"].ToString();
         //signId, string templateId
@@ -210,32 +211,45 @@ namespace ZT.SMS.Service
             PreconditionUtil.checkArgument(!string.IsNullOrEmpty(sendMsg.ToAddress), "联系方式不能为空");
             PreconditionUtil.checkArgument(!DateTime.MinValue.Equals(sendMsg.MsgData.OrderDate), "订单日期不能为空");
 
-            string content = string.Format("{0}||{1}", sendMsg.MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), sendMsg.MessageId);
-            FGSMSResponse response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsg.ToAddress);
-            if (response.code == 0)
+            lock (objLock)
             {
-                sendMsg.SendState = MsgSendState.SendSuccess;
-                sendMsg.MsgData.MsgNo.Add(response.msg_no);
-                _MessageRecordProvider.Send(sendMsg);
-            }
-            else
-            {
-                sendMsg.SendState = MsgSendState.SendFailed;
-                if (!string.IsNullOrEmpty(response.msg_no))
+                FGSMSResponse response = new FGSMSResponse();
+                MessageRecord checkRecord = _MessageRecordProvider.Get(sendMsg.Id);
+                if (checkRecord.SendState == MsgSendState.SendSuccess)
+                {
+                    // 记录日志
+                    response.msg = "消息已经发送成功，无需重复发送";
+                    AddLog(checkRecord, response);
+                    return true;
+                }
+
+                string content = string.Format("{0}||{1}", sendMsg.MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), sendMsg.MessageId);
+                response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsg.ToAddress);
+                if (response.code == 0)
+                {
+                    sendMsg.SendState = MsgSendState.SendSuccess;
                     sendMsg.MsgData.MsgNo.Add(response.msg_no);
-                _MessageRecordProvider.Send(sendMsg);
+                    _MessageRecordProvider.Send(sendMsg);
+                }
+                else
+                {
+                    sendMsg.SendState = MsgSendState.SendFailed;
+                    if (!string.IsNullOrEmpty(response.msg_no))
+                        sendMsg.MsgData.MsgNo.Add(response.msg_no);
+                    _MessageRecordProvider.Send(sendMsg);
 
+                }
+                // 记录日志
+                AddLog(sendMsg, response);
+
+                // 余额不足结束流程
+                if (response.code == 15)
+                {
+                    throw new BizException(response.code.ToString(), response.errorMsg);
+                }
+
+                return response.success;
             }
-            // 记录日志
-            AddLog(sendMsg, response);
-
-            // 余额不足结束流程
-            if (response.code == 15)
-            {
-                throw new BizException(response.code.ToString(), response.errorMsg);
-            }
-
-            return response.success;
         }
 
         private void AddLog(MessageRecord sendMsg, FGSMSResponse response)

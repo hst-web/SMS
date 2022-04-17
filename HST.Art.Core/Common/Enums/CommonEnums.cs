@@ -366,15 +366,18 @@ namespace ZT.SMS.Core
         /// <summary>
         /// 未发送
         /// </summary>
+        [Description("未发送")]
         Unsent = 0,
         /// <summary>
         /// 发送失败
         /// </summary>
+        [Description("发送失败")]
         SendFailed = 1,
 
         /// <summary>
         /// 发送成功 
         /// </summary>
+        [Description("发送成功")]
         SendSuccess = 2
     }
 }

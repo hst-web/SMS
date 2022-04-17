@@ -1228,6 +1228,7 @@
     <Content Include="Content\lib\jquery-ui\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\lib\jquery-ui\jquery-ui.min.css" />
     <Content Include="Content\lib\jquery-ui\jquery-ui.min.js" />
+    <Content Include="Content\lib\jquery.cokie.min.js" />
     <Content Include="Content\lib\jquery.contextmenu\jquery.contextmenu.r2.js" />
     <Content Include="Content\lib\jquery.matchHeight\jquery.matchHeight.js" />
     <Content Include="Content\lib\jquery.media.js" />

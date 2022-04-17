@@ -245,9 +245,23 @@ namespace ZT.SMS.Data
                         failList.Add(item);
                     }
                 }
+                catch (SqlException sqlEx)
+                {
+                    if (sqlEx.Message.Contains("AK_UK_MESSAGEID_MESSAGER"))
+                    {
+                        item.Remark = item.Remark + "该编号已经存在。不可重复添加:" + item.MessageId;
+                    }
+                    else
+                    {
+                        item.Remark = item.Remark + "添加数据库失败:" + sqlEx.Message;
+
+                    }
+                    failList.Add(item);
+                    Logger.Error(this, "批量添加失败,meeageId=" + item.MessageId + "exception:" + sqlEx.Message, sqlEx);
+                }
                 catch (Exception ex)
                 {
-                    item.Remark = item.Remark + "添加数据库失败: ex.Message";
+                    item.Remark = item.Remark + "添加数据库失败:" + ex.Message;
                     failList.Add(item);
                     Logger.Error(this, "批量添加失败,meeageId=" + item.MessageId + "exception:" + ex.Message, ex);
                 }

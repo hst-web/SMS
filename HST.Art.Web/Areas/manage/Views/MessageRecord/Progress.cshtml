@@ -10,100 +10,84 @@
 @Scripts.Render("~/bundles/saos")
 @Scripts.Render("~/bundles/ajaxAsync")
 @Scripts.Render("~/bundles/validate")
-@Styles.Render("~/appcss")
+@Styles.Render("~/bootstrap")
+
 <style>
-    .progress{
-        width:auto;
-        margin-top:30px
+    .progress {
+        width: auto;
+        margin-top: 20px;
     }
 
-    .progress, .progress-bar, .sr-only{
-        height:20px
+    .progress-bar-animated {
+        -webkit-animation: 1s linear infinite progress-bar-stripes;
+        animation: 1s linear infinite progress-bar-stripes;
     }
 </style>
-<article class="page-container">
-    <div class="progress"><div class="progress-bar"><span class="sr-only" id="aaaa" style="width:25%"></span></div></div>
-    <input type="button"  id="testBtn" name="name" value="test" />
+<article class="page-container" style="padding:30px">
+    <div class="progress" style="height:30px">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%;padding:5px">0%</div>
+    </div>
 </article>
 
 <script type="text/javascript">
     $(function () {
-
-        $("#testBtn").click(function () {
-   
-            @*$.getJSON('@Url.Action("CheckProcess")', function (res) {
-                alert(res);
-                $('.sr-only').width(res + '%'); //根据获得的进度改变进度条
-            });*@
-        });
-
-        @*var sitv = setInterval(function () {
-            $.getJSON('@Url.Action("CheckProcess")', function (res) {
-                console.log(res);
-                $('.sr-only').width(res + '%'); //根据获得的进度改变进度条
-            });
-        }, 1000); //setInterval()每隔1秒获取一次后台的进度值*@
-
-
-        $.ajax({
-            url: '@Url.Action("BatchSend")',
-            type: "post",
-            async: true,
-            success: function (data) {
-                alert(data.isSuccess);
-                if (data.isSuccess) {
-                    //clearInterval(sitv);
-                    //var index = parent.layer.getFrameIndex(window.name);
-                    top.layer.alert('发送成功！', {
-                        icon: 6,
-                        closeBtn: 0,
-                        yes: function () {
-                            if (parent[1] != null) {
-                                parent[pageIndex()].table1.ajax.reload();
-                            } else if (parent.table1 != null) {
-                                parent.table1.ajax.reload();
-                            } else {
-                                parent[0].table1.ajax.reload();
-                            }
-                            parent.layer.closeAll();
-                        }
-                    });
-                } else if (data.message != null) {
-                    top.layer.alert(data.message, { icon: 8 });
-                } else {
-                    top.layer.alert('发送失败！', { icon: 5 });
-                }
-            },
-            error: function (data) { top.layer.alert('发送失败！', { icon: 5 }); }
-        })
+        var sitv = setInterval(function () {
+            checkData(sitv);
+        }, 5000); //setInterval()每隔1秒获取一次后台的进度值
     });
 
-    function addPro(res) {
-        alert(res);
-        $('.sr-only').width(res + '%');
-    }
+    function checkData(obj) {
+        try {
+            $.ajax({
+                url: '@Url.Action("CheckProcess")',
+                type: "post",
+                data: { cacheKey: '@ViewBag.CacheKey' },
+                success: function (data) {
+                    if (data.EndTag) {
+                        $("div.progress-bar").width("100%").html("100%");
+                        clearInterval(obj);
+                        var proStatic = "成功/失败=" + data.SuccessCount + "/" + data.FailCount;
+                        var resultMsg = "全部发送成功！";
+                        var tipIcon = 1;//默认为成功图标
 
-    function formSuccess(result) {
-        if (result != null) {
-            if (result.isSuccess) {
-                var index = parent.layer.getFrameIndex(window.name);
-                layer.alert('保存成功！', {
-                    icon: 6,
-                    closeBtn: 0,
-                    yes: function () {
-                        if (parent[1] != null) {
-                            parent[pageIndex()].table1.ajax.reload();
+                        if (data.Message == null) {
+                            if (data.FailCount > 0) {
+                                tipIcon = 8;
+                                resultMsg = "操作结束<br/>" + proStatic;
+                            }
                         } else {
-                            parent.table1.ajax.reload();
+                            tipIcon = 8;
+                            resultMsg = data.Message + "<br/>" + proStatic;
                         }
-                        parent.layer.close(index);
+
+                        top.layer.alert(resultMsg, {
+                            icon: tipIcon,
+                            closeBtn: 0,
+                            yes: function () {
+                                if (parent[1] != null) {
+                                    parent[pageIndex()].table1.ajax.reload();
+                                } else if (parent.table1 != null) {
+                                    parent.table1.ajax.reload();
+                                } else {
+                                    parent[0].table1.ajax.reload();
+                                }
+                                parent.layer.closeAll();
+                            }
+                        });
+                    } else {
+                        $("div.progress-bar").width(data.Speed + "%").html(data.Speed + "%");
                     }
-                });
-            } else if (result.message != null) {
-                layer.alert(result.message, { icon: 8 });
-            } else
-                layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
-        } else
-            layer.alert('保存失败！', { icon: 5 });//icon:6为开心图
+                },
+                error: function (data) {
+                    clearInterval(obj);
+                    var index = parent.layer.getFrameIndex(window.name);
+                    top.layer.close(index);
+                    top.layer.alert('发送失败！' + data, { icon: 5 });
+                }
+            })
+        } catch (e1) {
+            parent.layer.closeAll();
+            alert("脚本异常，页面关闭：" + e1);
+        }
     }
 </script>

@@ -594,3 +594,44 @@ CreateDate ASC
 )
 go
 
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('MessageReport')
+            and   type = 'U')
+   drop table MessageReport
+go
+
+/*==============================================================*/
+/* Table: MessageReport                                         */
+/*==============================================================*/
+create table MessageReport (
+   Id                   int                  identity,
+   MsgNo                varchar(50)          not null,
+   Mobile               varchar(20)          null,
+   State                int                  null default 0,
+   CreateDate           datetime             null default getdate(),
+   constraint PK_MESSAGEREPORT primary key (Id),
+   constraint AK_UK_MSGNO_MESSAGER unique (MsgNo)
+)
+go
+
+if exists(select 1 from sys.extended_properties p where
+      p.major_id = object_id('MessageReport')
+  and p.minor_id = (select c.column_id from sys.columns c where c.object_id = p.major_id and c.name = 'State')
+)
+begin
+   declare @CurrentUser sysname
+select @CurrentUser = user_name()
+execute sp_dropextendedproperty 'MS_Description', 
+   'user', @CurrentUser, 'table', 'MessageReport', 'column', 'State'
+
+end
+
+
+select @CurrentUser = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '0:未发送
+   1:发送失败
+   2:发送成功',
+   'user', @CurrentUser, 'table', 'MessageReport', 'column', 'State'
+go

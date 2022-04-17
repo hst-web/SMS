@@ -39,6 +39,7 @@ namespace ZT.SMS.Web
         }
         [Required(AllowEmptyStrings = false, ErrorMessage = "订单日期不能为空")]
         public string OrderDate { get; set; }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "商品名称不能为空")]
         public string OrderName { get; set; }
         public string Remark { get; set; }
     }

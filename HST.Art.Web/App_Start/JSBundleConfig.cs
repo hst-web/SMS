@@ -23,6 +23,7 @@ namespace ZT.SMS.Web
                  "~/Content/lib/jquery/jquery.min.js",
                  "~/Content/lib/jquery/jquery-migrate.min.js",
                   "~/Content/lib/jquery-ui/jquery-ui.min.js",
+                    "~/Content/lib/jquery.cokie.min.js",
                  "~/Content/lib/uniform/jquery.uniform.js").Include(
                  "~/Content/lib/jquery-animateNumber/jquery.animateNumber.min.js", new CssRewriteUrlTransformWrapper()).Include(
                  "~/Content/lib/fancybox/dist/jquery.fancybox.min.js", new CssRewriteUrlTransformWrapper()).Include(
