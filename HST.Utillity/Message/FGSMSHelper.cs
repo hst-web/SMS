@@ -38,12 +38,6 @@ namespace ZT.Utillity
             try
             {
                 response = JsonUtils.Deserialize<FGSMSResponse>(res);
-                //重试一次
-                if (!response.success && response.code > 15)
-                {
-                    res = HttpTool.HttpRequest("https://api.4321.sh/sms/template", dic.Serialize(), "application/json");
-                    response = JsonUtils.Deserialize<FGSMSResponse>(res);
-                }
             }
             catch (JsonReaderException)
             {
@@ -164,6 +158,13 @@ namespace ZT.Utillity
     public class FGSMSReportResponse
     {
         public List<ReportInfo> data { get; set; }
+        public bool success
+        {
+            get
+            {
+                return code == 0;
+            }
+        }
         public string msg { get; set; }
         public int code { get; set; }
     }

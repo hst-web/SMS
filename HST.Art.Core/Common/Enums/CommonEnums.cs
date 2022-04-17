@@ -354,7 +354,7 @@ namespace ZT.SMS.Core
         /// 错误日志
         /// </summary>
         Error = 2,
-        Info=3
+        Info = 3
     }
 
 
@@ -374,10 +374,18 @@ namespace ZT.SMS.Core
         [Description("发送失败")]
         SendFailed = 1,
 
+
+        /// <summary>
+        /// 接收失败
+        /// </summary>
+        [Description("接收失败")]
+        ReceiveFailed = 2,
+
         /// <summary>
         /// 发送成功 
         /// </summary>
         [Description("发送成功")]
-        SendSuccess = 2
+        SendSuccess = 3
+       
     }
 }

@@ -182,6 +182,23 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             return Json(rmodel, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult Righting()
+        {
+            ResultRetrun rmodel = new ResultRetrun();
+            try
+            {
+                msgService.Righting();
+                //Thread.Sleep(5000);
+                rmodel.isSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                rmodel.message = "操作失败，原因：" + ex.Message;
+            }
+            return Json(rmodel, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult Send(int id)
         {
             ResultRetrun rmodel = new ResultRetrun();
@@ -325,9 +342,8 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
                 rmodel.message = "当前状态不支持批量发送";
                 return Json(rmodel.isSuccess, JsonRequestBehavior.AllowGet);
             }
-            List<MessageRecord> recordData = msgService.GetAll(new MessageRecordQuery() { SendState = (int)state });
 
-            if (CollectionUtils.IsEmpty(recordData))
+            if (msgService.Count(state) <= 0)
             {
                 rmodel.message = "没有要发送的数据";
             }
@@ -379,9 +395,9 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
                     int msgTotalCount = msgList.Count;
                     failList = msgList.FindAll(g => !string.IsNullOrEmpty(g.Remark));
                     msgList.RemoveAll(g => !string.IsNullOrEmpty(g.Remark));
-                    bool result = msgService.Add(msgList, out failOutList);
+                    msgService.Add(msgList, out failOutList);
 
-                    if (!result && CollectionUtils.IsNotEmpty(failOutList))
+                    if (CollectionUtils.IsNotEmpty(failOutList))
                     {
                         failList.AddRange(failOutList);
                     }
@@ -395,7 +411,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
                     }
                     else
                     {
-                        um_mod.IsSuccess = result;
+                        um_mod.IsSuccess = true;
                     }
                 }
             }

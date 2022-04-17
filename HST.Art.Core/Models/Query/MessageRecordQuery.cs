@@ -12,7 +12,9 @@ namespace ZT.SMS.Core
         private int _pageSize = 10;
         public string MessageId { get; set; }
         public string CreateDate { get; set; }
-   
+        private int righting = -1;
+      
+
         public int PageIndex
         {
             get
@@ -49,6 +51,22 @@ namespace ZT.SMS.Core
             set
             {
                 sendState = value;
+            }
+        }
+
+        /// <summary>
+        /// 1 true,0 false
+        /// </summary>
+        public int Righting
+        {
+            get
+            {
+                return righting;
+            }
+
+            set
+            {
+                righting = value;
             }
         }
 

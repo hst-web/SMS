@@ -559,6 +559,7 @@ create table MessageRecord (
    OperatorId           int                  null,
    CreateDate           datetime             null default getdate(),
    IsDeleted            bit                  null default 0,
+   IsRighting           bit                  null default 0,
    constraint PK_MessageRecord primary key (Id),
    constraint AK_UK_MESSAGEID_MESSAGER unique (MessageId)
 )
@@ -581,7 +582,8 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '0:未发送
    1:发送失败
-   2:发送成功',
+   2:接收失败
+   3:发送成功',
    'user', @CurrentUser, 'table', 'MessageRecord', 'column', 'State'
 go
 
@@ -610,6 +612,8 @@ create table MessageReport (
    Mobile               varchar(20)          null,
    State                int                  null default 0,
    CreateDate           datetime             null default getdate(),
+   ResultCode           varchar(30)          null,
+   IsRighting           bit                  null default 0,
    constraint PK_MESSAGEREPORT primary key (Id),
    constraint AK_UK_MSGNO_MESSAGER unique (MsgNo)
 )
@@ -632,6 +636,7 @@ select @CurrentUser = user_name()
 execute sp_addextendedproperty 'MS_Description', 
    '0:未发送
    1:发送失败
-   2:发送成功',
+   2:接收失败
+   3:发送成功',
    'user', @CurrentUser, 'table', 'MessageReport', 'column', 'State'
 go

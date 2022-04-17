@@ -87,5 +87,13 @@ namespace ZT.SMS.Data
             parametersList.Add(new SqlParameter("@Id", flagUpdHandle.Id));
             return dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
         }
+
+        public int GetCount(FlagUpdHandle flagUpdHandle)
+        {
+            DBHelper dbHelper = new DBHelper(ConnectionString, DbProviderType.SqlServer);
+            string strSql = string.Format("select count(*) from {0}  where {1}={2}", flagUpdHandle.TableName, flagUpdHandle.Key, flagUpdHandle.Value);
+
+            return (int)dbHelper.ExecuteScalar(strSql, null);
+        }
     }
 }

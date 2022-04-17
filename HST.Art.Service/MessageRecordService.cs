@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using ZT.Utillity;
 using System.Web.Configuration;
 using System.Web;
+using System.Threading;
 
 namespace ZT.SMS.Service
 {
@@ -175,16 +176,16 @@ namespace ZT.SMS.Service
             return null;
         }
 
-        public bool Add(List<MessageRecord> MessageRecordInfos, out List<MessageRecord> failList)
+        public void Add(List<MessageRecord> MessageRecordInfos, out List<MessageRecord> failList)
         {
             if (MessageRecordInfos == null || MessageRecordInfos.Count <= 0)
             {
                 failList = null;
                 ErrorMsg = ErrorCode.ParameterNull;
-                return false;
+                return;
             }
 
-            return _MessageRecordProvider.Add(MessageRecordInfos, out failList);
+            _MessageRecordProvider.Add(MessageRecordInfos, out failList);
         }
 
         public List<string> GetAllMessageId()
@@ -192,16 +193,16 @@ namespace ZT.SMS.Service
             return _MessageRecordProvider.GetAllMessageId();
         }
 
-        public bool Update(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList)
+        public void Update(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList)
         {
             if (messageRecordInfos == null || messageRecordInfos.Count <= 0)
             {
                 failList = null;
                 ErrorMsg = ErrorCode.ParameterNull;
-                return false;
+                return;
             }
 
-            return _MessageRecordProvider.Update(messageRecordInfos, out failList);
+            _MessageRecordProvider.Update(messageRecordInfos, out failList);
         }
 
         public bool Send(MessageRecord sendMsg)
@@ -265,6 +266,94 @@ namespace ZT.SMS.Service
             sLog.UserId = sendMsg.OperatorId;
             sLog.ReqParameter = JsonUtils.Serialize(sendMsg);
             _interProvider.AddLog(sLog);
+        }
+
+        public int Count(MsgSendState state)
+        {
+            return _MessageRecordProvider.GetCount(new FlagUpdHandle()
+            {
+                FieldType = FieldType.Int,
+                Key = "State",
+                Value = (int)state,
+                TableName = "MessageRecord"
+            });
+        }
+
+        public MessageStatisticsInfo Statistics()
+        {
+            return _MessageRecordProvider.Statistics();
+        }
+
+        /// <summary>
+        /// 冲正
+        /// </summary>
+        public void Righting()
+        {
+            while (true)
+            {
+                FGSMSReportResponse response = FGSMSHelper.GetSMSReport();
+                Logger.Info(typeof(MessageRecordService), "GetSMSReport=" + JsonUtils.Serialize(response));
+                if (!response.success)
+                {
+                    SystemLog sLog = new SystemLog();
+                    sLog.ActionName = "SMSReport";
+                    sLog.ClientIp = HttpContext.Current.Session["IP"].ToString();
+                    sLog.ControllerName = "MessageRecordService.AddReport";
+                    sLog.ResultLog = JsonUtils.Serialize(response);
+                    sLog.Source = LogSource.Admin;
+                    sLog.Type = LogType.Error;
+                    _interProvider.AddLog(sLog);
+                    break;
+                }
+
+                if (CollectionUtils.IsEmpty(response.data)) continue;
+                _MessageRecordProvider.AddReport(response.data.Select(g => new MessageReport()
+                {
+                    MsgNo = g.msg_no,
+                    Mobile = g.mobile,
+                    ResultCode = g.status,
+                    SendState = g.success ? MsgSendState.SendSuccess : MsgSendState.ReceiveFailed
+                }).ToList());
+                //需要间隔5s
+                Thread.Sleep(5000);
+            }
+
+            RightingHandle();
+            Logger.Info(typeof(MessageRecordService), "Righting End");
+        }
+
+        private void RightingHandle()
+        {
+            List<MessageReport> reportList = _MessageRecordProvider.GetAllReport();
+            if (CollectionUtils.IsEmpty(reportList))
+            {
+                return;
+            }
+
+            List<MessageRecord> messageList = _MessageRecordProvider.GetAll(new MessageRecordQuery() { Righting = 0 });
+            if (CollectionUtils.IsEmpty(messageList))
+            {
+                return;
+            }
+
+            List<MessageReport> reportEndList = new List<MessageReport>();
+            List<MessageRecord> messageEndList = new List<MessageRecord>();
+            List<MessageRecord> faildList = null;
+            foreach (MessageReport item in reportList)
+            {
+                MessageRecord messageItem = messageList.Find(g => g.MsgData.MsgNo.Contains(item.MsgNo));
+                if (messageItem != null)
+                {
+                    messageItem.IsRighting = true;
+                    messageItem.SendState = item.SendState;
+                    messageEndList.Add(messageItem);
+                    item.IsRighting = true;
+                    reportEndList.Add(item);
+                }
+            }
+
+            _MessageRecordProvider.UpdateReport(reportEndList);
+            _MessageRecordProvider.Update(messageEndList, out faildList);
         }
     }
 }

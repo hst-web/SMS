@@ -14,9 +14,12 @@ namespace ZT.SMS.Core
         MessageRecord GetByMsgId(string msgId);
         List<string> GetAllMessageId();
         bool Update(MessageRecord messageRecordInfo);
-        bool Update(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);
+        void Update(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);
         bool Add(MessageRecord messageRecordInfo);
-        bool Add(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);
+        void Add(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);     
         bool Send(MessageRecord sendMsg);
+        int Count(MsgSendState state);
+        MessageStatisticsInfo Statistics();
+        void Righting();
     }
 }
