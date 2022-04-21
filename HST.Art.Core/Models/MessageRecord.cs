@@ -16,7 +16,6 @@ namespace ZT.SMS.Core
         public MsgDataInfo MsgData { get; set; }
         public int OperatorId { get; set; }
         private DateTime _createdate = DateTime.Now;
-        private bool _isdeleted = false;
         public MsgSendState SendState { get; set; }
         public string Remark { get; set; }
         public bool IsRighting { get; set; }
@@ -28,14 +27,6 @@ namespace ZT.SMS.Core
         {
             set { _createdate = value; }
             get { return _createdate; }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsDeleted
-        {
-            set { _isdeleted = value; }
-            get { return _isdeleted; }
         }
     }
 

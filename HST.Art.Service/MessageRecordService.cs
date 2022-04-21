@@ -205,43 +205,50 @@ namespace ZT.SMS.Service
             _MessageRecordProvider.Update(messageRecordInfos, out failList);
         }
 
-        public bool Send(MessageRecord sendMsg)
+        public bool Send(List<MessageRecord> sendMsgList, bool needCheck = true)
         {
-            PreconditionUtil.checkNotNull(sendMsg, "参数校验失败");
-            PreconditionUtil.checkArgument(!string.IsNullOrEmpty(sendMsg.MessageId), "订单编号不能为空");
-            PreconditionUtil.checkArgument(!string.IsNullOrEmpty(sendMsg.ToAddress), "联系方式不能为空");
-            PreconditionUtil.checkArgument(!DateTime.MinValue.Equals(sendMsg.MsgData.OrderDate), "订单日期不能为空");
+            PreconditionUtil.checkArgument(CollectionUtils.IsNotEmpty(sendMsgList), "参数校验失败");
 
             lock (objLock)
             {
                 FGSMSResponse response = new FGSMSResponse();
-                MessageRecord checkRecord = _MessageRecordProvider.Get(sendMsg.Id);
-                if (checkRecord.SendState == MsgSendState.SendSuccess)
+                if (needCheck)
                 {
-                    // 记录日志
-                    response.msg = "消息已经发送成功，无需重复发送";
-                    AddLog(checkRecord, response);
-                    return true;
+                    List<MessageRecord> msgLogList = JsonUtils.Deserialize<List<MessageRecord>>(sendMsgList.Serialize());
+                    CheckSendRecord(ref sendMsgList);
+                    if (CollectionUtils.IsEmpty(sendMsgList))
+                    {
+                        // 记录日志
+                        response.msg = "消息已经发送成功，无需重复发送";
+                        AddLog(msgLogList, response);
+                        return true;
+                    }
                 }
 
-                string content = string.Format("{0}||{1}", sendMsg.MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), sendMsg.MessageId);
-                response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsg.ToAddress);
+                // 后续跟进业务调整
+                string content = string.Format("{0}||{1}", sendMsgList.First().MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), string.Join("、", sendMsgList.Select(g => g.MessageId)));
+                //response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsgList.First().ToAddress);
+                Logger.Info(typeof(MessageRecordService), string.Format("request:{0},response:{1}", sendMsgList.First().ToAddress + "," + content, response.Serialize()));
+
+
                 if (response.code == 0)
                 {
-                    sendMsg.SendState = MsgSendState.SendSuccess;
-                    sendMsg.MsgData.MsgNo.Add(response.msg_no);
-                    _MessageRecordProvider.Send(sendMsg);
+                    sendMsgList.ForEach(g => { g.SendState = MsgSendState.SendSuccess; g.MsgData.MsgNo.Add(response.msg_no); });
+                    _MessageRecordProvider.Send(sendMsgList);
                 }
                 else
                 {
-                    sendMsg.SendState = MsgSendState.SendFailed;
-                    if (!string.IsNullOrEmpty(response.msg_no))
-                        sendMsg.MsgData.MsgNo.Add(response.msg_no);
-                    _MessageRecordProvider.Send(sendMsg);
+                    sendMsgList.ForEach(g =>
+                    {
+                        g.SendState = MsgSendState.SendFailed;
+                        if (!string.IsNullOrEmpty(response.msg_no))
+                            g.MsgData.MsgNo.Add(response.msg_no);
+                    });
+                    _MessageRecordProvider.Send(sendMsgList);
 
                 }
                 // 记录日志
-                AddLog(sendMsg, response);
+                AddLog(sendMsgList, response);
 
                 // 余额不足结束流程
                 if (response.code == 15)
@@ -253,18 +260,24 @@ namespace ZT.SMS.Service
             }
         }
 
-        private void AddLog(MessageRecord sendMsg, FGSMSResponse response)
+        private void CheckSendRecord(ref List<MessageRecord> sendMsgList)
+        {
+            List<int> ids = sendMsgList.Select(g => g.Id).ToList();
+            sendMsgList.Clear();
+            sendMsgList.AddRange(_MessageRecordProvider.Get(ids).FindAll(s => s.SendState == MsgSendState.Unsent || s.SendState == MsgSendState.SendFailed));
+        }
+
+        private void AddLog(List<MessageRecord> sendMsgs, FGSMSResponse response)
         {
             SystemLog sLog = new SystemLog();
             sLog.ActionName = "SendSMS";
-            sLog.ClientIp = HttpContext.Current.Session["IP"].ToString();
             sLog.ControllerName = "MessageRecordService.Send";
             sLog.ResultLog = JsonUtils.Serialize(response);
             sLog.Source = LogSource.Admin;
             sLog.Type = response.success ? LogType.Info : LogType.Error;
-            sLog.UserAgent = sendMsg.MessageId;
-            sLog.UserId = sendMsg.OperatorId;
-            sLog.ReqParameter = JsonUtils.Serialize(sendMsg);
+            sLog.UserAgent = string.Join(",", sendMsgs.Select(g => g.MessageId));
+            sLog.UserId = sendMsgs.First().OperatorId;
+            sLog.ReqParameter = sendMsgs.Serialize();
             _interProvider.AddLog(sLog);
         }
 
@@ -285,9 +298,9 @@ namespace ZT.SMS.Service
         }
 
         /// <summary>
-        /// 冲正
+        /// 加载报表
         /// </summary>
-        public void Righting()
+        public void LoadReport()
         {
             while (true)
             {
@@ -297,7 +310,6 @@ namespace ZT.SMS.Service
                 {
                     SystemLog sLog = new SystemLog();
                     sLog.ActionName = "SMSReport";
-                    sLog.ClientIp = HttpContext.Current.Session["IP"].ToString();
                     sLog.ControllerName = "MessageRecordService.AddReport";
                     sLog.ResultLog = JsonUtils.Serialize(response);
                     sLog.Source = LogSource.Admin;
@@ -317,7 +329,14 @@ namespace ZT.SMS.Service
                 //需要间隔5s
                 Thread.Sleep(5000);
             }
+        }
 
+        /// <summary>
+        /// 冲正
+        /// </summary>
+        public void Righting()
+        {
+            LoadReport();
             RightingHandle();
             Logger.Info(typeof(MessageRecordService), "Righting End");
         }
@@ -355,5 +374,7 @@ namespace ZT.SMS.Service
             _MessageRecordProvider.UpdateReport(reportEndList);
             _MessageRecordProvider.Update(messageEndList, out faildList);
         }
+
+
     }
 }

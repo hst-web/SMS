@@ -16,10 +16,11 @@ namespace ZT.SMS.Core
         bool Update(MessageRecord messageRecordInfo);
         void Update(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);
         bool Add(MessageRecord messageRecordInfo);
-        void Add(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);     
-        bool Send(MessageRecord sendMsg);
+        void Add(List<MessageRecord> messageRecordInfos, out List<MessageRecord> failList);
+        bool Send(List<MessageRecord> sendMsgs, bool needCheck = true);
         int Count(MsgSendState state);
         MessageStatisticsInfo Statistics();
         void Righting();
+        void LoadReport();
     }
 }

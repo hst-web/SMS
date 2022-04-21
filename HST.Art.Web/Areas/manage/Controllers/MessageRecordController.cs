@@ -153,7 +153,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
 
             Task task = new Task(() =>
             {
-                //BatchSendSMS(cacheKey, MsgSendState.SendSuccess);
+                BatchSendSMS(cacheKey, MsgSendState.SendSuccess);
             });
             task.Start();
 
@@ -189,7 +189,6 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             try
             {
                 msgService.Righting();
-                //Thread.Sleep(5000);
                 rmodel.isSuccess = true;
             }
             catch (Exception ex)
@@ -211,7 +210,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
 
             try
             {
-                rmodel.isSuccess = msgService.Send(data);
+                rmodel.isSuccess = msgService.Send(new List<MessageRecord>() { data }, false);
             }
             catch (BizException biz)
             {
@@ -232,14 +231,14 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
         {
             ResultRetrun rmodel = new ResultRetrun();
             List<MessageRecord> data = msgService.GetAll(new MessageRecordQuery() { SendState = (int)MsgSendState.Unsent });
+            List<List<MessageRecord>> groupList = GetGroupList(data);
 
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < groupList.Count; i++)
             {
                 rmodel = new ResultRetrun();
                 try
                 {
-                    rmodel.isSuccess = msgService.Send(data[i]);
-                    Thread.Sleep(5);
+                    rmodel.isSuccess = msgService.Send(groupList[i]);
                 }
                 catch (BizException biz)
                 {
@@ -259,21 +258,21 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
         private void BatchSendSMS(string cacheKey, MsgSendState state)
         {
             List<MessageRecord> recordData = msgService.GetAll(new MessageRecordQuery() { SendState = (int)state });
-            ProgressResult result = new ProgressResult(recordData.Count);
+            List<List<MessageRecord>> groupList = GetGroupList(recordData);
+            ProgressResult result = new ProgressResult(groupList.Count);
 
             try
             {
-                for (int i = 0; i < recordData.Count; i++)
+                for (int i = 0; i < groupList.Count; i++)
                 {
                     result.Count += 1;
-                    if (msgService.Send(recordData[i]))
+                    if (msgService.Send(groupList[i]))
                     {
                         result.SuccessCount += 1;
                     }
 
                     Logger.Info(typeof(MessageRecordController), "BatchSendSMS=" + cacheKey + ";data=" + JsonUtils.Serialize(result));
                     CacheHelper.Set(cacheKey, result);
-                    Thread.Sleep(5);
                 }
             }
             catch (BizException biz)
@@ -292,6 +291,25 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
             {
                 Logger.Info(typeof(MessageRecordController), "BatchSendSMS End Result=" + cacheKey + ";data=" + JsonUtils.Serialize(result));
             }
+        }
+
+        private List<List<MessageRecord>> GetGroupList(List<MessageRecord> recordList)
+        {
+            List<List<MessageRecord>> groupList = new List<List<MessageRecord>>();
+            if (CollectionUtils.IsEmpty(recordList)) return groupList;
+            recordList.RemoveAll(g => DateTime.MinValue.Equals(g.MsgData.OrderDate));
+            if (CollectionUtils.IsEmpty(recordList)) return groupList;
+            IEnumerable<IGrouping<DateTime, MessageRecord>> recordGroupByDate = recordList.GroupBy(g => g.MsgData.OrderDate.Date);
+
+            foreach (IGrouping<DateTime, MessageRecord> item in recordGroupByDate)
+            {
+                foreach (var s in item.ToList().GroupBy(s => s.ToAddress))
+                {
+                    groupList.Add(s.ToList());
+                }
+            }
+
+            return groupList;
         }
 
         public JsonResult CheckProcess(string cacheKey)

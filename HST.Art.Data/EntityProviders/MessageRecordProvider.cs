@@ -41,6 +41,30 @@ namespace ZT.SMS.Data
         }
 
         /// <summary>
+        /// 根据ID获取消息信息
+        /// </summary>
+        /// <param name="id">消息ID</param>
+        /// <returns>消息信息</returns>
+        public List<MessageRecord> Get(List<int> ids)
+        {
+            List<MessageRecord> messageRecordList = new List<MessageRecord>();
+            DBHelper dbHelper = new DBHelper(ConnectionString, DbProviderType.SqlServer);
+            string inParStr = string.Empty;
+            List<DbParameter> parametersList = GetParameterList(ids, out inParStr);
+            string strSql = @"SELECT Id, MessageId, ToAddress,SendDate, MsgData, State, OperatorId,CreateDate,IsRighting  from MessageRecord  where id in (" + inParStr + ")";
+
+            using (DbDataReader reader = dbHelper.ExecuteReader(strSql, parametersList))
+            {
+                while (reader.Read())
+                {
+                    messageRecordList.Add(GetMessageRecordFromReader(reader));
+                }
+            }
+
+            return messageRecordList;
+        }
+
+        /// <summary>
         /// 获取所有消息信息
         /// </summary>
         /// <param name="condition">筛选条件</param>
@@ -225,6 +249,17 @@ namespace ZT.SMS.Data
             return sb.ToString();
         }
 
+        private List<DbParameter> GetParameterList(List<int> codes, out string inSqlStr)
+        {
+            List<DbParameter> parList = new List<DbParameter>();
+            for (int i = 0; i < codes.Count; i++)
+            {
+                parList.Add(new SqlParameter("@p" + i, codes[i]));
+            }
+
+            inSqlStr = string.Join(",", parList.Select(g => g.ParameterName));
+            return parList;
+        }
         #endregion
 
         #region 编辑消息
@@ -330,15 +365,19 @@ namespace ZT.SMS.Data
         }
 
 
-        public bool Send(MessageRecord MessageRecordInfo)
+        public void Send(List<MessageRecord> MessageRecordInfo)
         {
             DBHelper dbHelper = new DBHelper(ConnectionString, DbProviderType.SqlServer);
             string strSql = @"Update MessageRecord   Set [SendDate]=getdate() ,[State]=@State,[MsgData]=@MsgData  Where ID=@ID";
-            List<DbParameter> parametersList = new List<DbParameter>();
-            parametersList.Add(new SqlParameter("@State", (int)MessageRecordInfo.SendState));
-            parametersList.Add(new SqlParameter("@ID", MessageRecordInfo.Id));
-            parametersList.Add(new SqlParameter("@MsgData", GetMsgDataStr(MessageRecordInfo.MsgData)));
-            return dbHelper.ExecuteNonQuery(strSql, parametersList) > 0;
+            List<DbParameter> parametersList = null;
+            foreach (MessageRecord item in MessageRecordInfo)
+            {
+                parametersList = new List<DbParameter>();
+                parametersList.Add(new SqlParameter("@State", (int)item.SendState));
+                parametersList.Add(new SqlParameter("@ID", item.Id));
+                parametersList.Add(new SqlParameter("@MsgData", GetMsgDataStr(item.MsgData)));
+                dbHelper.ExecuteNonQuery(strSql, parametersList);
+            }
         }
 
         public void Update(List<MessageRecord> MessageRecordInfos, out List<MessageRecord> failList)
