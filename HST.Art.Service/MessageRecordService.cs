@@ -227,8 +227,8 @@ namespace ZT.SMS.Service
 
                 // 后续跟进业务调整
                 string content = string.Format("{0}||{1}||{2}", sendMsgList.First().MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), string.Join("、", sendMsgList.Select(g => g.MsgData.OrderName)), string.Join("、", sendMsgList.Select(g => g.MessageId)));
-                //response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsgList.First().ToAddress);
-                Logger.Info(typeof(MessageRecordService), string.Format("request:{0},response:{1}", sendMsgList.First().ToAddress + "," + content, response.Serialize()));
+                response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsgList.First().ToAddress);
+                Logger.Info(typeof(MessageRecordService), "message body=" + string.Format("request:{0},response:{1}", sendMsgList.First().ToAddress + "," + content, response.Serialize()));
 
 
                 if (response.code == 0)
@@ -360,12 +360,11 @@ namespace ZT.SMS.Service
             List<MessageRecord> faildList = null;
             foreach (MessageReport item in reportList)
             {
-                MessageRecord messageItem = messageList.Find(g => g.MsgData.MsgNo.Contains(item.MsgNo));
-                if (messageItem != null)
+                List<MessageRecord> messageItemList = messageList.FindAll(g => g.MsgData.MsgNo.Contains(item.MsgNo));
+                if (CollectionUtils.IsNotEmpty(messageItemList))
                 {
-                    messageItem.IsRighting = true;
-                    messageItem.SendState = item.SendState;
-                    messageEndList.Add(messageItem);
+                    messageItemList.ForEach(g => { g.SendState = item.SendState; g.IsRighting = true; });
+                    messageEndList.AddRange(messageItemList);
                     item.IsRighting = true;
                     reportEndList.Add(item);
                 }

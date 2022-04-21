@@ -250,64 +250,65 @@ WriteLiteral("\',\r\n            //创建选择文件按钮\r\n            pick:
 "   var xzlist = (\"xlsx,xls\").split(\",\");\r\n            var filenamelist = file.na" +
 "me.split(\'.\');\r\n            var filehz = filenamelist[filenamelist.length - 1];\r" +
 "\n\r\n            if (xzlist.indexOf(filehz) < 0) {\r\n                layer.alert(\"请" +
-"上传指定类型格式的文件\", 0);\r\n                return false;\r\n            }\r\n\r\n            i" +
-"f (file.size > (1024 * 1024 * 5)) {\r\n                layer.alert(\"文件大小不可超过5M\", 0" +
-");\r\n                return false;\r\n            }\r\n\r\n            var filelen = $(" +
-"\"#filelist>li\").length;\r\n            if (filelen >= maxcount) {\r\n               " +
-" layer.alert(\"超出最大上传数量\", 0);\r\n                return false;\r\n            }\r\n    " +
-"    });\r\n        //某个文件开始上传前触发，一个文件只会触发一次。\r\n        uploader.on(\'uploadStart\', f" +
-"unction (file) {\r\n            uploader.options.formData.guid = WebUploader.Base." +
-"guid();\r\n        });\r\n        // 当有文件添加进来的时候\r\n        uploader.on(\'fileQueued\', " +
-"function (file) {\r\n            $(\".help-file\").hide();\r\n            $(\".yangli\")" +
-".hide()\r\n            $(\".yulan\").show();\r\n            uploader.makeThumb(file, f" +
-"unction (error, ret) {\r\n                var file_list = [];\r\n                fil" +
-"e_list.push(\"<li id=\'\" + file.id + \"\'>\");\r\n                file_list.push(\"<em c" +
-"lass=\'rar\'></em>\");\r\n                file_list.push(\"<span class=\'title\'><span/>" +
-"\");\r\n                file_list.push(\"<div class=\'percent_small\'>\");\r\n           " +
-"     file_list.push(\"<div class=\'per_pic2\'>\");\r\n                file_list.push(\"" +
-"<div class=\'change_per2\' style=\'width:1%\'></div>\");\r\n                file_list.p" +
-"ush(\"</div>\");\r\n                file_list.push(\"<span class=\'showtitle\'>正准备上传…</" +
-"span></div>\");\r\n                file_list.push(\"</div></li>\");\r\n                " +
-"$(\"#filelist\").empty().append(file_list.join(\'\'));\r\n            });\r\n        });" +
-"\r\n        //重置\r\n        uploader.on(\'reset\', function (file) {\r\n\r\n        });\r\n " +
-"       // 文件上传过程中创建进度条实时显示。\r\n        uploader.on(\'uploadProgress\', function (fil" +
-"e, percentage) {\r\n            var jd = parseInt(percentage * 100);\r\n            " +
-"if (jd > 1) {\r\n                $(\"#\" + file.id).find(\".change_per2\").css(\"width\"" +
-", jd + \'%\');\r\n                $(\"#\" + file.id).find(\".per_pic2,.showtitle\").attr" +
-"(\"title\", \'已上传\' + jd + \'%\');\r\n                $(\"#\" + file.id).find(\".showtitle\"" +
-").text(\'已上传\' + jd + \'%\');\r\n            }\r\n            if (jd >= 100) {\r\n        " +
-"        $(\"#\" + file.id).find(\".per_pic2,.showtitle\").attr(\"title\", \"处理中...\");\r\n" +
-"            \r\n                loadIndex = top.layer.msg(\'数据正在处理中,请稍后...\', {\r\n   " +
-"                 icon: 16, shade: 0.4,time:0\r\n                });\r\n            }" +
-"\r\n            isfilesuping = uploader.getStats().progressNum != 0;\r\n        });\r" +
-"\n\r\n        uploader.on(\'uploadSuccess\', function (file, obj) {\r\n            top." +
-"layer.close(loadIndex);\r\n            isfilesuping = uploader.getStats().progress" +
-"Num != 0;\r\n            var jsonresult = obj._raw;\r\n            jsonresult = eval" +
-"(\'(\' + jsonresult + \')\');\r\n            if (jsonresult.FileName) {\r\n             " +
-"   $(\"#\" + file.id).find(\".showtitle\").text(\"\");\r\n                $(\"#\" + file.i" +
-"d).find(\"span.title\").html(jsonresult.FileName);\r\n                $(\"#filelist\")" +
-".removeClass(\"hidden\");\r\n            } else {\r\n                $(\"#filelist\").ad" +
-"dClass(\"hidden\");\r\n            }\r\n\r\n            if (!jsonresult.IsSuccess) {\r\n  " +
-"              if (jsonresult.FilePath) {\r\n                    top.layer.open({\r\n" +
-"                        type: 1,\r\n                        anim: 2,\r\n            " +
-"            shadeClose: true, //开启遮罩关闭\r\n                        content: \'<div  " +
-"style=\"padding: 20px 60px 25px;\"   >\' + jsonresult.Message + \'</br><a style=\"col" +
-"or:#3bb4f2;display:inline-block;margin-top:5px\" href=\"\' + jsonresult.FilePath + " +
-"\'\">点击此处下载失败数据<a/></div>\'\r\n                    });\r\n                } else {\r\n   " +
-"                 top.layer.alert(jsonresult.Message, { icon: 8 });\r\n            " +
-"    }\r\n            } else {\r\n                top.layer.alert(\"导入成功\", { icon: 5 }" +
-");\r\n            }\r\n\r\n            if (parent[1] != null) {\r\n                paren" +
-"t[pageIndex()].table1.ajax.reload();\r\n            } else {\r\n                pare" +
-"nt.table1.ajax.reload();\r\n            }\r\n\r\n            uploader.reset();\r\n      " +
-"  });\r\n\r\n        uploader.on(\'uploadError\', function (file, reason) {\r\n         " +
-"   top.layer.alert(reason);\r\n            uploader.reset();\r\n        });\r\n       " +
-" uploader.on(\'error\', function (handler) {\r\n            if (handler == \"Q_EXCEED" +
-"_NUM_LIMIT\") {\r\n                top.layer.alert(\"超出最大张数\");\r\n            }\r\n     " +
-"       if (handler == \"F_DUPLICATE\") {\r\n                top.layer.alert(\"该文件已在上传" +
-"列表\", 3);\r\n            }\r\n\r\n            if (handler == \"Q_TYPE_DENIED\") {\r\n      " +
-"          top.layer.alert(\"该文件不满足上传要求，可能您上传的文件为0KB\");\r\n            }\r\n        })" +
-";\r\n        uploader.on(\'uploadComplete\', function (file) {\r\n            $(\'#\' + " +
-"file.id).find(\'.percent_small\').fadeOut();\r\n        });\r\n\r\n    });\r\n\r\n</script>");
+"上传指定类型格式的文件\", { icon: 0 });\r\n                return false;\r\n            }\r\n\r\n   " +
+"         if (file.size > (1024 * 1024 * 5)) {\r\n                layer.alert(\"文件大小" +
+"不可超过5M\", { icon: 0 });\r\n                return false;\r\n            }\r\n\r\n        " +
+"    var filelen = $(\"#filelist>li\").length;\r\n            if (filelen >= maxcount" +
+") {\r\n                layer.alert(\"超出最大上传数量\", { icon: 0 });\r\n                retu" +
+"rn false;\r\n            }\r\n        });\r\n        //某个文件开始上传前触发，一个文件只会触发一次。\r\n      " +
+"  uploader.on(\'uploadStart\', function (file) {\r\n            uploader.options.for" +
+"mData.guid = WebUploader.Base.guid();\r\n        });\r\n        // 当有文件添加进来的时候\r\n    " +
+"    uploader.on(\'fileQueued\', function (file) {\r\n            $(\".help-file\").hid" +
+"e();\r\n            $(\".yangli\").hide()\r\n            $(\".yulan\").show();\r\n        " +
+"    uploader.makeThumb(file, function (error, ret) {\r\n                var file_l" +
+"ist = [];\r\n                file_list.push(\"<li id=\'\" + file.id + \"\'>\");\r\n       " +
+"         file_list.push(\"<em class=\'rar\'></em>\");\r\n                file_list.pus" +
+"h(\"<span class=\'title\'><span/>\");\r\n                file_list.push(\"<div class=\'p" +
+"ercent_small\'>\");\r\n                file_list.push(\"<div class=\'per_pic2\'>\");\r\n  " +
+"              file_list.push(\"<div class=\'change_per2\' style=\'width:1%\'></div>\")" +
+";\r\n                file_list.push(\"</div>\");\r\n                file_list.push(\"<s" +
+"pan class=\'showtitle\'>正准备上传…</span></div>\");\r\n                file_list.push(\"</" +
+"div></li>\");\r\n                $(\"#filelist\").empty().append(file_list.join(\'\'));" +
+"\r\n            });\r\n        });\r\n        //重置\r\n        uploader.on(\'reset\', funct" +
+"ion (file) {\r\n\r\n        });\r\n        // 文件上传过程中创建进度条实时显示。\r\n        uploader.on(\'" +
+"uploadProgress\', function (file, percentage) {\r\n            var jd = parseInt(pe" +
+"rcentage * 100);\r\n            if (jd > 1) {\r\n                $(\"#\" + file.id).fi" +
+"nd(\".change_per2\").css(\"width\", jd + \'%\');\r\n                $(\"#\" + file.id).fin" +
+"d(\".per_pic2,.showtitle\").attr(\"title\", \'已上传\' + jd + \'%\');\r\n                $(\"#" +
+"\" + file.id).find(\".showtitle\").text(\'已上传\' + jd + \'%\');\r\n            }\r\n        " +
+"    if (jd >= 100) {\r\n                $(\"#\" + file.id).find(\".per_pic2,.showtitl" +
+"e\").attr(\"title\", \"处理中...\");\r\n            \r\n                loadIndex = top.laye" +
+"r.msg(\'数据正在处理中,请稍后...\', {\r\n                    icon: 16, shade: 0.4,time:0\r\n    " +
+"            });\r\n            }\r\n            isfilesuping = uploader.getStats().p" +
+"rogressNum != 0;\r\n        });\r\n\r\n        uploader.on(\'uploadSuccess\', function (" +
+"file, obj) {\r\n            top.layer.close(loadIndex);\r\n            isfilesuping " +
+"= uploader.getStats().progressNum != 0;\r\n            var jsonresult = obj._raw;\r" +
+"\n            jsonresult = eval(\'(\' + jsonresult + \')\');\r\n            if (jsonres" +
+"ult.FileName) {\r\n                $(\"#\" + file.id).find(\".showtitle\").text(\"\");\r\n" +
+"                $(\"#\" + file.id).find(\"span.title\").html(jsonresult.FileName);\r\n" +
+"                $(\"#filelist\").removeClass(\"hidden\");\r\n            } else {\r\n   " +
+"             $(\"#filelist\").addClass(\"hidden\");\r\n            }\r\n\r\n            if" +
+" (!jsonresult.IsSuccess) {\r\n                if (jsonresult.FilePath) {\r\n        " +
+"            top.layer.open({\r\n                        type: 1,\r\n                " +
+"        anim: 2,\r\n                        shadeClose: true, //开启遮罩关闭\r\n          " +
+"              content: \'<div  style=\"padding: 20px 60px 25px;\"   >\' + jsonresult" +
+".Message + \'</br><a style=\"color:#3bb4f2;display:inline-block;margin-top:5px\" hr" +
+"ef=\"\' + jsonresult.FilePath + \'\">点击此处下载失败数据<a/></div>\'\r\n                    });\r" +
+"\n                } else {\r\n                    top.layer.alert(jsonresult.Messag" +
+"e, { icon: 8 });\r\n                }\r\n            } else {\r\n                top.l" +
+"ayer.alert(\"导入成功\", { icon: 1 });\r\n            }\r\n\r\n            if (parent[1] != " +
+"null) {\r\n                parent[pageIndex()].table1.ajax.reload();\r\n            " +
+"} else {\r\n                parent.table1.ajax.reload();\r\n            }\r\n\r\n       " +
+"     uploader.reset();\r\n        });\r\n\r\n        uploader.on(\'uploadError\', functi" +
+"on (file, reason) {\r\n            top.layer.alert(reason);\r\n            uploader." +
+"reset();\r\n        });\r\n        uploader.on(\'error\', function (handler) {\r\n      " +
+"      if (handler == \"Q_EXCEED_NUM_LIMIT\") {\r\n                top.layer.alert(\"超" +
+"出最大张数\");\r\n            }\r\n            if (handler == \"F_DUPLICATE\") {\r\n          " +
+"      top.layer.alert(\"该文件已在上传列表\", 3);\r\n            }\r\n\r\n            if (handler" +
+" == \"Q_TYPE_DENIED\") {\r\n                top.layer.alert(\"该文件不满足上传要求，可能您上传的文件为0KB" +
+"\");\r\n            }\r\n        });\r\n        uploader.on(\'uploadComplete\', function " +
+"(file) {\r\n            $(\'#\' + file.id).find(\'.percent_small\').fadeOut();\r\n      " +
+"  });\r\n\r\n    });\r\n\r\n</script>");
 
         }
     }
