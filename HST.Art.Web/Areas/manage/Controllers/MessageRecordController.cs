@@ -153,7 +153,7 @@ namespace ZT.SMS.Web.Areas.manage.Controllers
 
             Task task = new Task(() =>
             {
-                BatchSendSMS(cacheKey, MsgSendState.SendSuccess);
+                BatchSendSMS(cacheKey, state);
             });
             task.Start();
 

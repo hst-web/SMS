@@ -226,7 +226,7 @@ namespace ZT.SMS.Service
                 }
 
                 // 后续跟进业务调整
-                string content = string.Format("{0}||{1}", sendMsgList.First().MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), string.Join("、", sendMsgList.Select(g => g.MessageId)));
+                string content = string.Format("{0}||{1}||{2}", sendMsgList.First().MsgData.OrderDate.GetDateTimeFormats('D')[0].ToString(), string.Join("、", sendMsgList.Select(g => g.MsgData.OrderName)), string.Join("、", sendMsgList.Select(g => g.MessageId)));
                 //response = FGSMSHelper.TemplateSMS(signId, templateId, content, sendMsgList.First().ToAddress);
                 Logger.Info(typeof(MessageRecordService), string.Format("request:{0},response:{1}", sendMsgList.First().ToAddress + "," + content, response.Serialize()));
 
